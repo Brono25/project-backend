@@ -167,6 +167,8 @@ bower_components
 # OS metadata
 .DS_Store
 Thumbs.db
+._.*
+src/._*
 
 # Ignore built ts files
 dist/**/*
