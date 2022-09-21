@@ -1,23 +1,57 @@
 
-const data = {
-  members: [
+
+let data = {
+   
+    users: [
     {
-      id: 1,
-      email: 'example@gmail.com',
+      uId: 1,
       nameFirst: 'Hayden',
-      nameLast: 'Jacobs',
-      handleStr: 'haydenjacobs',
-      password: 'hayden123',
+      nameLast: 'Smith',
+      email: 'hayhay123@gmail.com',
+      handleStr: 'haydensmith',
     },
-  ],
-      
-  channels: [
+    ],
+
+    channels: [
     {
-      id: 1,
-      name: 'My Channel',
-    }
+
+    cId: 1,
+    name: 'My Channel',
+    isPublic: true,
+    ownerMembers: [
+        {
+          uId: 1,
+          email: 'example@gmail.com',
+          nameFirst: 'Hayden',
+          nameLast: 'Jacobs',
+          handleStr: 'haydenjacobs',
+        },
+        ],
+        
+    allMembers: [
+        {
+          uId: 1,
+          email: 'example@gmail.com',
+          nameFirst: 'Hayden',
+          nameLast: 'Jacobs',
+          handleStr: 'haydenjacobs',
+        },
+        ],
+    messages: [
+        {
+          mId: 1,
+          uId: 1,
+          message: 'Hello world',
+          timeSent: 1582426789,
+        },
+        ],
+
+    start: 0,
+    end: 50,
+
+  },
   ],
-};
+}
 
 
 [Optional] short description: 
