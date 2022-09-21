@@ -1,7 +1,7 @@
 
 
 // Stub-function for listing all channels
-function channelsListALLV1 (authUserId) {
+function channelsListAllV1 (authUserId) {
   return {
     channels: [
       {
