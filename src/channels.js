@@ -1,4 +1,3 @@
-
 // Stub-function for listing all channels
 function channelsListAllV1 (authUserId) {
   return {
@@ -27,5 +26,5 @@ function channelsListV1(authUserId) {
         name: 'My Channel',
       }
     ],
- }
+  }
 }
