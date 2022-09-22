@@ -1,5 +1,3 @@
-
-
 // Stub-function for listing all channels
 function channelsListAllV1 (authUserId) {
   return {
@@ -14,19 +12,19 @@ function channelsListAllV1 (authUserId) {
 
 // Stub funtion for creating user channels.
 function channelsCreateV1(authUserId, name, isPublic) {
-    return {
-        channelId: 1,
-    }
+  return {
+    channelId: 1,
+  }
 }
 
 // Stub function for listing the created channels.
 function channelsListV1(authUserId) {
-    return {
-        channels: [
-            {
-                channelId: 1, 
-                name: 'My Channel',
-            }
-        ],
-    }
+  return {
+    channels: [
+      {
+        channelId: 1, 
+        name: 'My Channel',
+      }
+    ],
+  }
 }
