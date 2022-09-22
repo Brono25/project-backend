@@ -1,6 +1,17 @@
+## **Data Structure**
+The type of information stored in 'data' was taken from the paramters an return values of the interface functions.\
+'data' is an object split into two categories, 'users' and 'channels' since they are the two main categories of information.\
+
+The structure is such that new items (users, channels, messages etc) are added into lists while information about the item is added into object within the list.\
+This makes traversing items easy with loops.
 
 
-let data = {
+
+
+### **Data example**
+
+```
+const data = {
    
     users: [
     {
@@ -52,6 +63,4 @@ let data = {
   },
   ],
 }
-
-
-[Optional] short description: 
+```
