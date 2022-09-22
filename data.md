@@ -1,14 +1,6 @@
-## **Data Structure**
-The type of information stored in 'data' was taken from the paramters an return values of the interface functions.\
-'data' is an object split into two categories, 'users' and 'channels' since they are the two main categories of information.\
-
-The structure is such that new items (users, channels, messages etc) are added into lists while information about the item is added into object within the list.\
-This makes traversing items easy with loops.
 
 
-
-
-### **Data example**
+### **Data Example**
 
 ```
 const data = {
@@ -64,3 +56,12 @@ const data = {
   ],
 }
 ```
+
+
+## **Data Structure**
+The type of information stored in 'data' was taken from the paramters an return values of the interface functions.\
+'data' is an object split into two main categories, 'users' and 'channels'.\
+Since 'messages', 'allMembers', 'ownerMembers', 'isPublic', 'name' and 'cId' is information relating to a single channel\
+they are grouped into a single object inside the channels array.\
+While all the user information is grouped into an object in the 'user' array.
+
