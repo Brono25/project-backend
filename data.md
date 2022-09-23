@@ -1,6 +1,6 @@
 
 
-### **Data Example**
+## **Data Example**
 
 ```
 const data = {
@@ -37,7 +37,7 @@ const data = {
 
 
 ## **Data Structure**
-The type of information stored in 'data' was taken from the paramters an return values of the interface functions.\
+The type of information stored in 'data' was taken from the parameters an return values of the interface functions.\
 'data' is an object split into two main categories, 'users' and 'channels'.\
 Since 'messages', 'allMembers', 'ownerMembers', 'isPublic', 'name' and 'cId' is information relating to a single channel\
 they are grouped into a single object inside the channels array.\
