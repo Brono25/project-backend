@@ -15,7 +15,6 @@ function channelsCreateV1(authUserId, name, isPublic) {
   return {
     channelId: 1,
   }
-<<<<<<< HEAD
 }
 
 // Stub function for listing the created channels.
@@ -28,6 +27,4 @@ function channelsListV1(authUserId) {
       }
     ],
   }
-=======
->>>>>>> ad26a6b2a344ffcb510c563d6b442d542c12fe81
 }
