@@ -39,7 +39,6 @@ function channelInviteV1( authUserId, channelId, uId ) {
 
 }
 
-
 //stub-function for listing the messages in the channel
 function channelMessagesV1( authUserId, channelId, start ){
 
@@ -59,4 +58,5 @@ function channelMessagesV1( authUserId, channelId, start ){
 	}
 
 }
+
 
