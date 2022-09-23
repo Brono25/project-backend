@@ -22,6 +22,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
 >>>>>>> ac93b0ee3163c00e9fd8f8036adc165bd6cd1228
 }
 
+<<<<<<< HEAD
 // Stub function for listing the created channels.
 function channelsListV1(authUserId) {
   return {
@@ -43,3 +44,6 @@ function channelsListV1(authUserId) {
   }
 }
 >>>>>>> ac93b0ee3163c00e9fd8f8036adc165bd6cd1228
+=======
+
+>>>>>>> shirlyn/branch
