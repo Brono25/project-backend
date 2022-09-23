@@ -23,6 +23,13 @@ function channelDetailsV1(authUserId, channelId) {
     }
 }
 
+// Stub-function for joining channel
+function channelJoinV1(authUserId, channelId) {
+  return{
+      
+  }
+}
+
 //stub-function for inviting users to the channel
 function channelInviteV1( authUserId, channelId, uId ) {
 
