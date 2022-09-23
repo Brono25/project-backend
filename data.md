@@ -1,6 +1,9 @@
 
 
-let data = {
+### **Data Example**
+
+```
+const data = {
    
     users: [
     {
@@ -14,44 +17,33 @@ let data = {
 
     channels: [
     {
-
-    cId: 1,
-    name: 'My Channel',
-    isPublic: true,
-    ownerMembers: [
-        {
-          uId: 1,
-          email: 'example@gmail.com',
-          nameFirst: 'Hayden',
-          nameLast: 'Jacobs',
-          handleStr: 'haydenjacobs',
-        },
-        ],
-        
-    allMembers: [
-        {
-          uId: 1,
-          email: 'example@gmail.com',
-          nameFirst: 'Hayden',
-          nameLast: 'Jacobs',
-          handleStr: 'haydenjacobs',
-        },
-        ],
-    messages: [
-        {
-          mId: 1,
-          uId: 1,
-          message: 'Hello world',
-          timeSent: 1582426789,
-        },
-        ],
-
-    start: 0,
-    end: 50,
-
+      cId: 1,
+      name: 'My Channel',
+      isPublic: true,
+      ownerMembers: [ {uId: 1}, ];
+      allMembers:   [ {uId: 1}, {uId: 2}, ];
+      messages: [
+      {
+        mId: 1,
+        uId: 1,
+        message: 'Hello world',
+        timeSent: 1582426789,
+      },
+      ],
   },
   ],
 }
+```
 
 
-[Optional] short description: 
+## **Data Structure**
+The type of information stored in 'data' was taken from the paramters an return values of the interface functions.\
+'data' is an object split into two main categories, 'users' and 'channels'.\
+Since 'messages', 'allMembers', 'ownerMembers', 'isPublic', 'name' and 'cId' is information relating to a single channel\
+they are grouped into a single object inside the channels array.\
+All the user information is grouped into an object in the 'user' array.\
+The channels only store the user ID of the owner and
+members since that is all that is needed to look up their complete details.
+
+
+
