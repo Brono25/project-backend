@@ -7,7 +7,7 @@ const data = {
    
     users: [
     {
-      uId: 1,
+      authUserId: 1,
       nameFirst: 'Hayden',
       nameLast: 'Smith',
       email: 'hayhay123@gmail.com',
@@ -17,15 +17,15 @@ const data = {
 
     channels: [
     {
-      cId: 1,
+      channelId: 1,
       name: 'My Channel',
       isPublic: true,
       ownerMembers: [ {uId: 1}, ];
       allMembers:   [ {uId: 1}, {uId: 2}, ];
       messages: [
       {
-        mId: 1,
-        uId: 1,
+        messageId: 1,
+        authUserId: 1,
         message: 'Hello world',
         timeSent: 1582426789,
       },
