@@ -95,10 +95,9 @@ describe('authRegisterV1()', () => {
     });
   });
 
- 
   describe('Function Testing', () => {
     test('Create new user', () => {
-      const args = [email1, password1, firstName1, lastName1];
+      const args = [email2, password2, firstName2, lastName2];
       expect(authRegisterV1(...args)).toStrictEqual({authUserId: expect.any(Number)});
     });
   });
