@@ -10,8 +10,6 @@ import {
 //------------------Auth Helper functions------------------
 
 
-
-
 /**
  * @param {string} - users handle 
  * @returns {boolean} - is handle unique
@@ -30,8 +28,6 @@ function isHandleStrUnique(handleStr) {
   }
   return true;
 }
-
-
 
 
 /**
@@ -63,11 +59,6 @@ function generateHandleStr(nameFirst, nameLast) {
 }
 
 
-
-
-
-
-
 /**
  * The user ID is the same as their index in the 
  * data.user array. This is to make fetching user details
@@ -82,8 +73,6 @@ function generateAuthUserId() {
   const id = data.users.length;
   return id;
 }
-
-
 
 /**
  * @param {string} - users email
