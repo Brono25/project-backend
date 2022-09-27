@@ -10,16 +10,14 @@ import {
 // Do we assume names can contain characters outside of [a-z][0-9]??
 function generateHandleStr(firstName, lastName) {
 
-  let filteredFirstName = firstName.match(/[a-z0-9]+/ig).join('');
-  let filteredLastName = lastName.match(/[a-z0-9]+/ig).join('');
-  let lcFirstName = filteredFirstName.toLowerCase();
-  let lcLasttName = filteredLastName.toLowerCase();
+  let filteredFirstName = firstName.match(/[a-z0-9]+/ig).join('').toLowerCase();
+  let filteredLastName = lastName.match(/[a-z0-9]+/ig).join('').toLowerCase();
 
-  let baseHandle = lcFirstName.concat(lcLasttName);
+  let handleStr = filteredFirstName.concat(filteredLastName);
 
   const maxChars = 20;
-  if (baseHandle.length > maxChars) {
-    baseHandle = baseHandle.substring(0, maxChars);
+  if (handleStr.length > maxChars) {
+    handleStr = handleStr.substring(0, maxChars);
   }
 
   return {};
