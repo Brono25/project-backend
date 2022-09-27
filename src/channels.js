@@ -1,5 +1,5 @@
 // Stub-function for listing all channels
-function channelsListAllV1 (authUserId) {
+function channelsListAllV1(authUserId) {
   return {
     channels: [
       {
@@ -28,3 +28,12 @@ function channelsListV1(authUserId) {
     ],
   }
 }
+
+
+
+
+export {
+  channelsListAllV1,
+  channelsCreateV1,
+  channelsListV1,
+};
