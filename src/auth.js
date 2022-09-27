@@ -110,6 +110,9 @@ function authLoginV1(email, password) {
 
 
 
+
+
+
 //Stub-function for registering user.
 function authRegisterV1(email, password, nameFirst, nameLast) {
 
@@ -132,8 +135,6 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   if(nameLast.length < minNameLength || nameLast.length > maxNameLength ) {
     return {error: 'Last name must be between 1-50 characters long (inclusive)'};
   }
-
-
 
   const handleStr = generateHandleStr(nameFirst, nameLast);
   const authUserId = generateAuthUserId();
@@ -162,10 +163,4 @@ export {
   authRegisterV1,
 };
 
-
-authRegisterV1('e@gmail.com','1234567' ,'John312**2**1', '**Buckley120&%&8^%7(')
-authRegisterV1('ae@gmail.com','1234567' ,'John312**2**1', '**Buckley120&%&8^%7(')
-authRegisterV1('awe@gmail.com','1234567' ,'John312**2**1', '**Buckley120&%&8^%7(')
-authRegisterV1('aqwe@gmail.com','1234567' ,'John312**2**1', '**Buckley120&%&8^%7(')
-authRegisterV1('aeqwe@gmail.com','1234567' ,'John312**2**1', '**Buckley120&%&8^%7(')
 
