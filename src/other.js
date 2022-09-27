@@ -2,7 +2,7 @@
 
 
 
-export function clearV1() {
+function clearV1() {
   return {};
 }
 
