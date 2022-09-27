@@ -1,4 +1,23 @@
 
+import validator from 'validator';
+import {
+
+} from './other'
+
+
+
+//------------------Auth Helper functions------------------
+
+function generateHandleStr(firstName, lastName) {
+
+
+  
+}
+
+
+
+//------------------Auth Main functions------------------
+
 
 // Stub-function for authenticating user login
 function authLoginV1(email, password) {
@@ -7,8 +26,33 @@ function authLoginV1(email, password) {
   }
 }
 
+
+
 //Stub-function for registering user.
-function authRegisterV1(email, password, nameFirst, nameLast){
+function authRegisterV1(email, password, nameFirst, nameLast) {
+
+  
+  if(!validator.isEmail(email)) {
+    return {error: 'Invalid Email'};
+  }
+  const minPasswordLength = 6;
+  if(password.length < minPasswordLength) {
+    return {error: 'Passwords must atleast 6 characters'};
+  }
+  const maxNameLength = 50;
+  const minNameLength = 1;
+  if(nameFirst.length < minNameLength || nameFirst.length > maxNameLength ) {
+    return {error: 'First name must be between 1-50 characters long (inclusive)'};
+  }
+  if(nameLast.length < minNameLength || nameLast.length > maxNameLength ) {
+    return {error: 'Last name must be between 1-50 characters long (inclusive)'};
+  }
+
+  //TO DO Email in use
+
+
+
+
   return {
     authUserId: 1,
   }

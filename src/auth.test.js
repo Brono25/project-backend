@@ -22,6 +22,7 @@ let password2 = 'password2';
 
 let invalidEmail = 'Not a valid email string';
 let invalidShortPassword = '12345';
+let invalidEmptyName = '';
 let invalidLongFirstName = 'FirstNameLongerThanFiftyCharactersIsAnInvalidFirstName';
 let invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName';
 
@@ -82,6 +83,14 @@ describe('authRegisterV1()', () => {
 
     test('Invalid last name (greater than 50 characters)', () => {
       const args = [email1, password1, firstName1, invalidLongLastName];
+      expect(authRegisterV1(...args)).toStrictEqual({error: expect.any(String)});
+    });
+    test('Invalid empty first name', () => {
+      const args = [email1, password1, invalidEmptyName, lastName1];
+      expect(authRegisterV1(...args)).toStrictEqual({error: expect.any(String)});
+    });
+    test('Invalid empty last name', () => {
+      const args = [email1, password1, firstName1, invalidEmptyName];
       expect(authRegisterV1(...args)).toStrictEqual({error: expect.any(String)});
     });
   });
