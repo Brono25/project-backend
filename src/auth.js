@@ -7,11 +7,22 @@ import {
 
 
 //------------------Auth Helper functions------------------
-
+// Do we assume names can contain characters outside of [a-z][0-9]??
 function generateHandleStr(firstName, lastName) {
 
+  let filteredFirstName = firstName.match(/[a-z0-9]+/ig).join('');
+  let filteredLastName = lastName.match(/[a-z0-9]+/ig).join('');
+  let lcFirstName = filteredFirstName.toLowerCase();
+  let lcLasttName = filteredLastName.toLowerCase();
 
-  
+  let baseHandle = lcFirstName.concat(lcLasttName);
+
+  const maxChars = 20;
+  if (baseHandle.length > maxChars) {
+    baseHandle = baseHandle.substring(0, maxChars);
+  }
+
+  return {};
 }
 
 
@@ -64,3 +75,6 @@ export {
   authLoginV1,
   authRegisterV1,
 };
+
+
+generateHandleStr('John312**2**1', '**Buckley120&%&8^%7(');
