@@ -24,4 +24,29 @@ function clearV1() {
 
 
 
-export { clearV1 };
+
+/**
+ * @param {string} - users handle 
+ * @returns {boolean} - is handle unique
+ */
+function isValidAuthUserId(authUserId) {
+
+  const data = getData();
+
+  if(!data.users.length) {
+    return false;
+  }
+  for(let user of data.users) {
+    if(user.authUserId === authUserId) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+
+export { 
+  clearV1,
+  isValidAuthUserId,
+};
