@@ -41,13 +41,11 @@ afterEach(() => {
 
 
 
-describe('authLoginV1()', () => {
-  test('do testing', () => {
-    
-  });   
- 
-});
 
+
+
+
+//------------------Auth Register Test------------------//
 
 
 describe('authRegisterV1()', () => {
@@ -98,6 +96,32 @@ describe('authRegisterV1()', () => {
     });
   });
 });
+
+
+
+//------------------Auth Login Test------------------//
+
+
+describe('authLoginV1()', () => {
+ 
+  describe('Error Handling', () => {
+
+    test('do error testing', () => {
+    
+    }); 
+
+  });   
+
+  describe('Function Testing', () => {
+
+    test('do function testing', () => {
+    
+    }); 
+
+  })  
+ 
+});
+
 
 
 
