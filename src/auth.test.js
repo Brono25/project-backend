@@ -5,7 +5,7 @@ import {
   authRegisterV1,
 } from './auth';
 
-import {clearV1} from './other';
+import { clearV1 } from './other';
 
 
 
