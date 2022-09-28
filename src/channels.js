@@ -6,9 +6,25 @@ import {
 
 import {
   isValidAuthUserId,
-} from './other'
+} from './other.js'
+
+import { authRegisterV1 } from './auth.js';
 
 //------------------Channels Helper functions------------------
+/**
+ * The channel ID is the same as its index in the 
+ * data.channels array. This is to make fetching channel details
+ * from their the channel ID easy and ensures unique ID's.
+ * 
+ * @param {} 
+ * @returns {number} - unique channel id
+ */
+function generateChannelId() {
+
+  const data = getData();
+  const id = data.channels.length;
+  return id;
+}
 
 
 
@@ -26,9 +42,22 @@ function channelsCreateV1(authUserId, name, isPublic) {
     return {error: 'Invalid User ID'};
   }
 
+  const channelId = generateChannelId();
+  const channelDetails = {
+    channelId: channelId,
+    name: name,
+    isPublic: isPublic,
+    ownerMembers: [ {authUserId: authUserId}, ],
+    allMembers:   [ {authUserId: authUserId}, ],  //TO DO: Find if creater is added to members and owners?
+    messages: [],
+  }
+
+  let data = getData();
+  data.channels.push(channelDetails);
+  setData(data);
 
   return {
-    channelId: 1,
+    channelId: channelId,
   }
 }
 
@@ -68,3 +97,4 @@ export {
   channelsCreateV1,
   channelsListV1,
 };
+
