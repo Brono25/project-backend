@@ -5,7 +5,11 @@ import {
 } from './dataStore.js';
 
 
-
+/**
+ * Set data back to initial state.
+ * @param {} 
+ * @returns {} 
+ */
 function clearV1() {
 
   let data = getData();
@@ -16,6 +20,8 @@ function clearV1() {
   setData(data);
   return {};
 }
+
+
 
 
 export { clearV1 };
