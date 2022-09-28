@@ -60,7 +60,7 @@ describe('channelsCreateV1()', () => {
       expect(channelsCreateV1(...args)).toStrictEqual({error: expect.any(String)});
     }); 
     test('Invalid user ID', () => {
-      const args = [authUserId1, invalidEmptyChannelName, isPublic];
+      const args = [invalidAuthUserId, channelName1, isPublic];
       expect(channelsCreateV1(...args)).toStrictEqual({error: expect.any(String)});
     }); 
   }); 
@@ -71,7 +71,6 @@ describe('channelsCreateV1()', () => {
       expect(channelsCreateV1(...args)).toStrictEqual({channelId: expect.any(Number)});
     }); 
   })
-
   
 });
 

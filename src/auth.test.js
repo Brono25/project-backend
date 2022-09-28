@@ -30,9 +30,7 @@ let invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName'
 // Setup
 let authUserId1 = null;
 beforeEach(() => {
-
-  authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
-  
+  authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
 });
 
 // Tear down
@@ -46,8 +44,6 @@ afterEach(() => {
 describe('authLoginV1()', () => {
   test('do testing', () => {
     
-
-
   });   
  
 });
