@@ -9,47 +9,110 @@ import {
 
 
 
-describe('channelDetailsV1()', () => {
-  test('do testing', () => {
-    
 
+//------------------Channel Details Test------------------//
+
+
+describe('channelDetailsV1()', () => {
+ 
+  describe('Error Handling', () => {
+
+    test('do error testing', () => {
+    
+    }); 
 
   });   
+
+  describe('Function Testing', () => {
+
+    test('do function testing', () => {
+    
+    }); 
+
+  })  
  
 });
 
 
 
+
+
+//------------------Channel Join Test------------------//
 
 
 describe('channelJoinV1()', () => {
-  test('do testing', () => {
-    
+ 
+  describe('Error Handling', () => {
 
+    test('do error testing', () => {
+    
+    }); 
 
   });   
+
+  describe('Function Testing', () => {
+
+    test('do function testing', () => {
+    
+    }); 
+
+  })  
  
 });
 
 
+
+
+//------------------Channel Invite Test------------------//
 
 
 describe('channelInviteV1()', () => {
-  test('do testing', () => {
-    
+ 
+  describe('Error Handling', () => {
 
+    test('do error testing', () => {
+    
+    }); 
 
   });   
+
+  describe('Function Testing', () => {
+
+    test('do function testing', () => {
+    
+    }); 
+
+  })  
  
 });
 
+
+
+
+
+//------------------Channel Messages Test------------------//
 
 
 describe('channelMessagesV1()', () => {
-  test('do testing', () => {
-    
+ 
+  describe('Error Handling', () => {
 
+    test('do error testing', () => {
+    
+    }); 
 
   });   
+
+  describe('Function Testing', () => {
+
+    test('do function testing', () => {
+    
+    }); 
+
+  })  
  
 });
+
+
+
+
