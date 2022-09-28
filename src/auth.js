@@ -100,8 +100,11 @@ function isEmailTaken(email) {
 
 //------------------Auth Main functions------------------
 
-
-// Stub-function for authenticating user login
+/**
+ * 
+ * @param {string, string} - add description
+ * @returns {number} - add description
+ */
 function authLoginV1(email, password) {
   return {
     authUserId: 1,
@@ -113,7 +116,13 @@ function authLoginV1(email, password) {
 
 
 
-//Stub-function for registering user.
+/**
+ * Adds a new user to the dataStore.
+ * 
+ * @param {string, string, string, string} - user information to store
+ * @returns {number} - unique user id
+ */
+
 function authRegisterV1(email, password, nameFirst, nameLast) {
 
   
@@ -149,9 +158,6 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     let data = getData();
     data.users.push(userDetails);
     setData(data);
-
-
- 
 
   return  {authUserId: authUserId};
 }
