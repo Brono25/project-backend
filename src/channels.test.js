@@ -30,18 +30,7 @@ let isNotPublic = false;
 let invalidEmptyChannelName = '';
 let invalidLongChannelName = 'ChannelsNamesMoreThanTwentyCharactersAreInvalid'
 
-// Setup
-let authUserId1 = null;
-let invalidAuthUserId = null;
-beforeEach(() => {
-  authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
-  invalidAuthUserId = Math.abs(authUserId1) + 10;
-});
 
-// Tear down
-afterEach(() => {
- clearV1();
-});
 
 
 
@@ -49,6 +38,15 @@ afterEach(() => {
 
 
 describe('channelsCreateV1()', () => {
+  // Setup
+  let authUserId1 = null;
+  let invalidAuthUserId = null;
+  beforeEach(() => {
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
+    invalidAuthUserId = Math.abs(authUserId1) + 10;
+  });
+  // Tear down
+  afterEach(() => {clearV1()});
 
   describe('Error Handling', () => {
     test('Channel name too long', () => {
