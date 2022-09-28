@@ -106,13 +106,44 @@ function isEmailTaken(email) {
  * @returns {number} - add description
  */
 function authLoginV1(email, password) {
-  return {
-    authUserId: 1,
+  if (isEmailUsed(email) === false){
+    return {error: 'Email does not belong to a user'}
+  }
+
+  /*if (isPasswordCorrect(password) === false){
+    return {error: 'Password is incorrect'}
+  }*/
+
+  for (const user of data.users){
+    if (email === user.email){
+      return {
+        authUserId: user.authUserId,
+      }
+    }
   }
 }
 
-
-
+function isEmailUsed(email){
+  for (const user of data.users){
+    if (user.email === email){
+      return true;
+    }
+  }
+  return false;
+}
+/* Currently unsure of how to store password and access them in a secure way
+function isPasswordCorrect(email, password){
+  for (const user of data.users){
+    if (email === user.email){
+      if (password === user.password){
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+}
+*/
 
 
 
