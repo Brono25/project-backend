@@ -10,7 +10,7 @@ const data = {
       authUserId: 1,
       nameFirst: 'Hayden',
       nameLast: 'Smith',
-      password,
+      password: '123456',
       email: 'hayhay123@gmail.com',
       handleStr: 'haydensmith',
     },
