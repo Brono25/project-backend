@@ -78,7 +78,7 @@ function generateAuthUserId() {
  * @param {string} - users email
  * @returns {boolean} - is email already claimed by another user
  */
-function isEmailTaken(email) {
+function isEmailUsed(email) {
 
   const data = getData();
 
@@ -109,10 +109,11 @@ function authLoginV1(email, password) {
   if (isEmailUsed(email) === false){
     return {error: 'Email does not belong to a user'}
   }
-
-  /*if (isPasswordCorrect(password) === false){
+  
+  if (isPasswordCorrect(password) === false){
     return {error: 'Password is incorrect'}
-  }*/
+  }
+
   let data = getData();
   for (const user of data.users){
     if (email === user.email){
@@ -123,17 +124,8 @@ function authLoginV1(email, password) {
   }
 }
 
-function isEmailUsed(email){
-  let data = getData();
-  for (const user of data.users){
-    if (user.email === email){
-      return true;
-    }
-  }
-  return false;
-}
-/* Currently unsure of how to store password and access them in a secure way
 function isPasswordCorrect(email, password){
+  let data = getData();
   for (const user of data.users){
     if (email === user.email){
       if (password === user.password){
@@ -144,7 +136,6 @@ function isPasswordCorrect(email, password){
     }
   }
 }
-*/
 
 
 

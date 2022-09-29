@@ -100,26 +100,36 @@ describe('authRegisterV1()', () => {
 //------------------Auth Login Test------------------//
 
 
+
 describe('authLoginV1()', () => {
  
-  describe('Error Handling', () => {
+  test('do error testing for wrong email', () => {
+    clearV1();
+    const args = [email2, password2, firstName2, lastName2];
+    authRegisterV1(args);
+    expect(authLoginV1(wrongemail, password2)).toStrictEqual({error: expect.any(String)});
 
-    test('do error testing', () => {
-    
-    }); 
+  });
+  test('do error testing for wrong password', () => {
+    clearV1();
+    const args = [email2, password2, firstName2, lastName2];
+    authRegisterV1(args);
+    expect(authLoginV1(email2, wrongpassword)).toStrictEqual({error: expect.any(String)});
+  });
 
-  });   
+describe('Function Testing', () => {
 
-  describe('Function Testing', () => {
+  test('do function testing', () => {
+    clearV1();
+    const args = [email2, password2, firstName2, lastName2];
+    authRegisterV1(args);
+    expect(authLoginV1(email2, password2)).toStrictEqual({authUserId: expect.any(Number)});
 
-    test('do function testing', () => {
-    
-    }); 
+  }); 
 
-  })  
- 
+})  
+
 });
-
 
 
 
