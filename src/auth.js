@@ -110,8 +110,8 @@ function authLoginV1(email, password) {
     return {error: 'Email does not belong to a user'}
   }
   
-  if (isPasswordCorrect(password) === false){
-    return {error: 'Password is incorrect'}
+  if (isPasswordCorrect(email, password) === false){
+    return {error: 'Password is incorrect'};
   }
 
   let data = getData();
@@ -152,7 +152,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   if(!validator.isEmail(email)) {
     return {error: 'Invalid Email'};
   }
-  if(isEmailTaken(email)) {
+  if(isEmailUsed(email)) {
     return {error: 'Email is already taken'};
   }
   const minPasswordLength = 6;

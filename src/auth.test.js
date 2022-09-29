@@ -26,7 +26,8 @@ let invalidEmptyName = '';
 let invalidLongFirstName = 'FirstNameLongerThanFiftyCharactersIsAnInvalidFirstName';
 let invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName';
 
-
+let wrongemail = 'anything@gmail.com';
+let wrongpassword = 'wrongpassword';
 
 
 
@@ -106,14 +107,14 @@ describe('authLoginV1()', () => {
   test('do error testing for wrong email', () => {
     clearV1();
     const args = [email2, password2, firstName2, lastName2];
-    authRegisterV1(args);
+    authRegisterV1(...args);
     expect(authLoginV1(wrongemail, password2)).toStrictEqual({error: expect.any(String)});
 
   });
   test('do error testing for wrong password', () => {
     clearV1();
     const args = [email2, password2, firstName2, lastName2];
-    authRegisterV1(args);
+    authRegisterV1(...args);
     expect(authLoginV1(email2, wrongpassword)).toStrictEqual({error: expect.any(String)});
   });
 
@@ -122,7 +123,7 @@ describe('Function Testing', () => {
   test('do function testing', () => {
     clearV1();
     const args = [email2, password2, firstName2, lastName2];
-    authRegisterV1(args);
+    authRegisterV1(...args);
     expect(authLoginV1(email2, password2)).toStrictEqual({authUserId: expect.any(Number)});
 
   }); 
