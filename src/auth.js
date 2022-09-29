@@ -165,7 +165,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
   }
   const minPasswordLength = 6;
   if(password.length < minPasswordLength) {
-    return {error: 'Passwords must atleast 6 characters'};
+    return {error: 'Passwords must at-least 6 characters'};
   }
   const maxNameLength = 50;
   const minNameLength = 1;
