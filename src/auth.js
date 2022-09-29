@@ -183,6 +183,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
       nameFirst: nameFirst,
       nameLast: nameLast,
       email: email,
+      password: password,
       handleStr: handleStr,
     };
 
