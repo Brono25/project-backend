@@ -113,7 +113,7 @@ function authLoginV1(email, password) {
   /*if (isPasswordCorrect(password) === false){
     return {error: 'Password is incorrect'}
   }*/
-
+  let data = getData();
   for (const user of data.users){
     if (email === user.email){
       return {
@@ -124,6 +124,7 @@ function authLoginV1(email, password) {
 }
 
 function isEmailUsed(email){
+  let data = getData();
   for (const user of data.users){
     if (user.email === email){
       return true;
