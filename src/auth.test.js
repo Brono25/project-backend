@@ -13,6 +13,7 @@ import { clearV1 } from './other';
 let firstName1 = 'First Name 1';
 let lastName1 = 'Last Name 1';
 let email1 = 'email_1@gmail.com';
+let email1AltCase = 'EMAIL_1@GMAIL.COM';
 let password1 = 'password1';
 
 let firstName2= 'First Name 2';
@@ -27,7 +28,7 @@ let invalidLongFirstName = 'FirstNameLongerThanFiftyCharactersIsAnInvalidFirstNa
 let invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName';
 
 let wrongemail = 'anything@gmail.com';
-let wrongpassword = 'wrongpassword';
+let wrongPassword = 'wrongpassword';
 
 
 
@@ -56,12 +57,15 @@ describe('authRegisterV1()', () => {
       const args = [invalidEmail, password1, firstName1, lastName1];
       expect(authRegisterV1(...args)).toStrictEqual({error: expect.any(String)});
     }); 
-
     test('Email address already in use', () => {
       const args1 = [email1, password1, firstName1, lastName1];
       const args2 = [email1, password2, firstName2, lastName2];
       expect(authRegisterV1(...args1)).toStrictEqual({error: expect.any(String)});
       expect(authRegisterV1(...args2)).toStrictEqual({error: expect.any(String)});
+    });   
+    test('Uppercase email counts as duplicate', () => {
+      const args1 = [email1AltCase, password2, firstName2, lastName2];
+      expect(authRegisterV1(...args1)).toStrictEqual({error: expect.any(String)});
     });   
 
     test('Invalid password (less than 6 characters)', () => {
@@ -104,29 +108,34 @@ describe('authRegisterV1()', () => {
 
 describe('authLoginV1()', () => {
  
-  test('do error testing for wrong email', () => {
-    clearV1();
-    const args = [email2, password2, firstName2, lastName2];
-    authRegisterV1(...args);
-    expect(authLoginV1(wrongemail, password2)).toStrictEqual({error: expect.any(String)});
+    // Tear down
+  afterEach(() => {clearV1()});
 
-  });
-  test('do error testing for wrong password', () => {
-    clearV1();
-    const args = [email2, password2, firstName2, lastName2];
-    authRegisterV1(...args);
-    expect(authLoginV1(email2, wrongpassword)).toStrictEqual({error: expect.any(String)});
-  });
-
+  describe('Error Handling', () => {
+    test('do error testing for wrong email', () => {
+      const args = [email2, password2, firstName2, lastName2];
+      authRegisterV1(...args);
+      expect(authLoginV1(wrongemail, password2)).toStrictEqual({error: expect.any(String)});
+    });
+    test('do error testing for wrong password', () => {
+      const args = [email2, password2, firstName2, lastName2];
+      authRegisterV1(...args);
+      expect(authLoginV1(email2, wrongPassword)).toStrictEqual({error: expect.any(String)});
+    });
+});
 describe('Function Testing', () => {
 
-  test('do function testing', () => {
-    clearV1();
-    const args = [email2, password2, firstName2, lastName2];
-    authRegisterV1(...args);
-    expect(authLoginV1(email2, password2)).toStrictEqual({authUserId: expect.any(Number)});
-
+  test('Autherise Login using exact email match', () => {
+    const args = [email1, password1, firstName1, lastName1];
+    const userId = authRegisterV1(...args).authUserId;
+    expect(authLoginV1(email1, password1)).toStrictEqual({authUserId: userId});
   }); 
+  test('Autherise Login using upper case email matching lowercase', () => {
+    const args = [email1, password1, firstName1, lastName1];
+    const userId = authRegisterV1(...args).authUserId;
+    expect(authLoginV1(email1AltCase, password1)).toStrictEqual({authUserId: userId});
+  }); 
+  
 
 })  
 

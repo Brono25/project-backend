@@ -86,13 +86,30 @@ function isEmailUsed(email) {
     return false;
   }
   for(let user of data.users) {
-    if(user.email === email) {
+    if(user.email.toLowerCase() === email.toLowerCase()) {
       return true;
     }
   }
   return false;
 }
 
+
+/**
+ * @param {string, string} - users email and password
+ * @returns {number} - users id
+ */
+function isPasswordCorrect(email, password){
+  let data = getData();
+  for (const user of data.users){
+    if (email.toLowerCase() === user.email.toLowerCase()){
+      if (password === user.password){
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+}
 
 
 
@@ -116,25 +133,13 @@ function authLoginV1(email, password) {
 
   let data = getData();
   for (const user of data.users){
-    if (email === user.email){
+    if (email.toLowerCase() === user.email.toLowerCase()){
       return {
         authUserId: user.authUserId,
       }
     }
   }
-}
-
-function isPasswordCorrect(email, password){
-  let data = getData();
-  for (const user of data.users){
-    if (email === user.email){
-      if (password === user.password){
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
+  return {}
 }
 
 
