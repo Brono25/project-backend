@@ -79,13 +79,18 @@ describe('channelsCreateV1()', () => {
 
 
 
+
+
 //------------------Channels List All Test------------------//
 
 
 describe('channelsListAllV1()', () => {
+  // Setup
+  
 
   describe('Error Handling', () => {
-    test('do error testing', () => {
+    test('authUserId is invalid', () => {
+      
     
     }); 
   });   
@@ -109,23 +114,45 @@ describe('channelsListAllV1()', () => {
 
 
 describe('channelsListV1()', () => {
- 
+  // Setup
+  let authUserId1 = null;
+  let invalidAuthUserId = null;
+  beforeEach(() => {
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    invalidAuthUserId = Math.abs(authUserId1) + 10;
+  });
+  // Tear down
+  afterEach(() => {
+    clearV1()
+  });
   describe('Error Handling', () => {
-
-    test('do error testing', () => {
-    
+    test('Invalid user ID', () => {
+      expect(channelsListV1(invalidAuthUserId)).toStrictEqual({error: expect.any(String)});
     }); 
 
   });   
 
   describe('Function Testing', () => {
 
-    test('do function testing', () => {
-    
+    test('List channel', () => {
+      expect(channelsListV1(authUserId1)).toStrictEqual({channels: [
+    {
+      channelId: 1,
+      name: 'My Channel',
+      isPublic: true,
+      ownerMembers: [ {uId: 1}, ],
+      allMembers:   [ {uId: 1}, {uId: 2}, ],
+      messages: [
+      {
+        messageId: 1,
+        authUserId: 1,
+        message: 'Hello world',
+        timeSent: 1582426789,
+      }],
+  }
+  ]})
     }); 
-
-  })  
- 
+  })   
 });
 
 
