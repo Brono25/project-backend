@@ -44,7 +44,7 @@ function isValidAuthUserId(authUserId) {
   return false;
 }
 
-function isChannelId(channelId) {
+function isValidChannelId(channelId) {
 
   const data = getData();
 
