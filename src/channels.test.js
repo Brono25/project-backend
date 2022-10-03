@@ -117,6 +117,7 @@ describe('channelsListV1()', () => {
   // Setup
   let authUserId1 = null;
   let invalidAuthUserId = null;
+  let channelId1 = null;
   beforeEach(() => {
     authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
     channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
