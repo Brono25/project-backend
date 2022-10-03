@@ -44,6 +44,21 @@ function isValidAuthUserId(authUserId) {
   return false;
 }
 
+function isChannelId(channelId) {
+
+  const data = getData();
+
+  if(!data.channels.length) {
+    return false;
+  }
+  for(let channel of data.users) {
+    if(channels.channelId === channelId) {
+      return true;
+    }
+  }
+  return false;
+}
+
 
 
 export { 
