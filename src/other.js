@@ -64,4 +64,5 @@ function isValidChannelId(channelId) {
 export { 
   clearV1,
   isValidAuthUserId,
+  isValidChannelId,
 };
