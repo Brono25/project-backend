@@ -119,6 +119,7 @@ describe('channelsListV1()', () => {
   let invalidAuthUserId = null;
   beforeEach(() => {
     authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
   // Tear down
@@ -137,18 +138,12 @@ describe('channelsListV1()', () => {
     test('List channel', () => {
       expect(channelsListV1(authUserId1)).toStrictEqual({channels: [
     {
-      channelId: 1,
-      name: 'My Channel',
+      channelId: channelId1,
+      name: channelName1,
       isPublic: true,
-      ownerMembers: [ {uId: 1}, ],
-      allMembers:   [ {uId: 1}, {uId: 2}, ],
-      messages: [
-      {
-        messageId: 1,
-        authUserId: 1,
-        message: 'Hello world',
-        timeSent: 1582426789,
-      }],
+      ownerMembers: [ {uId: channelId1}, ],
+      allMembers:   [ {uId: channelId1} ],
+      messages: [],
   }
   ]})
     }); 
