@@ -65,6 +65,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
 
 // Stub-function for listing all channels
 function channelsListAllV1(authUserId) {
+  
   return {
     channels: [
       {
