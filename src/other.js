@@ -44,9 +44,50 @@ function isValidAuthUserId(authUserId) {
   return false;
 }
 
+/**
+ * @param {number} - channel id
+ * @returns {boolean} - does channel exist
+ */
+
+function isValidChannelId(channelId) {
+
+  const data = getData();
+
+  if(!data.channels.length) {
+    return false;
+  }
+  for(let channel of data.channels) {
+    if(channel.channelId === channelId) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @param {number, number} - authorised user's id and channel id
+ * @returns {boolean} - is user already member of channel
+ */
+
+function isAuthUserMember(authUserId, channelId) {
+  const data = getData();
+  for(let channel of data.channels) {
+    if(channel.channelId === channelId) {
+
+        if (channel.allMembers.find(a => a.authUserId === authUserId)){
+          return true;
+        }
+      }
+    }
+  
+  return false;
+}
+
 
 
 export { 
   clearV1,
   isValidAuthUserId,
+  isValidChannelId,
+  isAuthUserMember
 };
