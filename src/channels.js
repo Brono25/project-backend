@@ -6,6 +6,7 @@ import {
 
 import {
   isValidAuthUserId,
+  isAuthUserMember,
 } from './other.js'
 
 import { authRegisterV1 } from './auth.js';
@@ -75,19 +76,26 @@ function channelsListAllV1(authUserId) {
   }
 }
 
-
-
 // Stub function for listing the created channels.
 function channelsListV1(authUserId) {
-  return {
-    channels: [
-      {
-        channelId: 1, 
-        name: 'My Channel',
+
+  let data = getData();
+  let channels=[];
+
+  if (isValidAuthUserId(authUserId) === true) {
+    for(let channel of data.channels) {
+      if (isAuthUserMember(authUserId, channel.channelId) === true) {
+          channels.push(channel);
+        }
       }
-    ],
-  }
+    
+  } else {
+    return {error: 'Invalid User ID'};  
+  } 
+  
+  return {channels};
 }
+
 
 
 

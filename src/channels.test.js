@@ -79,13 +79,18 @@ describe('channelsCreateV1()', () => {
 
 
 
+
+
 //------------------Channels List All Test------------------//
 
 
 describe('channelsListAllV1()', () => {
+  // Setup
+  
 
   describe('Error Handling', () => {
-    test('do error testing', () => {
+    test('authUserId is invalid', () => {
+      
     
     }); 
   });   
@@ -109,23 +114,41 @@ describe('channelsListAllV1()', () => {
 
 
 describe('channelsListV1()', () => {
- 
+  // Setup
+  let authUserId1 = null;
+  let invalidAuthUserId = null;
+  let channelId1 = null;
+  beforeEach(() => {
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
+    invalidAuthUserId = Math.abs(authUserId1) + 10;
+  });
+  // Tear down
+  afterEach(() => {
+    clearV1()
+  });
   describe('Error Handling', () => {
-
-    test('do error testing', () => {
-    
+    test('Invalid user ID', () => {
+      expect(channelsListV1(invalidAuthUserId)).toStrictEqual({error: expect.any(String)});
     }); 
 
   });   
 
   describe('Function Testing', () => {
 
-    test('do function testing', () => {
-    
+    test('List channel', () => {
+      expect(channelsListV1(authUserId1)).toStrictEqual({channels: [
+    {
+      channelId: channelId1,
+      name: channelName1,
+      isPublic: true,
+      ownerMembers: [ {authUserId: authUserId1}, ],
+      allMembers:   [ {authUserId: authUserId1}, ],
+      messages: [],
+  }
+  ]})
     }); 
-
-  })  
- 
+  })   
 });
 
 
