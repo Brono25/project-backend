@@ -6,29 +6,11 @@ import {
 import {
   isValidAuthUserId,
   isValidChannelId,
+  isAuthUserMember,
 } from './other.js'
 
 //------------------ Channel Helper functions------------------
 
-/**
- * @param {number, number} - authorised user's id and channel id
- * @returns {boolean} - is user already member of channel
- */
-
-function isAuthUserMember(authUserId, channelId) {
-  const data = getData();
-  
-  for(let channel of data.channels) {
-    if(channel.channelId === channelId) {
-     if (channel.allMembers.includes(authUserId)) {
-       return true;
-      }
-    }
-  }
-  
-  return false;
-  
-}
 
 
 /**
