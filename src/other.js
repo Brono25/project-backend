@@ -52,7 +52,7 @@ function isValidChannelId(channelId) {
     return false;
   }
   for(let channel of data.channels) {
-    if(channels.channelId === channelId) {
+    if(channel.channelId === channelId) {
       return true;
     }
   }
