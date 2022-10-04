@@ -23,6 +23,8 @@ let email2 = 'email_2@gmail.com';
 let password2 = 'password2';
 
 let channelName1 = 'Channel 1';
+let channelName2 = 'Channel 2';
+let channelName3 = 'Channel 3';
 let isPublic = true;
 let isNotPublic = false;
 
@@ -84,18 +86,49 @@ describe('channelsCreateV1()', () => {
 
 describe('channelsListAllV1()', () => {
 
+  // SETUP
+  let user1Id = null;
+  let user2Id = null;
+  let invalidUserId = null;
+  beforeEach(() => {
+    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
+    invalidUserId = Math.abs(user1Id) + 173;
+
+    const user1Channel = channelsCreateV1(user1Id, channelName1, isPublic);
+    const user1Channel2 = channelsCreateV1(user1Id, channelName3, isNotPublic);
+    const user2Channel = channelsCreateV1(user1Id, channelName2, isNotPublic);
+  });
+
+  afterEach(() => {
+    clearV1();
+  });  
+
+  // TEARDOWN
   describe('Error Handling', () => {
-    test('do error testing', () => {
-    
+    test('Error Test: Invalid User ID', () => {
+      expect(channelsListAllV1(invalidUserId)).toStrictEqual({error: expect.any(string)});
     }); 
   });   
 
   describe('Function Testing', () => {
-    test('do function testing', () => {
-    
+    test('Function Test: Valid User ID & Created Channels', () => {
+      expect(channelsListAllV1(user1Id)).toStrictEqual({
+        channels: [
+          {user1Channel}, 
+          {user1Channel2},
+        ]
+      });
     }); 
-  })
-    
+
+    test('Function Test: Valid User ID & Private Channel', () => {
+      expect(channelsListAllV1(user2Id)).toStrictEqual({
+        channels: [
+          {user2Channel},
+        ]
+      });
+    });
+  });
 });
 
 
