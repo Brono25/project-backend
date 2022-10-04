@@ -1,5 +1,41 @@
+import {
+  setData,
+  getData,
+} from './dataStore.js';
+
+import {
+  isValidAuthUserId,
+  isValidChannelId,
+  isAuthUserMember,
+} from './other.js'
+
+//------------------ Channel Helper functions------------------
 
 
+
+/**
+ * @param {number} - channelId
+ * @returns {boolean} - is channel private
+ */
+function isChannelPrivate (channelId) {
+  const data = getData();
+  
+  for(let channel of data.channels) {
+    if(channel.channelId === channelId) {
+      if (channel.isPublic === true) {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
+
+
+  
+
+
+//------------------Channel Main functions------------------
 
 // Stub-function for listing channel details
 function channelDetailsV1(authUserId, channelId) {
@@ -28,14 +64,27 @@ function channelDetailsV1(authUserId, channelId) {
 
 // Stub-function for joining channel
 function channelJoinV1(authUserId, channelId) {
-  return{
+
+  if (isValidChannelId(channelId) === false) {
+    return{error: 'Invalid channel Id'};
+  
+  
+  } else if (isValidAuthUserId(authUserId) === false) {
+    return{error: 'Invalid User Id'};
       
+  } else if (isAuthUserMember(authUserId, channelId) === true) {
+    return{error: 'User is already a member of the channel'};
+  
+  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false) {
+    return{error: 'Private channel'};
+    
+  } else {
+    return {};
   }
 }
 
 //stub-function for inviting users to the channel
 function channelInviteV1( authUserId, channelId, uId ) {
-
 	return{
 	
 	}
