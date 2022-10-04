@@ -51,7 +51,7 @@ function isValidChannelId(channelId) {
   if(!data.channels.length) {
     return false;
   }
-  for(let channel of data.users) {
+  for(let channel of data.channels) {
     if(channels.channelId === channelId) {
       return true;
     }
