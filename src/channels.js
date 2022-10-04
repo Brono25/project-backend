@@ -65,14 +65,19 @@ function channelsCreateV1(authUserId, name, isPublic) {
 
 // Stub-function for listing all channels
 function channelsListAllV1(authUserId) {
-  return {
-    channels: [
-      {
-        channelId: 1,
-        name: 'My Channel',
-      }
-    ],
+
+  // check if authUserId is valid
+  if (isValidAuthUserId(authUserId) === false) {
+    return {error: 'Invalid user ID'};
+  } 
+
+  // check all created channels
+  let channelsAll = [];
+  let data = getData();
+  for (channel of data.channels) {
+    channelsAll.push(channel);
   }
+  return {channelsAll};
 }
 
 
