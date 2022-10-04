@@ -142,8 +142,8 @@ describe('channelsListV1()', () => {
       channelId: channelId1,
       name: channelName1,
       isPublic: true,
-      ownerMembers: [ {uId: channelId1}, ],
-      allMembers:   [ {uId: channelId1} ],
+      ownerMembers: [ {authUserId: authUserId1}, ],
+      allMembers:   [ {authUserId: authUserId1}, ],
       messages: [],
   }
   ]})
