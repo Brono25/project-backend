@@ -1,5 +1,12 @@
+import {
+  setData,
+  getData,
+} from './dataStore.js';
 
-
+import {
+  isValidAuthUserId,
+  isValidChannelId,
+} from './other.js'
 
 // Stub-function for listing channel details
 function channelDetailsV1(authUserId, channelId) {
@@ -28,6 +35,7 @@ function channelDetailsV1(authUserId, channelId) {
 
 // Stub-function for joining channel
 function channelJoinV1(authUserId, channelId) {
+
   return{
       
   }
