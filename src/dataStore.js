@@ -4,7 +4,7 @@ let data = {
    
     users: [
     /*{
-      authUserId: 1,
+      uId: 1,
       nameFirst: 'Hayden',
       nameLast: 'Smith',
       email: 'hayhay123@gmail.com',
@@ -22,7 +22,7 @@ let data = {
       messages: [
       {
         messageId: 1,
-        authUserId: 1,
+        uId: 1,
         message: 'Hello world',
         timeSent: 1582426789,
       },

@@ -160,11 +160,11 @@ describe('Function Testing', () => {
   afterEach(() => {clearV1()});
 
   test('Authorise login for first user in database', () => {
-   let args = [email1, password1]
+   let args = [email1, password1];
     expect(authLoginV1(...args)).toStrictEqual({authUserId: userId1});
   }); 
   test('Authorise login for last user in database', () => {
-   let args = ['3'.concat(email1), '3'.concat(password1)]
+   let args = [email2, password2];
     expect(authLoginV1(...args)).toStrictEqual({authUserId: userId3});
   }); 
   test('Authorise Login using upper case email matching lowercase', () => {
