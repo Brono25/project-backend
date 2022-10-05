@@ -23,6 +23,8 @@ let email2 = 'email_2@gmail.com';
 let password2 = 'password2';
 
 let channelName1 = 'Channel 1';
+let channelName2 = 'Channel 2';
+let channelName3 = 'Channel 3';
 let isPublic = true;
 let isNotPublic = false;
 
@@ -85,23 +87,73 @@ describe('channelsCreateV1()', () => {
 
 
 describe('channelsListAllV1()', () => {
-  // Setup
-  
 
+  // SETUP
+  let user1Id = null;
+  let user2Id = null;
+  let invalidUserId = null;
+  beforeEach(() => {
+    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
+    invalidUserId = Math.abs(user1Id) + 173;
+
+    const user1ChannelId = channelsCreateV1(user1Id, channelName1, isPublic).channelId;
+    const user1Channel2Id = channelsCreateV1(user1Id, channelName3, isNotPublic).channelId;
+    const user2ChannelId = channelsCreateV1(user2Id, channelName2, isNotPublic).channelId;
+  });
+
+  afterEach(() => {
+    clearV1();
+  });  
+
+  // TEARDOWN
   describe('Error Handling', () => {
-    test('authUserId is invalid', () => {
-      
-    
-    }); 
-  });   
+    test('Error Test: Invalid User ID', () => {
+      expect(channelsListAllV1(invalidUserId)).toStrictEqual({error: expect.any(String)});
+    });
+  });
 
   describe('Function Testing', () => {
-    test('do function testing', () => {
-    
+    test('Function Test: Valid User ID & Created Channels', () => {
+      expect(channelsListAllV1(user1Id)).toStrictEqual({
+        channels: [
+          {
+            channelId: user1ChannelId,
+            name: channelName1,
+            isPublic: isPublic,
+            ownerMembers: [ {authUserId: user1Id}, ],
+            allMembers: [ {authUserId: user1Id}, ],
+            messages: [],
+          }, 
+          {
+            channelId: user1Channel2Id,
+            name: channelName3,
+            isPublic: isNotPublic,
+            ownerMembers: [ {authUserId: user1Id}, ],
+            allMembers: [ {authUserId: user1Id}, ],
+            messages: [],
+          },
+        ]
+      });
     }); 
-  })
-    
+
+    test('Function Test: Valid User ID & Private Channel', () => {
+      expect(channelsListAllV1(user2Id)).toStrictEqual({
+        channels: [
+          {  
+            channelId: user2ChannelId,
+            name: channelName2,
+            isPublic: isNotPublic,
+            ownerMembers: [ {authUserId: user2Id}, ],
+            allMembers: [ {authUserId: user2Id}, ],
+            messages: [],
+          },
+        ]        
+      });
+    });
+  });
 });
+
 
 
 
