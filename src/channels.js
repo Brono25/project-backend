@@ -73,12 +73,12 @@ function channelsListAllV1(authUserId) {
   } 
 
   // check all created channels
-  let channelsAll = [];
+  let channels = [];
   let data = getData();
-  for (channel of data.channels) {
-    channelsAll.push(channel);
+  for (let channel of data.channels) {
+    channels.push(channel);
   }
-  return {channelsAll};
+  return {channels};
 }
 
 // Stub function for listing the created channels.
