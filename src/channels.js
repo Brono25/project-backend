@@ -90,7 +90,7 @@ function channelsListV1(authUserId) {
   if (isValidAuthUserId(authUserId) === true) {
     for(let channel of data.channels) {
       if (isAuthUserMember(authUserId, channel.channelId) === true) {
-          channels.push(channel);
+          channels.push({channelId: channel.channelId, name: channel.name});
         }
       }
     

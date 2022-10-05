@@ -230,11 +230,7 @@ describe('channelsListV1()', () => {
     {
       channelId: channelId1,
       name: channelName1,
-      isPublic: true,
-      ownerMembers: [ {uId: authUserId1}, ],
-      allMembers:   [ {uId: authUserId1}, ],
-      messages: [],
-  }
+    }
   ]})
     }); 
   })   
