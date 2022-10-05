@@ -27,25 +27,20 @@ let invalidEmptyName = '';
 let invalidLongFirstName = 'FirstNameLongerThanFiftyCharactersIsAnInvalidFirstName';
 let invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName';
 
-let wrongemail = 'anything@gmail.com';
+let wrongEmail = 'anything@gmail.com';
 let wrongPassword = 'wrongpassword';
-
-
-
-
 
 
 
 
 //------------------Auth Register Test------------------//
 
-
 describe('authRegisterV1()', () => {
 
   // Setup
   let authUserId1 = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
   });
 
   // Tear down
@@ -63,7 +58,7 @@ describe('authRegisterV1()', () => {
       expect(authRegisterV1(...args1)).toStrictEqual({error: expect.any(String)});
       expect(authRegisterV1(...args2)).toStrictEqual({error: expect.any(String)});
     });   
-    test('Uppercase email counts as duplicate', () => {
+    test('Attempt to assign uppercase email when lower case email is already taken', () => {
       const args1 = [email1AltCase, password2, firstName2, lastName2];
       expect(authRegisterV1(...args1)).toStrictEqual({error: expect.any(String)});
     });   
@@ -93,9 +88,26 @@ describe('authRegisterV1()', () => {
   });
 
   describe('Function Testing', () => {
-    test('Create new user', () => {
+    test('Create new user and get a number user ID', () => {
       const args = [email2, password2, firstName2, lastName2];
-      expect(authRegisterV1(...args)).toStrictEqual({authUserId: expect.any(Number)});
+      expect(authRegisterV1(...args)).toStrictEqual({uId: expect.any(Number)});
+    });
+    test('Create new user with existing names and password but different email', () => {
+      const args = [email2, password1, firstName1, lastName1];
+      expect(authRegisterV1(...args)).toStrictEqual({uId: expect.any(Number)});
+    });
+    test('Create 100 users and get 100 unique ID\'s', () => {
+      const numberOfUsers = 100;
+      let userIdList = new Set();
+      let email = '';
+      for (let n  = 0; n < numberOfUsers ; n++) {
+        email = n.toString().concat(email1);
+        let args = [email, password1, firstName1, lastName1];
+        let userId = authRegisterV1(...args);
+        userIdList.add(userId);
+      }
+      let h = userIdList.size
+      expect(userIdList.size === numberOfUsers).toStrictEqual(true);
     });
   });
 });
@@ -107,36 +119,58 @@ describe('authRegisterV1()', () => {
 
 
 describe('authLoginV1()', () => {
- 
-    // Tear down
+  
+  describe('Error Handling', () => {
+    
+    //Setup
+  let authUserId1 = null;
+  beforeEach(() => {
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
+  });
+
+  // Tear down
   afterEach(() => {clearV1()});
 
-  describe('Error Handling', () => {
-    test('do error testing for wrong email', () => {
-      const args = [email2, password2, firstName2, lastName2];
-      authRegisterV1(...args);
-      expect(authLoginV1(wrongemail, password2)).toStrictEqual({error: expect.any(String)});
+
+    test('Incorrect  email', () => {
+      expect(authLoginV1(wrongEmail, password1)).toStrictEqual({error: expect.any(String)});
     });
-    test('do error testing for wrong password', () => {
-      const args = [email2, password2, firstName2, lastName2];
-      authRegisterV1(...args);
-      expect(authLoginV1(email2, wrongPassword)).toStrictEqual({error: expect.any(String)});
+    test('Incorrect password', () => {
+      expect(authLoginV1(email1, wrongPassword)).toStrictEqual({error: expect.any(String)});
     });
 });
+
 describe('Function Testing', () => {
 
-  test('Autherise Login using exact email match', () => {
-    const args = [email1, password1, firstName1, lastName1];
-    const userId = authRegisterV1(...args).authUserId;
-    expect(authLoginV1(email1, password1)).toStrictEqual({authUserId: userId});
+  //Setup
+  let authUserId1 = null;
+  let userId1 = null;
+  let userId3 = null;
+  beforeEach(() => {
+    //create database of 3 users
+    let args = [email1, password1, firstName1, lastName1];
+    userId1 = authRegisterV1(...args).uId;
+    args = ['middleUser'.concat(email1), password1, firstName1, lastName2];
+    authRegisterV1(...args);
+    args = [email2, password2, firstName2, lastName2];
+    userId3 = authRegisterV1(...args).uId;
+  });
+
+  // Tear down
+  afterEach(() => {clearV1()});
+
+  test('Authorise login for first user in database', () => {
+   let args = [email1, password1]
+    expect(authLoginV1(...args)).toStrictEqual({uId: userId1});
   }); 
-  test('Autherise Login using upper case email matching lowercase', () => {
-    const args = [email1, password1, firstName1, lastName1];
-    const userId = authRegisterV1(...args).authUserId;
-    expect(authLoginV1(email1AltCase, password1)).toStrictEqual({authUserId: userId});
+  test('Authorise login for last user in database', () => {
+   let args = [email2, password2]
+    expect(authLoginV1(...args)).toStrictEqual({uId: userId3});
+  }); 
+  test('Authorise Login using upper case email matching lowercase', () => {
+    expect(authLoginV1(email1AltCase, password1)).toStrictEqual({uId: userId1});
   }); 
   
-
 })  
 
 });

@@ -48,8 +48,8 @@ function channelsCreateV1(authUserId, name, isPublic) {
     channelId: channelId,
     name: name,
     isPublic: isPublic,
-    ownerMembers: [ {authUserId: authUserId}, ],
-    allMembers:   [ {authUserId: authUserId}, ],  //TO DO: Find if creater is added to members and owners?
+    ownerMembers: [ {uId: authUserId}, ],
+    allMembers:   [ {uId: authUserId}, ],  //TO DO: Find if creater is added to members and owners?
     messages: [],
   }
 
