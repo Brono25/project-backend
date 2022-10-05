@@ -9,6 +9,7 @@ let data = {
       nameLast: 'Smith',
       email: 'hayhay123@gmail.com',
       handleStr: 'haydensmith',
+      globalPermission: 'owner',
     },*/
     ],
 

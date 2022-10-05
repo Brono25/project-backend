@@ -173,8 +173,15 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     return {error: 'Last name must be between 1-50 characters long (inclusive)'};
   }
 
+
   const handleStr = generateHandleStr(nameFirst, nameLast);
   const authUserId = generateAuthUserId();
+
+  let globalPermission = 'member'
+  if (authUserId === 0) {
+    globalPermission = 'owner'
+  }
+  
   const userDetails = {
       authUserId: authUserId,
       nameFirst: nameFirst,
@@ -182,6 +189,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
       email: email,
       password: password,
       handleStr: handleStr,
+      globalPermission: globalPermission,
     };
 
     let data = getData();
