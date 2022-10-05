@@ -203,21 +203,15 @@ describe('channelsListAllV1()', () => {
 
 
 describe('channelsListV1()', () => {
-  // Setup
-  let authUserId1 = null;
-  let invalidAuthUserId = null;
-  let channelId1 = null;
-  beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
-    channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
-    invalidAuthUserId = Math.abs(authUserId1) + 10;
-  });
+  
+
   // Tear down
-  afterEach(() => {
-    clearV1()
-  });
+  afterEach(() => {clearV1()});
+
   describe('Error Handling', () => {
     test('Invalid user ID', () => {
+      let authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+      let invalidAuthUserId = Math.abs(authUserId1) + 10;
       expect(channelsListV1(invalidAuthUserId)).toStrictEqual({error: expect.any(String)});
     }); 
 
@@ -226,11 +220,18 @@ describe('channelsListV1()', () => {
   describe('Function Testing', () => {
 
     test('List channel', () => {
+      let authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+      let channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
+      
       expect(channelsListV1(authUserId1)).toStrictEqual({channels: [
-    {
-      channelId: channelId1,
-      name: channelName1,
-    }
+      {
+        channelId: channelId1,
+        name: channelName1,
+      },
+
+
+
+
   ]})
     }); 
   })   
