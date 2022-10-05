@@ -27,18 +27,13 @@ let invalidEmptyName = '';
 let invalidLongFirstName = 'FirstNameLongerThanFiftyCharactersIsAnInvalidFirstName';
 let invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName';
 
-let wrongemail = 'anything@gmail.com';
+let wrongEmail = 'anything@gmail.com';
 let wrongPassword = 'wrongpassword';
 
 
 
 
-
-
-
-
 //------------------Auth Register Test------------------//
-
 
 describe('authRegisterV1()', () => {
 
@@ -63,7 +58,7 @@ describe('authRegisterV1()', () => {
       expect(authRegisterV1(...args1)).toStrictEqual({error: expect.any(String)});
       expect(authRegisterV1(...args2)).toStrictEqual({error: expect.any(String)});
     });   
-    test('Uppercase email counts as duplicate', () => {
+    test('Attempt to assign uppercase email when lower case email is already taken', () => {
       const args1 = [email1AltCase, password2, firstName2, lastName2];
       expect(authRegisterV1(...args1)).toStrictEqual({error: expect.any(String)});
     });   
@@ -93,9 +88,26 @@ describe('authRegisterV1()', () => {
   });
 
   describe('Function Testing', () => {
-    test('Create new user', () => {
+    test('Create new user and get a number user ID', () => {
       const args = [email2, password2, firstName2, lastName2];
       expect(authRegisterV1(...args)).toStrictEqual({authUserId: expect.any(Number)});
+    });
+    test('Create new user with existing names and password but different email', () => {
+      const args = [email2, password1, firstName1, lastName1];
+      expect(authRegisterV1(...args)).toStrictEqual({authUserId: expect.any(Number)});
+    });
+    test('Create 100 users and get 100 unique ID\'s', () => {
+      const numberOfUsers = 100;
+      let userIdList = new Set();
+      let email = '';
+      for (let n  = 0; n < numberOfUsers ; n++) {
+        email = n.toString().concat(email1);
+        let args = [email, password1, firstName1, lastName1];
+        let userId = authRegisterV1(...args);
+        userIdList.add(userId);
+      }
+      let h = userIdList.size
+      expect(userIdList.size === numberOfUsers).toStrictEqual(true);
     });
   });
 });
@@ -115,7 +127,7 @@ describe('authLoginV1()', () => {
     test('do error testing for wrong email', () => {
       const args = [email2, password2, firstName2, lastName2];
       authRegisterV1(...args);
-      expect(authLoginV1(wrongemail, password2)).toStrictEqual({error: expect.any(String)});
+      expect(authLoginV1(wrongEmail, password2)).toStrictEqual({error: expect.any(String)});
     });
     test('do error testing for wrong password', () => {
       const args = [email2, password2, firstName2, lastName2];
