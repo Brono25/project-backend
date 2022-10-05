@@ -70,8 +70,18 @@ describe('channelsCreateV1()', () => {
       const args = [authUserId1, channelName1, isPublic];
       expect(channelsCreateV1(...args)).toStrictEqual({channelId: expect.any(Number)});
     }); 
+
+    test('One user create 100 channels and get 100 unique ID\'s', () => {
+      const numberOfChannels = 100;
+      let channelIdList = new Set();
+      for (let n  = 0; n < numberOfChannels ; n++) {
+        let args = [authUserId1, n.toString().concat(channelName1), isPublic];
+        let channelId = channelsCreateV1(...args);
+        channelIdList.add(channelId);
+      }
+      expect(channelIdList.size === numberOfChannels).toStrictEqual(true);
+    });
   })
-  
 });
 
 
