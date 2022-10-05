@@ -57,9 +57,9 @@ describe('Function Testing', () => {
   
   test('Valid authUserId and uId', () => {
     const args2 = [email2, password2, firstName2, lastName2];
-    const authUserId2 = authRegisterV1(...args2).authUserId;
+    const authUserId2 = authRegisterV1(...args2).uId;
 
-    expect(userProfileV1(user1.authUserId, authUserId2)).toStrictEqual({
+    expect(userProfileV1(user1.uId, authUserId2)).toStrictEqual({
         user: {
             uId: authUserId2,
             email: email2,

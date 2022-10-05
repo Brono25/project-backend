@@ -40,7 +40,7 @@ describe('authRegisterV1()', () => {
   // Setup
   let authUserId1 = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
   });
 
   // Tear down
@@ -90,11 +90,11 @@ describe('authRegisterV1()', () => {
   describe('Function Testing', () => {
     test('Create new user and get a number user ID', () => {
       const args = [email2, password2, firstName2, lastName2];
-      expect(authRegisterV1(...args)).toStrictEqual({authUserId: expect.any(Number)});
+      expect(authRegisterV1(...args)).toStrictEqual({uId: expect.any(Number)});
     });
     test('Create new user with existing names and password but different email', () => {
       const args = [email2, password1, firstName1, lastName1];
-      expect(authRegisterV1(...args)).toStrictEqual({authUserId: expect.any(Number)});
+      expect(authRegisterV1(...args)).toStrictEqual({uId: expect.any(Number)});
     });
     test('Create 100 users and get 100 unique ID\'s', () => {
       const numberOfUsers = 100;
@@ -125,7 +125,7 @@ describe('authLoginV1()', () => {
     //Setup
   let authUserId1 = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
   });
 
   // Tear down
@@ -149,11 +149,11 @@ describe('Function Testing', () => {
   beforeEach(() => {
     //create database of 3 users
     let args = [email1, password1, firstName1, lastName1];
-    userId1 = authRegisterV1(...args).authUserId;
+    userId1 = authRegisterV1(...args).uId;
     args = ['middleUser'.concat(email1), password1, firstName1, lastName2];
     authRegisterV1(...args);
     args = [email2, password2, firstName2, lastName2];
-    userId3 = authRegisterV1(...args).authUserId;
+    userId3 = authRegisterV1(...args).uId;
   });
 
   // Tear down
@@ -161,14 +161,14 @@ describe('Function Testing', () => {
 
   test('Authorise login for first user in database', () => {
    let args = [email1, password1]
-    expect(authLoginV1(...args)).toStrictEqual({authUserId: userId1});
+    expect(authLoginV1(...args)).toStrictEqual({uId: userId1});
   }); 
   test('Authorise login for last user in database', () => {
-   let args = ['3'.concat(email1), '3'.concat(password1)]
-    expect(authLoginV1(...args)).toStrictEqual({authUserId: userId3});
+   let args = [email2, password2]
+    expect(authLoginV1(...args)).toStrictEqual({uId: userId3});
   }); 
   test('Authorise Login using upper case email matching lowercase', () => {
-    expect(authLoginV1(email1AltCase, password1)).toStrictEqual({authUserId: userId1});
+    expect(authLoginV1(email1AltCase, password1)).toStrictEqual({uId: userId1});
   }); 
   
 })  
