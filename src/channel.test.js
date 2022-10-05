@@ -67,11 +67,11 @@ describe('channelJoinV1()', () => {
   let authUserId2= null;
   let channelIdPriv = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
     channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
     invalidAuthUserId = Math.abs(authUserId1) + 10;
     invalidChannelId = Math.abs(channelId1) + 10;
-    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
+    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
     channelIdPriv = channelsCreateV1(authUserId2, channelName2, isNotPublic).channelId;
   });
   // Tear down

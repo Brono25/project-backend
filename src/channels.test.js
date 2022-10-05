@@ -44,7 +44,7 @@ describe('channelsCreateV1()', () => {
   let authUserId1 = null;
   let invalidAuthUserId = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
   // Tear down
@@ -106,8 +106,8 @@ describe('channelsListAllV1()', () => {
   let user1Channel2Id = null;
   let user2ChannelId = null;
   beforeEach(() => {
-    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
-    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
+    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).uId;
     invalidUserId = Math.abs(user1Id) + 173;
 
     user1ChannelId = channelsCreateV1(user1Id, channelName1, isPublic).channelId;
@@ -134,24 +134,24 @@ describe('channelsListAllV1()', () => {
             channelId: user1ChannelId,
             name: channelName1,
             isPublic: true,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers:   [ {authUserId: user1Id}, ],
+            ownerMembers: [ {uId: user1Id}, ],
+            allMembers:   [ {uId: user1Id}, ],
             messages: [],
           }, 
           {
             channelId: user1Channel2Id,
             name: channelName3,
             isPublic: false,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers: [ {authUserId: user1Id}, ],
+            ownerMembers: [ {uId: user1Id}, ],
+            allMembers: [ {uId: user1Id}, ],
             messages: [],
           },
           { 
             channelId: user2ChannelId,
             name: channelName2,
             isPublic: false,
-            ownerMembers: [ {authUserId: user2Id}, ],
-            allMembers:   [ {authUserId: user2Id}, ],
+            ownerMembers: [ {uId: user2Id}, ],
+            allMembers:   [ {uId: user2Id}, ],
             messages: [],
           },
         ],
@@ -165,24 +165,24 @@ describe('channelsListAllV1()', () => {
             channelId: user1ChannelId,
             name: channelName1,
             isPublic: true,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers:   [ {authUserId: user1Id}, ],
+            ownerMembers: [ {uId: user1Id}, ],
+            allMembers:   [ {uId: user1Id}, ],
             messages: [],
           }, 
           {
             channelId: user1Channel2Id,
             name: channelName3,
             isPublic: false,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers: [ {authUserId: user1Id}, ],
+            ownerMembers: [ {uId: user1Id}, ],
+            allMembers: [ {uId: user1Id}, ],
             messages: [],
           },
           { 
             channelId: user2ChannelId,
             name: channelName2,
             isPublic: false,
-            ownerMembers: [ {authUserId: user2Id}, ],
-            allMembers:   [ {authUserId: user2Id}, ],
+            ownerMembers: [ {uId: user2Id}, ],
+            allMembers:   [ {uId: user2Id}, ],
             messages: [],
           },
         ],        
@@ -208,7 +208,7 @@ describe('channelsListV1()', () => {
   let invalidAuthUserId = null;
   let channelId1 = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
     channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
@@ -231,8 +231,8 @@ describe('channelsListV1()', () => {
       channelId: channelId1,
       name: channelName1,
       isPublic: true,
-      ownerMembers: [ {authUserId: authUserId1}, ],
-      allMembers:   [ {authUserId: authUserId1}, ],
+      ownerMembers: [ {uId: authUserId1}, ],
+      allMembers:   [ {uId: authUserId1}, ],
       messages: [],
   }
   ]})
