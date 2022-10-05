@@ -136,6 +136,14 @@ describe('channelsListAllV1()', () => {
             allMembers: [ {authUserId: user1Id}, ],
             messages: [],
           },
+          { 
+            channelId: user2ChannelId,
+            name: channelName2,
+            isPublic: false,
+            ownerMembers: [ {authUserId: user2Id}, ],
+            allMembers:   [ {authUserId: user2Id}, ],
+            messages: [],
+          },
         ],
       });
     }); 
@@ -143,6 +151,22 @@ describe('channelsListAllV1()', () => {
     test('Function Test: Valid User ID & Private Channel', () => {
       expect(channelsListAllV1(user2Id)).toStrictEqual({
         channels: [
+          {      
+            channelId: user1ChannelId,
+            name: channelName1,
+            isPublic: true,
+            ownerMembers: [ {authUserId: user1Id}, ],
+            allMembers:   [ {authUserId: user1Id}, ],
+            messages: [],
+          }, 
+          {
+            channelId: user1Channel2Id,
+            name: channelName3,
+            isPublic: false,
+            ownerMembers: [ {authUserId: user1Id}, ],
+            allMembers: [ {authUserId: user1Id}, ],
+            messages: [],
+          },
           { 
             channelId: user2ChannelId,
             name: channelName2,
