@@ -85,9 +85,41 @@ function channelJoinV1(authUserId, channelId) {
 
 //stub-function for inviting users to the channel
 function channelInviteV1( authUserId, channelId, uId ) {
-	return{
-	
-	}
+	if (isValidChannelId(channelId) === false) {
+    return{error: 'Invalid channel Id'};
+  
+  
+  } else if (isValidAuthUserId(authUserId) === false) {
+    return{error: 'Invalid User Id'};
+      
+  } else if (isAuthUserMember(uId, channelId) === true) {
+    return{error: 'User is already a member of the channel'};
+  
+  } else if (isAuthUserMember(authUserId, channelId) === false) {
+    return{error: 'User is not a member of the channel'};
+
+  } else if (isValidAuthUserId(uId) === false) {
+    return{error: 'Invalid User Id'};
+
+  } 
+
+  const data = getData();
+
+  let channel;
+
+  for (let x of data.channels) {
+    if (x.channelId === channelId) {
+      channel = x;
+    }
+
+  }
+
+  const user = {uId: uId};
+  channel.allMembers.push(user);
+
+  setData(data);
+
+  return {};
 
 }
 
