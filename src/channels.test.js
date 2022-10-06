@@ -226,8 +226,8 @@ describe('channelsListV1()', () => {
     
     //User 2 member of channels
     channelInviteV1(authUserId1, privateChannelId1, authUserId2)
-    channelJoinV1(authUserId2, publicChannelId1);
-    channelJoinV1(authUserId2, publicChannelId2);
+    channelInviteV1(authUserId1, publicChannelId1, authUserId2);
+    channelInviteV1(authUserId1, publicChannelId2, authUserId2);
     
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
