@@ -118,9 +118,10 @@ function isPasswordCorrect(email, password){
 //------------------Auth Main functions------------------
 
 /**
+ * Given a registered user's email and password, returns their authUserId value.
  * 
- * @param {string, string} - add description
- * @returns {number} - add description
+ * @param {string, string} - users and password
+ * @returns {number} - authUserId 
  */
 function authLoginV1(email, password) {
   if (isEmailUsed(email) === false){
@@ -135,7 +136,7 @@ function authLoginV1(email, password) {
   for (const user of data.users){
     if (email.toLowerCase() === user.email.toLowerCase()){
       return {
-        authUserId: user.authUserId,
+        uId: user.uId,
       }
     }
   }
@@ -173,22 +174,30 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     return {error: 'Last name must be between 1-50 characters long (inclusive)'};
   }
 
+
   const handleStr = generateHandleStr(nameFirst, nameLast);
   const authUserId = generateAuthUserId();
+
+  let globalPermission = 'member'
+  if (authUserId === 0) {
+    globalPermission = 'owner'
+  }
+  
   const userDetails = {
-      authUserId: authUserId,
+      uId: authUserId,
       nameFirst: nameFirst,
       nameLast: nameLast,
       email: email,
       password: password,
       handleStr: handleStr,
+      globalPermission: globalPermission,
     };
 
     let data = getData();
     data.users.push(userDetails);
     setData(data);
 
-  return  {authUserId: authUserId};
+  return  {uId: authUserId};
 }
 
 

@@ -12,7 +12,7 @@ function userProfileV1(authUserId, uId){
     let data = getData();
 
     for (const user of data.users){
-        if (user.authUserId === uId){
+        if (user.uId === uId){
           return {
             user: {
               uId: uId,

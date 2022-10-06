@@ -48,8 +48,8 @@ function channelsCreateV1(authUserId, name, isPublic) {
     channelId: channelId,
     name: name,
     isPublic: isPublic,
-    ownerMembers: [ {authUserId: authUserId}, ],
-    allMembers:   [ {authUserId: authUserId}, ],  //TO DO: Find if creater is added to members and owners?
+    ownerMembers: [ {uId: authUserId}, ],
+    allMembers:   [ {uId: authUserId}, ],  //TO DO: Find if creater is added to members and owners?
     messages: [],
   }
 
@@ -76,7 +76,7 @@ function channelsListAllV1(authUserId) {
   let channels = [];
   let data = getData();
   for (let channel of data.channels) {
-    channels.push(channel);
+    channels.push({name: channel.name, channelId: channel.channelId});
   }
   return {channels};
 }
@@ -85,12 +85,12 @@ function channelsListAllV1(authUserId) {
 function channelsListV1(authUserId) {
 
   let data = getData();
-  let channels=[];
+  let channels = [];
 
   if (isValidAuthUserId(authUserId) === true) {
     for(let channel of data.channels) {
       if (isAuthUserMember(authUserId, channel.channelId) === true) {
-          channels.push(channel);
+          channels.push({name: channel.name, channelId: channel.channelId});
         }
       }
     

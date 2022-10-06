@@ -37,7 +37,7 @@ function isValidAuthUserId(authUserId) {
     return false;
   }
   for(let user of data.users) {
-    if(user.authUserId === authUserId) {
+    if(user.uId=== authUserId) {
       return true;
     }
   }
@@ -74,7 +74,7 @@ function isAuthUserMember(authUserId, channelId) {
   for(let channel of data.channels) {
     if(channel.channelId === channelId) {
 
-        if (channel.allMembers.find(a => a.authUserId === authUserId)){
+        if (channel.allMembers.find(a => a.uId === authUserId)){
           return true;
         }
       }

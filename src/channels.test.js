@@ -8,7 +8,7 @@ import {
 
 import { authRegisterV1 } from './auth';
 import { clearV1 } from './other';
-
+import { channelJoinV1, channelInviteV1 } from './channel';
 
 
 // Test data
@@ -25,14 +25,12 @@ let password2 = 'password2';
 let channelName1 = 'Channel 1';
 let channelName2 = 'Channel 2';
 let channelName3 = 'Channel 3';
+let channelName4 = 'Channel 4';
 let isPublic = true;
 let isNotPublic = false;
 
-
 let invalidEmptyChannelName = '';
 let invalidLongChannelName = 'ChannelsNamesMoreThanTwentyCharactersAreInvalid'
-
-
 
 
 
@@ -44,7 +42,7 @@ describe('channelsCreateV1()', () => {
   let authUserId1 = null;
   let invalidAuthUserId = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
   // Tear down
@@ -86,13 +84,6 @@ describe('channelsCreateV1()', () => {
 
 
 
-
-
-
-
-
-
-
 //------------------Channels List All Test------------------//
 
 
@@ -106,18 +97,17 @@ describe('channelsListAllV1()', () => {
   let user1Channel2Id = null;
   let user2ChannelId = null;
   beforeEach(() => {
-    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
-    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
+    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).uId;
     invalidUserId = Math.abs(user1Id) + 173;
 
     user1ChannelId = channelsCreateV1(user1Id, channelName1, isPublic).channelId;
     user1Channel2Id = channelsCreateV1(user1Id, channelName3, isNotPublic).channelId;
     user2ChannelId = channelsCreateV1(user2Id, channelName2, isNotPublic).channelId;
+    channelJoinV1(user1Id)
   });
 
-  afterEach(() => {
-    clearV1();
-  });  
+  afterEach(() => { clearV1() });  
 
   // TEARDOWN
   describe('Error Handling', () => {
@@ -133,26 +123,14 @@ describe('channelsListAllV1()', () => {
           {      
             channelId: user1ChannelId,
             name: channelName1,
-            isPublic: true,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers:   [ {authUserId: user1Id}, ],
-            messages: [],
           }, 
           {
             channelId: user1Channel2Id,
             name: channelName3,
-            isPublic: false,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers: [ {authUserId: user1Id}, ],
-            messages: [],
           },
           { 
             channelId: user2ChannelId,
             name: channelName2,
-            isPublic: false,
-            ownerMembers: [ {authUserId: user2Id}, ],
-            allMembers:   [ {authUserId: user2Id}, ],
-            messages: [],
           },
         ],
       });
@@ -164,26 +142,14 @@ describe('channelsListAllV1()', () => {
           {      
             channelId: user1ChannelId,
             name: channelName1,
-            isPublic: true,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers:   [ {authUserId: user1Id}, ],
-            messages: [],
           }, 
           {
             channelId: user1Channel2Id,
             name: channelName3,
-            isPublic: false,
-            ownerMembers: [ {authUserId: user1Id}, ],
-            allMembers: [ {authUserId: user1Id}, ],
-            messages: [],
           },
           { 
             channelId: user2ChannelId,
             name: channelName2,
-            isPublic: false,
-            ownerMembers: [ {authUserId: user2Id}, ],
-            allMembers:   [ {authUserId: user2Id}, ],
-            messages: [],
           },
         ],        
       });
@@ -203,39 +169,81 @@ describe('channelsListAllV1()', () => {
 
 
 describe('channelsListV1()', () => {
-  // Setup
+  
   let authUserId1 = null;
+  let authUserId2 = null;
   let invalidAuthUserId = null;
-  let channelId1 = null;
+  let publicChannelId1 = null;
+  let publicChannelId2 = null;
+  let privateChannelId1 = null
+  let privateChannelId2 = null
+  // Setup
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
-    channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
+    
+    // User 1's owner of channels
+    publicChannelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
+    publicChannelId2 = channelsCreateV1(authUserId1, channelName2, isPublic).channelId;
+    privateChannelId1 = channelsCreateV1(authUserId1, channelName3, isNotPublic).channelId;
+    privateChannelId2 = channelsCreateV1(authUserId1, channelName4, isNotPublic).channelId;
+    
+    //User 2 member of channels
+    channelInviteV1(authUserId1, privateChannelId1, authUserId2)
+    channelInviteV1(authUserId1, publicChannelId1, authUserId2);
+    channelInviteV1(authUserId1, publicChannelId2, authUserId2);
+    
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
   // Tear down
-  afterEach(() => {
-    clearV1()
-  });
+  afterEach(() => { clearV1()});
+
   describe('Error Handling', () => {
     test('Invalid user ID', () => {
+      let authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+      let invalidAuthUserId = Math.abs(authUserId1) + 10;
       expect(channelsListV1(invalidAuthUserId)).toStrictEqual({error: expect.any(String)});
     }); 
-
   });   
 
   describe('Function Testing', () => {
 
-    test('List channel', () => {
+    test('List channels for public', () => {
       expect(channelsListV1(authUserId1)).toStrictEqual({channels: [
-    {
-      channelId: channelId1,
+      {
+      channelId: publicChannelId1,
       name: channelName1,
-      isPublic: true,
-      ownerMembers: [ {authUserId: authUserId1}, ],
-      allMembers:   [ {authUserId: authUserId1}, ],
-      messages: [],
-  }
-  ]})
+      },
+      {
+      channelId: publicChannelId2,
+      name: channelName2,
+      },
+      {
+      channelId: privateChannelId1,
+      name: channelName3,
+      },
+      {
+      channelId: privateChannelId2,
+      name: channelName4,
+      },
+      ]})
+    }); 
+    test('List channels for private', () => {
+
+      expect(channelsListV1(authUserId2)).toStrictEqual({channels: [
+      {
+      channelId: publicChannelId1,
+      name: channelName1,
+      },
+      {
+      channelId: publicChannelId2,
+      name: channelName2,
+      },
+      {
+      channelId: privateChannelId1,
+      name: channelName3,
+      },
+      ]})
     }); 
   })   
 });
