@@ -76,7 +76,7 @@ function channelsListAllV1(authUserId) {
   let channels = [];
   let data = getData();
   for (let channel of data.channels) {
-    channels.push(channel);
+    channels.push({name: channel.name, channelId: channel.channelId});
   }
   return {channels};
 }
