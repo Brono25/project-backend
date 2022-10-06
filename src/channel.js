@@ -96,7 +96,10 @@ function channelInviteV1( authUserId, channelId, uId ) {
     return{error: 'User is already a member of the channel'};
   
   } else if (isAuthUserMember(authUserId, channelId) === false) {
-    return{error: 'User is not a member of the channel'};
+    const authUser = userProfileV1(authUserId, authUserId);
+    if (authUser.globalPermission !== 'owner') {
+      return {error: "User is not a member of the channel"};
+    }
 
   } else if (isValidAuthUserId(uId) === false) {
     return{error: 'Invalid User Id'};
