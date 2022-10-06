@@ -29,11 +29,8 @@ let channelName4 = 'Channel 4';
 let isPublic = true;
 let isNotPublic = false;
 
-
 let invalidEmptyChannelName = '';
 let invalidLongChannelName = 'ChannelsNamesMoreThanTwentyCharactersAreInvalid'
-
-
 
 
 
@@ -87,13 +84,6 @@ describe('channelsCreateV1()', () => {
 
 
 
-
-
-
-
-
-
-
 //------------------Channels List All Test------------------//
 
 
@@ -117,9 +107,7 @@ describe('channelsListAllV1()', () => {
     channelJoinV1(user1Id)
   });
 
-  afterEach(() => {
-    clearV1();
-  });  
+  afterEach(() => { clearV1() });  
 
   // TEARDOWN
   describe('Error Handling', () => {
@@ -135,26 +123,14 @@ describe('channelsListAllV1()', () => {
           {      
             channelId: user1ChannelId,
             name: channelName1,
-            isPublic: true,
-            ownerMembers: [ {uId: user1Id}, ],
-            allMembers:   [ {uId: user1Id}, ],
-            messages: [],
           }, 
           {
             channelId: user1Channel2Id,
             name: channelName3,
-            isPublic: false,
-            ownerMembers: [ {uId: user1Id}, ],
-            allMembers: [ {uId: user1Id}, ],
-            messages: [],
           },
           { 
             channelId: user2ChannelId,
             name: channelName2,
-            isPublic: false,
-            ownerMembers: [ {uId: user2Id}, ],
-            allMembers:   [ {uId: user2Id}, ],
-            messages: [],
           },
         ],
       });
@@ -166,26 +142,14 @@ describe('channelsListAllV1()', () => {
           {      
             channelId: user1ChannelId,
             name: channelName1,
-            isPublic: true,
-            ownerMembers: [ {uId: user1Id}, ],
-            allMembers:   [ {uId: user1Id}, ],
-            messages: [],
           }, 
           {
             channelId: user1Channel2Id,
             name: channelName3,
-            isPublic: false,
-            ownerMembers: [ {uId: user1Id}, ],
-            allMembers: [ {uId: user1Id}, ],
-            messages: [],
           },
           { 
             channelId: user2ChannelId,
             name: channelName2,
-            isPublic: false,
-            ownerMembers: [ {uId: user2Id}, ],
-            allMembers:   [ {uId: user2Id}, ],
-            messages: [],
           },
         ],        
       });
@@ -281,8 +245,6 @@ describe('channelsListV1()', () => {
       },
       ]})
     }); 
-
-    
   })   
 });
 
