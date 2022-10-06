@@ -31,6 +31,24 @@ function isChannelPrivate (channelId) {
   return true;
 }
 
+/**
+ * @param {number} - uId
+ * @returns {boolean} - is user a global owner
+ */
+ function isGlobalOwner (authUserId) {
+  const data = getData();
+  
+  for(let user of data.users) {
+    if(user.uId === authUserId) {
+      if ( === ) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
 
   
 
