@@ -264,7 +264,7 @@ describe('channelsListV1()', () => {
       },
       ]})
     }); 
-    test('List channels for public and private', () => {
+    test('List channels for private', () => {
 
       expect(channelsListV1(authUserId2)).toStrictEqual({channels: [
       {
@@ -281,6 +281,8 @@ describe('channelsListV1()', () => {
       },
       ]})
     }); 
+
+    
   })   
 });
 
