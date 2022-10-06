@@ -113,12 +113,6 @@ describe('channelJoinV1()', () => {
 
 
 describe('channelInviteV1()', () => {
-<<<<<<< HEAD
-
-  describe('Error Handling', () => {
-
-    test('do error testing', () => {
-=======
  
   
   // Setup
@@ -161,31 +155,16 @@ describe('channelInviteV1()', () => {
     test('authUser not a member', () => {
       expect(channelInviteV1(authUserId2, channelId1, authUserId2)).toStrictEqual({error: expect.any(String)});
     })
->>>>>>> 7fcc6dd3535e14e918425dfb3d40aeb4889e9b7a
-
-    });
 
   });
 
   describe('Function Testing', () => {
 
-<<<<<<< HEAD
-    test('do function testing', () => {
-
-    });
-=======
     test('adds the user to the channel', () => {
       expect(channelInviteV1(authUserId1, channelId1, authUserId2)).toStrictEqual({})
     }); 
-  })     
- 
-});
->>>>>>> 7fcc6dd3535e14e918425dfb3d40aeb4889e9b7a
-
   })
-
-});
-
+});   
 
 
 //------------------Channel Messages Test------------------//
