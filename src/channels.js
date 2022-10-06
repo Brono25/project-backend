@@ -85,12 +85,12 @@ function channelsListAllV1(authUserId) {
 function channelsListV1(authUserId) {
 
   let data = getData();
-  let channels=[];
+  let channels = [];
 
   if (isValidAuthUserId(authUserId) === true) {
     for(let channel of data.channels) {
       if (isAuthUserMember(authUserId, channel.channelId) === true) {
-          channels.push({channelId: channel.channelId, name: channel.name});
+          channels.push({name: channel.name, channelId: channel.channelId});
         }
       }
     
