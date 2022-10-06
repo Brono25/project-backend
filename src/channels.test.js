@@ -8,7 +8,7 @@ import {
 
 import { authRegisterV1 } from './auth';
 import { clearV1 } from './other';
-
+import { channelJoinV1, channelInviteV1 } from './channel';
 
 
 // Test data
@@ -25,6 +25,7 @@ let password2 = 'password2';
 let channelName1 = 'Channel 1';
 let channelName2 = 'Channel 2';
 let channelName3 = 'Channel 3';
+let channelName4 = 'Channel 4';
 let isPublic = true;
 let isNotPublic = false;
 
@@ -113,6 +114,7 @@ describe('channelsListAllV1()', () => {
     user1ChannelId = channelsCreateV1(user1Id, channelName1, isPublic).channelId;
     user1Channel2Id = channelsCreateV1(user1Id, channelName3, isNotPublic).channelId;
     user2ChannelId = channelsCreateV1(user2Id, channelName2, isNotPublic).channelId;
+    channelJoinV1(user1Id)
   });
 
   afterEach(() => {
@@ -203,39 +205,79 @@ describe('channelsListAllV1()', () => {
 
 
 describe('channelsListV1()', () => {
-  // Setup
+  
   let authUserId1 = null;
+  let authUserId2 = null;
   let invalidAuthUserId = null;
-  let channelId1 = null;
+  let publicChannelId1 = null;
+  let publicChannelId2 = null;
+  let privateChannelId1 = null
+  let privateChannelId2 = null
+  // Setup
   beforeEach(() => {
     authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
-    channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
+    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
+    
+    // User 1's owner of channels
+    publicChannelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
+    publicChannelId2 = channelsCreateV1(authUserId1, channelName2, isPublic).channelId;
+    privateChannelId1 = channelsCreateV1(authUserId1, channelName3, isNotPublic).channelId;
+    privateChannelId2 = channelsCreateV1(authUserId1, channelName4, isNotPublic).channelId;
+    
+    //User 2 member of channels
+    channelInviteV1(authUserId1, privateChannelId1, authUserId2)
+    channelJoinV1(authUserId2, publicChannelId1);
+    channelJoinV1(authUserId2, publicChannelId2);
+    
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
   // Tear down
-  afterEach(() => {
-    clearV1()
-  });
+  afterEach(() => { clearV1()});
+
   describe('Error Handling', () => {
     test('Invalid user ID', () => {
       expect(channelsListV1(invalidAuthUserId)).toStrictEqual({error: expect.any(String)});
     }); 
-
   });   
 
   describe('Function Testing', () => {
 
-    test('List channel', () => {
+    test('List channels for public', () => {
       expect(channelsListV1(authUserId1)).toStrictEqual({channels: [
-    {
-      channelId: channelId1,
+      {
+      channelId: publicChannelId1,
       name: channelName1,
-      isPublic: true,
-      ownerMembers: [ {uId: authUserId1}, ],
-      allMembers:   [ {uId: authUserId1}, ],
-      messages: [],
-  }
-  ]})
+      },
+      {
+      channelId: publicChannelId2,
+      name: channelName2,
+      },
+      {
+      channelId: privateChannelId1,
+      name: channelName3,
+      },
+      {
+      channelId: privateChannelId2,
+      name: channelName4,
+      },
+      ]})
+    }); 
+    test('List channels for public and private', () => {
+
+      expect(channelsListV1(authUserId2)).toStrictEqual({channels: [
+      {
+      channelId: publicChannelId1,
+      name: channelName1,
+      },
+      {
+      channelId: publicChannelId2,
+      name: channelName2,
+      },
+      {
+      channelId: privateChannelId1,
+      name: channelName3,
+      },
+      ]})
     }); 
   })   
 });
