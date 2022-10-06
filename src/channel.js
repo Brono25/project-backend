@@ -151,7 +151,7 @@ function channelMessagesV1( authUserId, channelId, start ){
 
   }
 
-  const messages = channel.messages;
+  const Messages = channel.messages;
   
   if (start + 50 <= numMessages) {
     const end = start + 50;
