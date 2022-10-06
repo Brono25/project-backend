@@ -9,8 +9,6 @@ import {
   isAuthUserMember,
 } from './other.js'
 
-import { authRegisterV1 } from './auth.js';
-
 //------------------Channels Helper functions------------------
 /**
  * The channel ID is the same as its index in the 
@@ -26,7 +24,6 @@ function generateChannelId() {
   const id = data.channels.length;
   return id;
 }
-
 
 
 //------------------Channels Main functions------------------
@@ -107,7 +104,6 @@ function channelsListV1(authUserId) {
           channels.push({name: channel.name, channelId: channel.channelId});
         }
       }
-    
   } else {
     return {error: 'Invalid User ID'};  
   } 
