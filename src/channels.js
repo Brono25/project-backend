@@ -9,8 +9,6 @@ import {
   isAuthUserMember,
 } from './other.js'
 
-import { authRegisterV1 } from './auth.js';
-
 //------------------Channels Helper functions------------------
 /**
  * The channel ID is the same as its index in the 
@@ -28,10 +26,13 @@ function generateChannelId() {
 }
 
 
-
 //------------------Channels Main functions------------------
-
-// Stub funtion for creating user channels.
+/**
+ * Returns a list of all channels if user is valid.
+ * 
+ * @param {number, string, boolean} - user ID, channel name, is public
+ * @returns {number} - channel ID
+ */
 function channelsCreateV1(authUserId, name, isPublic) {
 
   const maxChars = 20;
@@ -49,7 +50,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     name: name,
     isPublic: isPublic,
     ownerMembers: [ {uId: authUserId}, ],
-    allMembers:   [ {uId: authUserId}, ],  //TO DO: Find if creater is added to members and owners?
+    allMembers:   [ {uId: authUserId}, ],  
     messages: [],
   }
 
@@ -63,8 +64,12 @@ function channelsCreateV1(authUserId, name, isPublic) {
 }
 
 
-
-// Stub-function for listing all channels
+/**
+ * Returns a list of all channels if user is valid.
+ * 
+ * @param {string} - user ID
+ * @returns {Array} - list of channels
+ */
 function channelsListAllV1(authUserId) {
 
   // check if authUserId is valid
@@ -81,7 +86,13 @@ function channelsListAllV1(authUserId) {
   return {channels};
 }
 
-// Stub function for listing the created channels.
+
+/**
+ * Returns a list of all channels a user is a member of
+ * 
+ * @param {string} - user ID
+ * @returns {Array} - list of channels
+ */
 function channelsListV1(authUserId) {
 
   let data = getData();
@@ -93,15 +104,11 @@ function channelsListV1(authUserId) {
           channels.push({name: channel.name, channelId: channel.channelId});
         }
       }
-    
   } else {
     return {error: 'Invalid User ID'};  
   } 
-  
   return {channels};
 }
-
-
 
 
 
