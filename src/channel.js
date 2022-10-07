@@ -136,7 +136,7 @@ function channelMessagesV1( authUserId, channelId, start ){
     return {error: 'Invalid channel Id'};
   }
 
-
+  let data = getData();
   let channel;
   for (let x of data.channels) {
     if (x.channelId === channelId) {
@@ -156,13 +156,13 @@ function channelMessagesV1( authUserId, channelId, start ){
     return{error: 'User is not a member of the channel'};
 
   }
-
+  let end = 0;
   const Messages = channel.messages;
   
   if (start + 50 <= numMessages) {
-    const end = start + 50;
+    end = start + 50;
   } else {
-    const end = -1;
+    end = -1;
   }
 
 let messages = [];

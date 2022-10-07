@@ -181,10 +181,10 @@ describe('channelMessagesV1()', () => {
     // Register users
     userId1 = authRegisterV1(
       email1, password1, firstName1, lastName1
-    ).authUserId;
+    ).uId;
     userId2 = authRegisterV1(
       email2, password2, firstName2, lastName2
-    ).authUserId;
+    ).uId;
     // Create channels
     channelId1 = channelsCreateV1(userId1, channelName1, false).channelId;
     channelId2 = channelsCreateV1(userId2, channelName2, false).channelId;
