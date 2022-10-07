@@ -144,7 +144,7 @@ function channelMessagesV1( authUserId, channelId, start ){
     }
 
   }
-  const numbermessage = channel.messages.length;
+  const numMessages = channel.messages.length;
 
   if (start >= numMessages) {
     return {error: 'Messages start too high'};
@@ -169,18 +169,25 @@ let messages = [];
 
 if (end !== -1) {
   let loopEnd = start + 50;
+  for (let i = start; i < loopEnd; i++) {
+    messages.push(Messages[i]);
+  }
+    return{		
+      messages,
+      start,
+      end,
+    };
 } else {
-  numbermessages;
+  for (let i = start; i < numMessages; i++) {
+    messages.push(Messages[i]);
+  }
+    return{		
+      messages,
+      start,
+      end,
+    };
 }
 
-for (let i = start; i < loopEnd; i++) {
-  messages.push(allMessages[i]);
-}
-	return{		
-		messages,
-    start,
-    end,
-	};
 }
 
 
