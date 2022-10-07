@@ -17,6 +17,7 @@ import {
 
 
 /**
+ * Given a channelId, checks if the channel is private. Return false is public, true if private.
  * @param {number} - channelId
  * @returns {boolean} - is channel private
  */
@@ -61,6 +62,8 @@ function isChannelPrivate (channelId) {
 /**
  *Given a channel with ID channelId that the authorised user is 
  *a member of, provides basic details about the channel.
+ * @param {number, number} - authUserId and channelId
+ * @returns {} - 
  */
 
 function channelDetailsV1(authUserId, channelId) {
@@ -115,6 +118,8 @@ function channelJoinV1(authUserId, channelId) {
 
 /**
  *Invites a user with ID uId to join a channel with ID channelId.
+ * @param {number, number, number} - authUserId, channelId and uId
+ * @returns {} 
  */
 
 function channelInviteV1( authUserId, channelId, uId ) {
@@ -162,6 +167,8 @@ function channelInviteV1( authUserId, channelId, uId ) {
 /**
  * Given a channel with ID channelId that the authorised user 
  * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ * @param {number, number, number} - authUserId, channelId, start
+ * @returns {object} - { messages, start, end }
  */
 
 function channelMessagesV1( authUserId, channelId, start ){
