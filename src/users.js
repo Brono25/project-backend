@@ -1,10 +1,14 @@
-// uId: Id of the user to view
 import { isValidAuthUserId } from './other';
 import {
     getData,
   } from './dataStore.js';
   
-
+/**
+ * For a valid user, returns information about their user ID, email, first name, last name, and handle
+ * 
+ * @param {number, number} - the uId of the user and the user to view
+ * @returns {user} -Object containing uId, email, nameFirst, nameLast, handleStr
+ */
 function userProfileV1(authUserId, uId){
     if (isValidAuthUserId(authUserId) === false){
         return {error: 'authUserId is invalid!'}
