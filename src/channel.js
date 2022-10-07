@@ -112,6 +112,13 @@ function channelJoinV1(authUserId, channelId) {
     return{error: 'Private channel'};
     
   } else {
+    const data = getData();
+
+    for(let channel of data.channels) {
+      if(channel.channelId === channelId) {
+        channel.allMembers.push(authUserId);
+      }
+    }
     return {};
   }
 }
