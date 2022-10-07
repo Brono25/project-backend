@@ -34,12 +34,35 @@ function isChannelPrivate (channelId) {
   return true;
 }
 
+/**
+ * @param {number} - uId
+ * @returns {boolean} - is user a global owner
+ */
+ function isGlobalOwner (authUserId) {
+  const data = getData();
+  
+  for(let user of data.users) {
+    if(user.uId === authUserId) {
+      if (user.globalPermission !== 'owner') {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
+
+
   
 
 
 //------------------Channel Main functions------------------
 
-// Stub-function for listing channel details
+/**
+ *Given a channel with ID channelId that the authorised user is 
+ *a member of, provides basic details about the channel.
+ */
+
 function channelDetailsV1(authUserId, channelId) {
     return {
         name: 'Hayden',
@@ -64,7 +87,12 @@ function channelDetailsV1(authUserId, channelId) {
     }
 }
 
-// Stub-function for joining channel
+/**
+ * Given a channelId of a channel that the authorised user can join, adds them to that channel.
+ * @param {number, number} - user id and channel id
+ * @returns {} 
+ */
+
 function channelJoinV1(authUserId, channelId) {
 
   if (isValidChannelId(channelId) === false) {
@@ -77,7 +105,7 @@ function channelJoinV1(authUserId, channelId) {
   } else if (isAuthUserMember(authUserId, channelId) === true) {
     return{error: 'User is already a member of the channel'};
   
-  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false) {
+  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false && isGlobalOwner(authUserId) === false) {
     return{error: 'Private channel'};
     
   } else {
@@ -85,7 +113,10 @@ function channelJoinV1(authUserId, channelId) {
   }
 }
 
-//stub-function for inviting users to the channel
+/**
+ *Invites a user with ID uId to join a channel with ID channelId.
+ */
+
 function channelInviteV1( authUserId, channelId, uId ) {
 	if (isValidChannelId(channelId) === false) {
     return{error: 'Invalid channel Id'};
@@ -128,7 +159,11 @@ function channelInviteV1( authUserId, channelId, uId ) {
 
 }
 
-//stub-function for listing the messages in the channel
+/**
+ * Given a channel with ID channelId that the authorised user 
+ * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ */
+
 function channelMessagesV1( authUserId, channelId, start ){
 
 

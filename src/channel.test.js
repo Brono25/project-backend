@@ -20,6 +20,12 @@ let lastName2 = 'Last Name 2';
 let email2 = 'email_2@gmail.com';
 let password2 = 'password2';
 
+
+let firstName3= 'First Name 3';
+let lastName3 = 'Last Name 3';
+let email3 = 'email_3@gmail.com';
+let password3 = 'password3';
+
 let channelName1 = 'Channel 1';
 let channelName2 = 'Channel 2';
 let isPublic = true;
@@ -66,6 +72,7 @@ describe('channelJoinV1()', () => {
   let invalidChannelId = null;
   let authUserId2 = null;
   let channelIdPriv = null;
+  let authUserId3 = null;
   beforeEach(() => {
     authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
     channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
@@ -73,6 +80,7 @@ describe('channelJoinV1()', () => {
     invalidChannelId = Math.abs(channelId1) + 10;
     authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
     channelIdPriv = channelsCreateV1(authUserId2, channelName2, isNotPublic).channelId;
+    authUserId3 = authRegisterV1(email3, password3, firstName3, lastName3).uId;
   });
   // Tear down
   afterEach(() => {
@@ -89,7 +97,8 @@ describe('channelJoinV1()', () => {
     });
 
     test('Private channelId', () => {
-      expect(channelJoinV1(authUserId1, channelIdPriv)).toStrictEqual({ error: expect.any(String) });
+      expect(channelJoinV1(authUserId3, channelIdPriv)).toStrictEqual({error: expect.any(String)});
+
     });
 
     test('Invalid User Id', () => {
@@ -100,10 +109,14 @@ describe('channelJoinV1()', () => {
 
   describe('Function Testing', () => {
 
-    test('adds the user to the channel', () => {
+    test('adds a global member to the channel', () => {
       expect(channelJoinV1(authUserId2, channelId1)).toStrictEqual({})
     });
-  })
+
+    test('adds a global owner to the channel', () => {
+      expect(channelJoinV1(authUserId1, channelIdPriv)).toStrictEqual({})
+    }); 
+  })   
 });
 
 

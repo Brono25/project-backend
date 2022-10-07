@@ -13,6 +13,7 @@ const data = {
       password: '123456',
       email: 'hayhay123@gmail.com',
       handleStr: 'haydensmith',
+      globalPermission : 'global owner',
     },
     ],
 
