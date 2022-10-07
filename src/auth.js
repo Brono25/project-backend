@@ -197,7 +197,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     data.users.push(userDetails);
     setData(data);
 
-  return  {authUserId: authUserId};
+  return  {uId: authUserId};
 }
 
 
