@@ -118,9 +118,10 @@ function isPasswordCorrect(email, password){
 //------------------Auth Main functions------------------
 
 /**
+ * Given a registered user's email and password, returns their authUserId value.
  * 
- * @param {string, string} - add description
- * @returns {number} - add description
+ * @param {string, string} - users and password
+ * @returns {number} - authUserId 
  */
 function authLoginV1(email, password) {
   if (isEmailUsed(email) === false){
