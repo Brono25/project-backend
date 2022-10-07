@@ -136,7 +136,7 @@ function authLoginV1(email, password) {
   for (const user of data.users){
     if (email.toLowerCase() === user.email.toLowerCase()){
       return {
-        uId: user.uId,
+        authUserId: user.authUserId,
       }
     }
   }
