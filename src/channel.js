@@ -55,7 +55,11 @@ function isChannelPrivate (channelId) {
 
 //------------------Channel Main functions------------------
 
-// Stub-function for listing channel details
+/**
+ *Given a channel with ID channelId that the authorised user is 
+ *a member of, provides basic details about the channel.
+ */
+
 function channelDetailsV1(authUserId, channelId) {
     return {
         name: 'Hayden',
@@ -80,7 +84,12 @@ function channelDetailsV1(authUserId, channelId) {
     }
 }
 
-// Stub-function for joining channel
+/**
+ * Given a channelId of a channel that the authorised user can join, adds them to that channel.
+ * @param {number, number} - user id and channel id
+ * @returns {} 
+ */
+
 function channelJoinV1(authUserId, channelId) {
 
   if (isValidChannelId(channelId) === false) {
@@ -101,7 +110,10 @@ function channelJoinV1(authUserId, channelId) {
   }
 }
 
-//stub-function for inviting users to the channel
+/**
+ *Invites a user with ID uId to join a channel with ID channelId.
+ */
+
 function channelInviteV1( authUserId, channelId, uId ) {
 	if (isValidChannelId(channelId) === false) {
     return{error: 'Invalid channel Id'};
@@ -144,7 +156,11 @@ function channelInviteV1( authUserId, channelId, uId ) {
 
 }
 
-//stub-function for listing the messages in the channel
+/**
+ * Given a channel with ID channelId that the authorised user 
+ * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ */
+
 function channelMessagesV1( authUserId, channelId, start ){
 
 
