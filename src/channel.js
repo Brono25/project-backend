@@ -131,9 +131,9 @@ function channelJoinV1(authUserId, channelId) {
  */
 
 function channelInviteV1( authUserId, channelId, uId ) {
+
 	if (isValidChannelId(channelId) === false) {
     return{error: 'Invalid channel Id'};
-  
   
   } else if (isValidAuthUserId(authUserId) === false) {
     return{error: 'Invalid User Id'};
@@ -146,7 +146,6 @@ function channelInviteV1( authUserId, channelId, uId ) {
     if (authUser.globalPermission !== 'owner') {
       return {error: "User is not a member of the channel"};
     }
-
   } else if (isValidAuthUserId(uId) === false) {
     return{error: 'Invalid User Id'};
 
@@ -154,21 +153,13 @@ function channelInviteV1( authUserId, channelId, uId ) {
 
   const data = getData();
 
-  let channel;
-
-  for (let x of data.channels) {
-    if (x.channelId === channelId) {
-      channel = x;
+  for (let channel of data.channels) {
+    if (channel.channelId === channelId) {
+      channel.allMembers.push({uId: uId});
     }
-
   }
-
-  channel.allMembers.push(uId);
-
   setData(data);
-
   return {};
-
 }
 
 /**
