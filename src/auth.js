@@ -136,7 +136,7 @@ function authLoginV1(email, password) {
   for (const user of data.users){
     if (email.toLowerCase() === user.email.toLowerCase()){
       return {
-        authUserId: user.authUserId,
+        uId: user.uId,
       }
     }
   }
@@ -197,7 +197,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     data.users.push(userDetails);
     setData(data);
 
-  return  {authUserId: authUserId};
+  return  {uId: authUserId};
 }
 
 
