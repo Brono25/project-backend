@@ -186,8 +186,8 @@ describe('channelMessagesV1()', () => {
       email2, password2, firstName2, lastName2
     ).authUserId;
     // Create channels
-    channelId1 = channelsCreateV1(userId, channelName1, false).channelId;
-    channelId2 = channelsCreateV1(userId, channelName2, false).channelId;
+    channelId1 = channelsCreateV1(userId1, channelName1, false).channelId;
+    channelId2 = channelsCreateV1(userId2, channelName2, false).channelId;
   });
 
   describe('Error Handling', () => {
@@ -200,8 +200,7 @@ describe('channelMessagesV1()', () => {
 
     test('Invalid channelId', () => {
       expect(
-        channelMessagesV1(userId1, channelId1 + channelId2, 0)
-      ).toStrictEqual(
+        channelMessagesV1(userId1, channelId2 + channelId1, 0)).toStrictEqual(
         { error: expect.any(String) }
       );
     });
