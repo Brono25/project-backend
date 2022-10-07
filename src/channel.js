@@ -120,8 +120,10 @@ function channelDetailsV1(authUserId, channelId) {
 
 
 /**
- * @param {number} - channelId
- * @returns {array} - memberDetails
+ * Return a list containing all members and their details
+ * of a given channel ID
+ * @param {number} - channel ID
+ * @returns {Array} list of objects containing members details
  */
 function userMemberDetails (channelId) {
   const data = getData();
@@ -146,10 +148,17 @@ function userMemberDetails (channelId) {
 
 
 
+
+/**
+ * Return a list containing owners and their details
+ * of a given channel ID
+ * @param {number, number} - user id and channel id
+ * @returns {Array} list of objects containing owner details
+ */
 function ownerMemberDetails (channelId) {
+ 
   const data = getData();
   let ownerDetailsList = [];
-
   let channel = getChannelDetailsFromId(channelId);
 
   for (let owner of channel.ownerMembers) {
@@ -174,9 +183,6 @@ function ownerMemberDetails (channelId) {
 
 
 
-
-
-
 /**
  * Given a channelId of a channel that the authorised user can join, adds them to that channel.
  * @param {number, number} - user id and channel id
@@ -185,17 +191,19 @@ function ownerMemberDetails (channelId) {
 
 function channelJoinV1(authUserId, channelId) {
 
-  if (isValidChannelId(channelId) === false) {
+  if (!isValidChannelId(channelId)) {
     return{error: 'Invalid channel Id'};
   
   
-  } else if (isValidAuthUserId(authUserId) === false) {
+  } else if (!isValidAuthUserId(authUserId)) {
     return{error: 'Invalid User Id'};
       
-  } else if (isAuthUserMember(authUserId, channelId) === true) {
+  } else if (isAuthUserMember(authUserId, channelId)) {
     return{error: 'User is already a member of the channel'};
   
-  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false && isGlobalOwner(authUserId) === false) {
+  } else if (isChannelPrivate(channelId) 
+            && !isAuthUserMember(authUserId, channelId) 
+            && !isGlobalOwner(authUserId)) {
     return{error: 'Private channel'};
   }
 

@@ -8,7 +8,6 @@ import { channelsCreateV1 } from './channels';
 import { clearV1 } from './other';
 
 // Test data
-// Test data
 let firstName1 = 'First Name 1';
 let lastName1 = 'Last Name 1';
 let email1 = 'email_1@gmail.com';
@@ -70,8 +69,6 @@ describe('Error Handling', () => {
 
 
  
-
-
 //------------------Function Testing------------------//
 
 describe('Function Testing', () => {
@@ -164,7 +161,3 @@ describe('Function Testing', () => {
     );
   });  
 }); 
-
-
-
-
