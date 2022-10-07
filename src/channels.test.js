@@ -42,7 +42,7 @@ describe('channelsCreateV1()', () => {
   let authUserId1 = null;
   let invalidAuthUserId = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId; 
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId; 
     invalidAuthUserId = Math.abs(authUserId1) + 10;
   });
   // Tear down
@@ -97,8 +97,8 @@ describe('channelsListAllV1()', () => {
   let user1Channel2Id = null;
   let user2ChannelId = null;
   beforeEach(() => {
-    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).uId;
-    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).uId;
+    user1Id = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    user2Id = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
     invalidUserId = Math.abs(user1Id) + 173;
 
     user1ChannelId = channelsCreateV1(user1Id, channelName1, isPublic).channelId;
@@ -179,8 +179,8 @@ describe('channelsListV1()', () => {
   let privateChannelId2 = null
   // Setup
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
-    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
+    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
     
     // User 1's owner of channels
     publicChannelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
@@ -200,7 +200,7 @@ describe('channelsListV1()', () => {
 
   describe('Error Handling', () => {
     test('Invalid user ID', () => {
-      let authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+      let authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
       let invalidAuthUserId = Math.abs(authUserId1) + 10;
       expect(channelsListV1(invalidAuthUserId)).toStrictEqual({error: expect.any(String)});
     }); 
