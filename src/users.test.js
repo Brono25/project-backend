@@ -30,7 +30,7 @@ describe('userProfileV1', () => {
   let wrongUserId = null;
   beforeEach(() => {
     user1 = authRegisterV1(email1, password1, firstName1, lastName1); 
-    wrongUserId = user1.uId + 10;
+    wrongUserId = user1.authUserId + 10;
   });
   // Tear down
   afterEach(() => {clearV1()});
@@ -38,10 +38,10 @@ describe('userProfileV1', () => {
   describe('Error Handling', () => {
 
     test('Invalid authUserId', () => {
-      expect(userProfileV1(wrongUserId, user1.uId)).toStrictEqual({error: expect.any(String)});
+      expect(userProfileV1(wrongUserId, user1.authUserId)).toStrictEqual({error: expect.any(String)});
     }); 
     test('Invalid uId', () => {
-      expect(userProfileV1(user1.uId, wrongUserId)).toStrictEqual({error: expect.any(String)});
+      expect(userProfileV1(user1.authUserId, wrongUserId)).toStrictEqual({error: expect.any(String)});
     });   
    
     });
@@ -57,9 +57,9 @@ describe('Function Testing', () => {
   
   test('Valid authUserId and uId', () => {
     const args2 = [email2, password2, firstName2, lastName2];
-    const authUserId2 = authRegisterV1(...args2).uId;
+    const authUserId2 = authRegisterV1(...args2).authUserId;
 
-    expect(userProfileV1(user1.uId, authUserId2)).toStrictEqual({
+    expect(userProfileV1(user1.authUserId, authUserId2)).toStrictEqual({
         user: {
             uId: authUserId2,
             email: email2,

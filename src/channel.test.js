@@ -74,13 +74,13 @@ describe('channelJoinV1()', () => {
   let channelIdPriv = null;
   let authUserId3 = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
     channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
     invalidAuthUserId = Math.abs(authUserId1) + 10;
     invalidChannelId = Math.abs(channelId1) + 10;
-    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
+    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
     channelIdPriv = channelsCreateV1(authUserId2, channelName2, isNotPublic).channelId;
-    authUserId3 = authRegisterV1(email3, password3, firstName3, lastName3).uId;
+    authUserId3 = authRegisterV1(email3, password3, firstName3, lastName3).authUserId;
   });
   // Tear down
   afterEach(() => {
@@ -136,11 +136,11 @@ describe('channelInviteV1()', () => {
   let authUserId2= null;
   let channelIdPriv = null;
   beforeEach(() => {
-    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).uId;
+    authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
     channelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
     invalidAuthUserId = Math.abs(authUserId1) + 10;
     invalidChannelId = Math.abs(channelId1) + 10;
-    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).uId;
+    authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
     channelIdPriv = channelsCreateV1(authUserId2, channelName2, isNotPublic).channelId;
   });
   // Tear down
@@ -194,10 +194,10 @@ describe('channelMessagesV1()', () => {
     // Register users
     userId1 = authRegisterV1(
       email1, password1, firstName1, lastName1
-    ).uId;
+    ).authUserId;
     userId2 = authRegisterV1(
       email2, password2, firstName2, lastName2
-    ).uId;
+    ).authUserId;
     // Create channels
     channelId1 = channelsCreateV1(userId1, channelName1, false).channelId;
     channelId2 = channelsCreateV1(userId2, channelName2, false).channelId;
