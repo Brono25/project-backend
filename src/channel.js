@@ -7,8 +7,11 @@ import {
   isValidAuthUserId,
   isValidChannelId,
   isAuthUserMember,
-} from './other.js'
+} from './other.js';
 
+import {
+  userProfileV1,
+} from './users.js';
 //------------------ Channel Helper functions------------------
 
 
@@ -168,7 +171,7 @@ function channelMessagesV1( authUserId, channelId, start ){
     return {error: 'Invalid channel Id'};
   }
 
-
+  let data = getData();
   let channel;
   for (let x of data.channels) {
     if (x.channelId === channelId) {
@@ -176,7 +179,7 @@ function channelMessagesV1( authUserId, channelId, start ){
     }
 
   }
-  const numbermessage = channel.messages.length;
+  const numMessages = channel.messages.length;
 
   if (start >= numMessages) {
     return {error: 'Messages start too high'};
@@ -188,31 +191,38 @@ function channelMessagesV1( authUserId, channelId, start ){
     return{error: 'User is not a member of the channel'};
 
   }
-
+  let end = 0;
   const Messages = channel.messages;
   
   if (start + 50 <= numMessages) {
-    const end = start + 50;
+    end = start + 50;
   } else {
-    const end = -1;
+    end = -1;
   }
 
 let messages = [];
 
 if (end !== -1) {
   let loopEnd = start + 50;
+  for (let i = start; i < loopEnd; i++) {
+    messages.push(Messages[i]);
+  }
+    return{		
+      messages,
+      start,
+      end,
+    };
 } else {
-  numbermessages;
+  for (let i = start; i < numMessages; i++) {
+    messages.push(Messages[i]);
+  }
+    return{		
+      messages,
+      start,
+      end,
+    };
 }
 
-for (let i = start; i < loopEnd; i++) {
-  messages.push(allMessages[i]);
-}
-	return{		
-		messages,
-    start,
-    end,
-	};
 }
 
 
