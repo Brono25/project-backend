@@ -7,8 +7,11 @@ import {
   isValidAuthUserId,
   isValidChannelId,
   isAuthUserMember,
-} from './other.js'
+} from './other.js';
 
+import {
+  userProfileV1,
+} from './users.js';
 //------------------ Channel Helper functions------------------
 
 
