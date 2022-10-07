@@ -221,12 +221,12 @@ describe('channelMessagesV1()', () => {
 
   describe('Function Testing', () => {
     
-    test('No messages', () => {
+    /**test('No messages', () => {
       expect(channelMessagesV1(userId1, channelId1, 0)).toStrictEqual(
         { messages: [], start: 0, end: -1 }
       );
     });
-
+    */
     // More tests once messages can be implemented
 
   });
