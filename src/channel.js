@@ -117,6 +117,7 @@ function channelJoinV1(authUserId, channelId) {
     for(let channel of data.channels) {
       if(channel.channelId === channelId) {
         channel.allMembers.push(authUserId);
+        setData(data);
       }
     }
     return {};
@@ -162,8 +163,7 @@ function channelInviteV1( authUserId, channelId, uId ) {
 
   }
 
-  const user = {uId: uId};
-  channel.allMembers.push(user);
+  channel.allMembers.push(uId);
 
   setData(data);
 
