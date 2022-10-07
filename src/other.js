@@ -86,12 +86,33 @@ function isAuthUserMember(authUserId, channelId) {
 
 function getUserDetailsFromId(uId) {
 
+  const data = getData();
+  let userDetails = {};
+
+  for (const user of data.users) {
+    if(user.uId === uId) {
+      
+      userDetails = {
+        uId: user.uId,
+        nameFirst: user.nameFirst,
+        nameLast: user.nameLast,
+        email: user.email,
+        handleStr: user.handleStr,
+        globalPermission: user.globalPermission,
+      }
+      break;
+    }
+  }
+  return userDetails;
 }
+
+
 
 function getChannelDetailsFromId(channelId) {
   
   const data = getData();
-  let channelDetails = [];
+
+   let channelDetails = {};
 
   for (const channel of data.channels) {
     if(channel.channelId === channelId) {

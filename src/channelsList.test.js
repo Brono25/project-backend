@@ -60,8 +60,6 @@ afterEach(() => { clearV1()});
 
 //------------------Error Testing------------------//
 
-
-
 describe('Error Handling', () => {
   test('Invalid user ID', () => {
     let authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
