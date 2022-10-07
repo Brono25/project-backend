@@ -40,13 +40,13 @@ function isChannelPrivate (channelId) {
   
   for(let user of data.users) {
     if(user.uId === authUserId) {
-      if ( === ) {
-        return true;
+      if (user.globalPermission !== 'owner') {
+        return false;
       }
     }
   }
   
-  return false;
+  return true;
 }
 
 
@@ -93,7 +93,7 @@ function channelJoinV1(authUserId, channelId) {
   } else if (isAuthUserMember(authUserId, channelId) === true) {
     return{error: 'User is already a member of the channel'};
   
-  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false) {
+  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false && isGlobalOwner(authUserId) === false) {
     return{error: 'Private channel'};
     
   } else {
@@ -114,7 +114,10 @@ function channelInviteV1( authUserId, channelId, uId ) {
     return{error: 'User is already a member of the channel'};
   
   } else if (isAuthUserMember(authUserId, channelId) === false) {
-    return{error: 'User is not a member of the channel'};
+    const authUser = userProfileV1(authUserId, authUserId);
+    if (authUser.globalPermission !== 'owner') {
+      return {error: "User is not a member of the channel"};
+    }
 
   } else if (isValidAuthUserId(uId) === false) {
     return{error: 'Invalid User Id'};
@@ -144,21 +147,56 @@ function channelInviteV1( authUserId, channelId, uId ) {
 //stub-function for listing the messages in the channel
 function channelMessagesV1( authUserId, channelId, start ){
 
-	return{
-	
-	messages: [
-      {
-        messageId: 1,
-        uId: 1,
-        message: 'Hello world',
-        timeSent: 1582426789,
-      }
-	],
-	start: 0,
-	end: 50,		
-		
-	}
 
+  if (isValidChannelId(channelId) === false) {
+    return {error: 'Invalid channel Id'};
+  }
+
+
+  let channel;
+  for (let x of data.channels) {
+    if (x.channelId === channelId) {
+      channel = x;
+    }
+
+  }
+  const numbermessage = channel.messages.length;
+
+  if (start >= numMessages) {
+    return {error: 'Messages start too high'};
+
+  } else if (isValidAuthUserId(authUserId) === false) {
+    return{error: 'Invalid User Id'};
+  
+  } else if (isAuthUserMember(authUserId, channelId) === false) {
+    return{error: 'User is not a member of the channel'};
+
+  }
+
+  const Messages = channel.messages;
+  
+  if (start + 50 <= numMessages) {
+    const end = start + 50;
+  } else {
+    const end = -1;
+  }
+
+let messages = [];
+
+if (end !== -1) {
+  let loopEnd = start + 50;
+} else {
+  numbermessages;
+}
+
+for (let i = start; i < loopEnd; i++) {
+  messages.push(allMessages[i]);
+}
+	return{		
+		messages,
+    start,
+    end,
+	};
 }
 
 
