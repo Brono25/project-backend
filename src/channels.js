@@ -7,6 +7,7 @@ import {
 import {
   isValidAuthUserId,
   isAuthUserMember,
+  getChannelDetailsFromId,
 } from './other.js'
 
 //------------------Channels Helper functions------------------
@@ -95,19 +96,23 @@ function channelsListAllV1(authUserId) {
  */
 function channelsListV1(authUserId) {
 
+   if (!isValidAuthUserId(authUserId)) {
+    return {error: 'Invalid User ID'};  
+   }
+
   let data = getData();
   let channels = [];
 
-  if (isValidAuthUserId(authUserId) === true) {
-    for(let channel of data.channels) {
-      if (isAuthUserMember(authUserId, channel.channelId) === true) {
-          channels.push({name: channel.name, channelId: channel.channelId});
-        }
-      }
-  } else {
-    return {error: 'Invalid User ID'};  
-  } 
-  return {channels};
+  for(let channel of data.channels) {
+    if (isAuthUserMember(authUserId, channel.channelId)) {
+
+      channels.push({
+        name: channel.name, 
+        channelId: channel.channelId
+      });
+    }
+  }
+  return {channels: channels};
 }
 
 

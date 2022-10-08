@@ -68,7 +68,6 @@ function isValidChannelId(channelId) {
  * @param {number, number} - authorised user's id and channel id
  * @returns {boolean} - is user already member of channel
  */
-
 function isAuthUserMember(authUserId, channelId) {
   const data = getData();
   for(let channel of data.channels) {
@@ -85,9 +84,60 @@ function isAuthUserMember(authUserId, channelId) {
 
 
 
+function getUserDetailsFromId(uId) {
+
+  const data = getData();
+  let userDetails = {};
+
+  for (const user of data.users) {
+    if(user.uId === uId) {
+      
+      userDetails = {
+        uId: user.uId,
+        nameFirst: user.nameFirst,
+        nameLast: user.nameLast,
+        email: user.email,
+        handleStr: user.handleStr,
+        globalPermission: user.globalPermission,
+      }
+      break;
+    }
+  }
+  return userDetails;
+}
+
+
+
+function getChannelDetailsFromId(channelId) {
+  
+  const data = getData();
+
+   let channelDetails = {};
+
+  for (const channel of data.channels) {
+    if(channel.channelId === channelId) {
+      
+      channelDetails = {
+        channelId: channel.channelId,
+        name: channel.name,
+        isPublic: channel.isPublic,
+        ownerMembers: [...channel.ownerMembers],
+        allMembers: [...channel.allMembers],
+        messages: [...channel.messages],
+      }
+      break;
+    }
+  }
+  return channelDetails;
+}
+
+
+
 export { 
   clearV1,
   isValidAuthUserId,
   isValidChannelId,
-  isAuthUserMember
+  isAuthUserMember,
+  getUserDetailsFromId,
+  getChannelDetailsFromId,
 };

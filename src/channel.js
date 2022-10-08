@@ -7,14 +7,17 @@ import {
   isValidAuthUserId,
   isValidChannelId,
   isAuthUserMember,
+  getChannelDetailsFromId,
+  getUserDetailsFromId,
 } from './other.js';
 
 import {
   userProfileV1,
 } from './users.js';
+
+
+
 //------------------ Channel Helper functions------------------
-
-
 
 /**
  * Given a channelId, checks if the channel is private. Return false is public, true if private.
@@ -54,7 +57,8 @@ function isChannelPrivate (channelId) {
 }
 
 
-  
+
+
 
 
 //------------------Channel Main functions------------------
@@ -66,29 +70,118 @@ function isChannelPrivate (channelId) {
  * @returns {} - 
  */
 
+
+
+/**
+ * @param {number} - channelId
+ * @param {integer} - uId
+ * @returns {string} - channel name
+ * @returns {boolean} - isPublic
+ * @returns {array} - ownerMembers
+ * @returns {array} - allMembers  
+
+ *Given a channel with ID channelId that the authorised user is 
+ *a member of, provides basic details about the channel.
+ */
+
+
 function channelDetailsV1(authUserId, channelId) {
-    return {
-        name: 'Hayden',
-        ownerMembers: [
-          {
-            uId: 1,
-            email: 'example@gmail.com',
-            nameFirst: 'Hayden',
-            nameLast: 'Jacobs',
-            handleStr: 'haydenjacobs',
-          }
-        ],
-        allMembers: [
-          {
-            uId: 1,
-            email: 'example@gmail.com',
-            nameFirst: 'Hayden',
-            nameLast: 'Jacobs',
-            handleStr: 'haydenjacobs',
-          }
-        ],
-    }
+
+  // check if authUserId is valid
+  if (!isValidAuthUserId(authUserId)) {
+    return {error: 'Invalid User Id'};
+  }
+  // check if channelId is valid
+  if (!isValidChannelId(channelId)) {
+    return {error: 'Invalid channel Id'};
+  }
+  // if valid channelId, check if user is member of channel 
+  if (!isAuthUserMember(authUserId, channelId)) {
+    return {error: 'User is not a member of this channel'};
+  }
+
+  let data = getData();
+
+  let channel = getChannelDetailsFromId(channelId);
+
+  let ownerMembersDetailsList = ownerMemberDetails(channelId);
+  let userMemberDetailsList = userMemberDetails(channelId);
+
+  let channelDetails = {
+        name: channel.name,
+        isPublic: channel.isPublic,
+        ownerMembers: ownerMembersDetailsList,
+        allMembers: userMemberDetailsList,
+      };
+      
+  return channelDetails;  
 }
+
+
+
+/**
+ * Return a list containing all members and their details
+ * of a given channel ID
+ * @param {number} - channel ID
+ * @returns {Array} list of objects containing members details
+ */
+function userMemberDetails (channelId) {
+  const data = getData();
+  let memberDetailsList = [];
+
+  let channel = getChannelDetailsFromId(channelId);
+
+  for (let member of channel.allMembers) {
+
+    let memberDetails = getUserDetailsFromId(member.uId);
+
+      memberDetailsList.push({
+        uId: memberDetails.uId, 
+        email: memberDetails.email, 
+        nameFirst: memberDetails.nameFirst, 
+        nameLast: memberDetails.nameLast, 
+        handleStr: memberDetails.handleStr
+      })
+  }
+  return memberDetailsList;
+}
+
+
+
+
+/**
+ * Return a list containing owners and their details
+ * of a given channel ID
+ * @param {number, number} - user id and channel id
+ * @returns {Array} list of objects containing owner details
+ */
+function ownerMemberDetails (channelId) {
+ 
+  const data = getData();
+  let ownerDetailsList = [];
+  let channel = getChannelDetailsFromId(channelId);
+
+  for (let owner of channel.ownerMembers) {
+
+    let ownerDetails = getUserDetailsFromId(owner.uId);
+
+      ownerDetailsList.push({
+        uId: ownerDetails.uId, 
+        email: ownerDetails.email, 
+        nameFirst: ownerDetails.nameFirst, 
+        nameLast: ownerDetails.nameLast, 
+        handleStr: ownerDetails.handleStr
+      })
+  return ownerDetailsList;
+  }
+}
+
+  
+
+
+
+
+
 
 /**
  * Given a channelId of a channel that the authorised user can join, adds them to that channel.
@@ -98,30 +191,29 @@ function channelDetailsV1(authUserId, channelId) {
 
 function channelJoinV1(authUserId, channelId) {
 
-  if (isValidChannelId(channelId) === false) {
+  if (!isValidChannelId(channelId)) {
     return{error: 'Invalid channel Id'};
   
   
-  } else if (isValidAuthUserId(authUserId) === false) {
+  } else if (!isValidAuthUserId(authUserId)) {
     return{error: 'Invalid User Id'};
       
-  } else if (isAuthUserMember(authUserId, channelId) === true) {
+  } else if (isAuthUserMember(authUserId, channelId)) {
     return{error: 'User is already a member of the channel'};
   
-  } else if (isChannelPrivate(channelId) === true && isAuthUserMember(authUserId, channelId) === false && isGlobalOwner(authUserId) === false) {
+  } else if (isChannelPrivate(channelId) 
+            && !isAuthUserMember(authUserId, channelId) 
+            && !isGlobalOwner(authUserId)) {
     return{error: 'Private channel'};
-    
-  } else {
-    const data = getData();
-
-    for(let channel of data.channels) {
-      if(channel.channelId === channelId) {
-        channel.allMembers.push(authUserId);
-        setData(data);
-      }
-    }
-    return {};
   }
+
+  const data = getData();
+  let channel = getChannelDetailsFromId(channelId);
+  channel.allMembers.push({uId: authUserId});
+  data.channels[channelId] = channel;
+  setData(data);
+
+  return {};
 }
 
 /**
@@ -131,9 +223,9 @@ function channelJoinV1(authUserId, channelId) {
  */
 
 function channelInviteV1( authUserId, channelId, uId ) {
+
 	if (isValidChannelId(channelId) === false) {
     return{error: 'Invalid channel Id'};
-  
   
   } else if (isValidAuthUserId(authUserId) === false) {
     return{error: 'Invalid User Id'};
@@ -146,7 +238,6 @@ function channelInviteV1( authUserId, channelId, uId ) {
     if (authUser.globalPermission !== 'owner') {
       return {error: "User is not a member of the channel"};
     }
-
   } else if (isValidAuthUserId(uId) === false) {
     return{error: 'Invalid User Id'};
 
@@ -154,21 +245,13 @@ function channelInviteV1( authUserId, channelId, uId ) {
 
   const data = getData();
 
-  let channel;
-
-  for (let x of data.channels) {
-    if (x.channelId === channelId) {
-      channel = x;
+  for (let channel of data.channels) {
+    if (channel.channelId === channelId) {
+      channel.allMembers.push({uId: uId});
     }
-
   }
-
-  channel.allMembers.push(uId);
-
   setData(data);
-
   return {};
-
 }
 
 /**
@@ -247,4 +330,4 @@ export {
   channelJoinV1,
   channelInviteV1,
   channelMessagesV1,
-};
+}
