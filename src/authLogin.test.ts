@@ -1,11 +1,11 @@
-
+// @ts-nocheck
 
 import {
   authRegisterV1,
   authLoginV1,
-} from './auth';
+} from './auth.ts';
 
-import { clearV1 } from './other';
+import { clearV1 } from './other.ts';
 
 
 // Test data

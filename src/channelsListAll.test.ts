@@ -1,13 +1,13 @@
 
-
+// @ts-nocheck
 import {
   channelsListAllV1,
   channelsCreateV1,
-} from './channels'
+} from './channels.ts'
 
-import { authRegisterV1 } from './auth';
-import { clearV1 } from './other';
-import { channelJoinV1 } from './channel';
+import { authRegisterV1 } from './auth.ts';
+import { clearV1 } from './other.ts';
+import { channelJoinV1 } from './channel.ts';
 
 
 // Test data

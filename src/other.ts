@@ -1,8 +1,8 @@
-
+// @ts-nocheck
 import {
   setData,
   getData,
-} from './dataStore.js';
+} from './dataStore.ts';
 
 
 /**

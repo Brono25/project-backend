@@ -1,14 +1,14 @@
-
+// @ts-nocheck
 import {
   setData,
   getData,
-} from './dataStore.js';
+} from './dataStore.ts';
 
 import {
   isValidAuthUserId,
   isAuthUserMember,
   getChannelDetailsFromId,
-} from './other.js'
+} from './other.ts'
 
 //------------------Channels Helper functions------------------
 /**
