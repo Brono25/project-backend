@@ -1,5 +1,37 @@
-// YOU SHOULD MODIFY THIS OBJECT BELOW
-let data = {};
+
+// Data storage structure to follow
+let data = {
+   
+    users: [
+    /*{
+      uId: 1,
+      nameFirst: 'Hayden',
+      nameLast: 'Smith',
+      email: 'hayhay123@gmail.com',
+      handleStr: 'haydensmith',
+      globalPermission: 'owner',
+    },*/
+    ],
+
+    channels: [
+    /*{
+      channelId: 1,
+      name: 'My Channel',
+      isPublic: true,
+      ownerMembers: [ {uId: 1}, ];
+      allMembers:   [ {uId: 1}, {uId: 2}, ];
+      messages: [
+      {
+        messageId: 1,
+        uId: 1,
+        message: 'Hello world',
+        timeSent: 1582426789,
+      },
+      ],
+  },*/
+  ],
+}
+
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
 
