@@ -1,8 +1,9 @@
+// @ts-nocheck
 import {
   authRegisterV1,
-} from './auth';
+} from '../src/auth.ts';
 
-import {clearV1} from './other';
+import {clearV1} from '../src/other.ts';
 
 
 

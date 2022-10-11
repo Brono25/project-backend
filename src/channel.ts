@@ -1,7 +1,8 @@
+// @ts-nocheck
 import {
   setData,
   getData,
-} from './dataStore.js';
+} from './dataStore.ts';
 
 import {
   isValidAuthUserId,
@@ -9,11 +10,11 @@ import {
   isAuthUserMember,
   getChannelDetailsFromId,
   getUserDetailsFromId,
-} from './other.js';
+} from './other.ts';
 
 import {
   userProfileV1,
-} from './users.js';
+} from './users.ts';
 
 
 

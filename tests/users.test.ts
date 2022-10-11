@@ -1,10 +1,11 @@
+// @ts-nocheck
 
 import {
     authRegisterV1,
-  } from './auth';
+  } from '../src/auth.ts';
 
-import { userProfileV1 } from './users';
-import { clearV1 } from './other';
+import { userProfileV1 } from '../src/users.ts';
+import { clearV1 } from '../src/other.ts';
 
 // Test data
 let firstName1 = 'First Name 1';

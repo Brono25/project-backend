@@ -1,8 +1,8 @@
 
-
-import { channelsCreateV1 } from './channels'
-import { authRegisterV1 } from './auth';
-import { clearV1 } from './other';
+// @ts-nocheck
+import { channelsCreateV1 } from '../src/channels.ts'
+import { authRegisterV1 } from '../src/auth.ts';
+import { clearV1 } from '../src/other.ts';
 
 
 // Test data

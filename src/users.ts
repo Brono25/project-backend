@@ -1,7 +1,10 @@
-import { isValidAuthUserId } from './other';
+
+// @ts-nocheck
+
+import { isValidAuthUserId } from './other.ts';
 import {
     getData,
-  } from './dataStore.js';
+  } from './dataStore.ts';
   
 /**
  * For a valid user, returns information about their user ID, email, first name, last name, and handle

@@ -1,13 +1,16 @@
+
+// @ts-nocheck
+
 import {
   channelDetailsV1,
   channelJoinV1,
   channelInviteV1,
   channelMessagesV1,
-} from './channel';
+} from '../src/channel.ts';
 
-import { authRegisterV1 } from './auth';
-import { channelsCreateV1 } from './channels';
-import { clearV1 } from './other';
+import { authRegisterV1 } from '../src/auth.ts';
+import { channelsCreateV1 } from '../src/channels.ts';
+import { clearV1 } from '../src/other.ts';
 
 // Test data
 let firstName1 = 'First Name 1';

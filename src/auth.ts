@@ -1,9 +1,10 @@
+// @ts-nocheck
 
 import validator from 'validator';
 import {
   setData,
   getData,
-} from './dataStore.js';
+} from './dataStore.ts';
 
 
 

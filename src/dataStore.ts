@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 // Data storage structure to follow
 let data = {
    
