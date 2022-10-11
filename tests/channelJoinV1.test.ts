@@ -1,9 +1,9 @@
 // @ts-nocheck
 
-import {channelJoinV1} from './channel.ts';
-import { authRegisterV1 } from './auth.ts';
-import { channelsCreateV1 } from './channels.ts';
-import { clearV1 } from './other.ts';
+import {channelJoinV1} from '../src/channel.ts';
+import { authRegisterV1 } from '../src/auth.ts';
+import { channelsCreateV1 } from '../src/channels.ts';
+import { clearV1 } from '../src/other.ts';
 
 // Test data
 let firstName1 = 'First Name 1';

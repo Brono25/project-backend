@@ -3,11 +3,11 @@
 import {
   channelsListAllV1,
   channelsCreateV1,
-} from './channels.ts'
+} from '../src/channels.ts'
 
-import { authRegisterV1 } from './auth.ts';
-import { clearV1 } from './other.ts';
-import { channelJoinV1 } from './channel.ts';
+import { authRegisterV1 } from '../src/auth.ts';
+import { clearV1 } from '../src/other.ts';
+import { channelJoinV1 } from '../src/channel.ts';
 
 
 // Test data

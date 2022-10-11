@@ -2,10 +2,10 @@
 
 import {
     authRegisterV1,
-  } from './auth.ts';
+  } from '../src/auth.ts';
 
-import { userProfileV1 } from './users.ts';
-import { clearV1 } from './other.ts';
+import { userProfileV1 } from '../src/users.ts';
+import { clearV1 } from '../src/other.ts';
 
 // Test data
 let firstName1 = 'First Name 1';
