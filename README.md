@@ -53,6 +53,10 @@ In this iteration, you are expected to:
 
     * Change `.js` file extension to `.ts` for both tests and function files. You **must** do this step to avoid import errors.
 
+    * Run `npm run tsc` and incrementally fix all type errors.
+    
+    * Either choose to change one file at a time, or change all file extensions and use `// @ts-nocheck` at the beginning of select files to disable checking on that specific file, omitting errors.
+
     Below shows a sample conversion of auth.js => auth.ts
     ![](node.png)
     ![](typescript.png)

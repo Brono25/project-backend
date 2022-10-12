@@ -1,46 +1,34 @@
 
-// @ts-nocheck
-
 import {
-  channelDetailsV1,
-  channelJoinV1,
-  channelInviteV1,
   channelMessagesV1,
-} from './channel.ts';
+} from '../channel';
 
-import { authRegisterV1 } from './auth.ts';
-import { channelsCreateV1 } from './channels.ts';
-import { clearV1 } from './other.ts';
+import { authRegisterV1 } from '../auth';
+import { channelsCreateV1 } from '../channels';
+import { clearV1 } from '../other';
 
 // Test data
-let firstName1 = 'First Name 1';
-let lastName1 = 'Last Name 1';
-let email1 = 'email_1@gmail.com';
-let password1 = 'password1';
+const firstName1 = 'First Name 1';
+const lastName1 = 'Last Name 1';
+const email1 = 'email_1@gmail.com';
+const password1 = 'password1';
 
-let firstName2 = 'First Name 2';
-let lastName2 = 'Last Name 2';
-let email2 = 'email_2@gmail.com';
-let password2 = 'password2';
+const firstName2 = 'First Name 2';
+const lastName2 = 'Last Name 2';
+const email2 = 'email_2@gmail.com';
+const password2 = 'password2';
 
+const channelName1 = 'Channel 1';
+const channelName2 = 'Channel 2';
 
-let firstName3= 'First Name 3';
-let lastName3 = 'Last Name 3';
-let email3 = 'email_3@gmail.com';
-let password3 = 'password3';
-
-let channelName1 = 'Channel 1';
-let channelName2 = 'Channel 2';
-let isPublic = true;
-let isNotPublic = false;
-
+const isNotPublic = false;
 
 let userId1;
 let userId2;
 let channelId1;
 let channelId2;
 
-//Setup
+// Setup
 beforeEach(() => {
   // Register users
   userId1 = authRegisterV1(
@@ -50,21 +38,16 @@ beforeEach(() => {
     email2, password2, firstName2, lastName2
   ).authUserId;
   // Create channels
-  channelId1 = channelsCreateV1(userId1, channelName1, false).channelId;
-  channelId2 = channelsCreateV1(userId2, channelName2, false).channelId;
+  channelId1 = channelsCreateV1(userId1, channelName1, isNotPublic).channelId;
+  channelId2 = channelsCreateV1(userId2, channelName2, isNotPublic).channelId;
 });
 
 // Tear down
-afterEach(() => { clearV1() });
+afterEach(() => { clearV1(); });
 
-
-
-
-//------------------Error Testing------------------//
-
+// ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-
   test('Invalid authUserId', () => {
     expect(channelMessagesV1(userId1 + userId2, channelId1, 0)).toStrictEqual(
       { error: expect.any(String) }
@@ -89,16 +72,10 @@ describe('Error Handling', () => {
       { error: expect.any(String) }
     );
   });
-
 });
 
-//------------------Function Testing------------------//
-describe('Function Testing', () => {
-  
-    
+// ------------------Function Testing------------------//
+/* describe('Function Testing', () => {
 
 });
-
-
-
-
+ */

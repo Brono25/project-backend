@@ -1,43 +1,36 @@
-// @ts-nocheck
+
 import {
   setData,
   getData,
-} from './dataStore.ts';
-
+} from './dataStore';
 
 /**
  * Set data back to initial state.
- * @param {} 
- * @returns {} 
+ * @param {}
+ * @returns {}
  */
 function clearV1() {
-
   let data = getData();
   data = {
     users: [],
     channels: [],
-  }
+  };
   setData(data);
   return {};
 }
 
-
-
-
-
 /**
- * @param {string} - users handle 
+ * @param {string} - users handle
  * @returns {boolean} - is handle unique
  */
 function isValidAuthUserId(authUserId) {
-
   const data = getData();
 
-  if(!data.users.length) {
+  if (!data.users.length) {
     return false;
   }
-  for(let user of data.users) {
-    if(user.uId=== authUserId) {
+  for (const user of data.users) {
+    if (user.uId === authUserId) {
       return true;
     }
   }
@@ -50,14 +43,13 @@ function isValidAuthUserId(authUserId) {
  */
 
 function isValidChannelId(channelId) {
-
   const data = getData();
 
-  if(!data.channels.length) {
+  if (!data.channels.length) {
     return false;
   }
-  for(let channel of data.channels) {
-    if(channel.channelId === channelId) {
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
       return true;
     }
   }
@@ -70,70 +62,40 @@ function isValidChannelId(channelId) {
  */
 function isAuthUserMember(authUserId, channelId) {
   const data = getData();
-  for(let channel of data.channels) {
-    if(channel.channelId === channelId) {
-
-        if (channel.allMembers.find(a => a.uId === authUserId)){
-          return true;
-        }
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      if (channel.allMembers.find(a => a.uId === authUserId)) {
+        return true;
       }
     }
-  
+  }
+
   return false;
 }
 
-
-
 function getUserDetailsFromId(uId) {
-
   const data = getData();
-  let userDetails = {};
 
   for (const user of data.users) {
-    if(user.uId === uId) {
-      
-      userDetails = {
-        uId: user.uId,
-        nameFirst: user.nameFirst,
-        nameLast: user.nameLast,
-        email: user.email,
-        handleStr: user.handleStr,
-        globalPermission: user.globalPermission,
-      }
-      break;
+    if (user.uId === uId) {
+      return user;
     }
   }
-  return userDetails;
+  return {};
 }
-
-
 
 function getChannelDetailsFromId(channelId) {
-  
   const data = getData();
 
-   let channelDetails = {};
-
   for (const channel of data.channels) {
-    if(channel.channelId === channelId) {
-      
-      channelDetails = {
-        channelId: channel.channelId,
-        name: channel.name,
-        isPublic: channel.isPublic,
-        ownerMembers: [...channel.ownerMembers],
-        allMembers: [...channel.allMembers],
-        messages: [...channel.messages],
-      }
-      break;
+    if (channel.channelId === channelId) {
+      return channel;
     }
   }
-  return channelDetails;
+  return {};
 }
 
-
-
-export { 
+export {
   clearV1,
   isValidAuthUserId,
   isValidChannelId,

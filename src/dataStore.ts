@@ -1,20 +1,20 @@
-// @ts-nocheck
+
 // Data storage structure to follow
 let data = {
-   
-    users: [
-    /*{
+
+  users: [
+    /* {
       uId: 1,
       nameFirst: 'Hayden',
       nameLast: 'Smith',
       email: 'hayhay123@gmail.com',
       handleStr: 'haydensmith',
       globalPermission: 'owner',
-    },*/
-    ],
+    }, */
+  ],
 
-    channels: [
-    /*{
+  channels: [
+    /* {
       channelId: 1,
       name: 'My Channel',
       isPublic: true,
@@ -28,10 +28,9 @@ let data = {
         timeSent: 1582426789,
       },
       ],
-  },*/
+  }, */
   ],
-}
-
+};
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
 
