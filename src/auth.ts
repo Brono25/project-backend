@@ -1,7 +1,14 @@
 
 import validator from 'validator';
 import { setData, getData } from './dataStore';
-import { Data, User, GlobalPermision } from './defines';
+import {
+  DataStore,
+  UserStore,
+  GlobalPermision,
+  GLOBAL_OWNER,
+  AuthUserId,
+  Error
+} from './data.types';
 
 // ------------------Auth Helper functions------------------
 
@@ -10,7 +17,7 @@ import { Data, User, GlobalPermision } from './defines';
  * @returns {boolean} - is handle unique
  */
 function isHandleStrUnique(handleStr: string) {
-  const data: Data = getData();
+  const data: DataStore = getData();
 
   if (!data.users.length) {
     return true;
@@ -29,6 +36,7 @@ function isHandleStrUnique(handleStr: string) {
  *
  * @param {string, string} - firstName, lastName
  * @returns {string} - always returns a unique handle string
+ *
  */
 function generateHandleStr(nameFirst: string, nameLast: string) {
   const filteredFirstName: string = nameFirst.match(/[a-z0-9]+/ig).join('').toLowerCase();
@@ -59,7 +67,7 @@ function generateHandleStr(nameFirst: string, nameLast: string) {
  * @returns {number} - unique user id
  */
 function generateAuthUserId() {
-  const data: Data = getData();
+  const data: DataStore = getData();
   const id: number = data.users.length;
   return id;
 }
@@ -69,7 +77,7 @@ function generateAuthUserId() {
  * @returns {boolean} - is email already claimed by another user
  */
 function isEmailUsed(email: string) {
-  const data: Data = getData();
+  const data: DataStore = getData();
 
   if (!data.users.length) {
     return false;
@@ -87,7 +95,7 @@ function isEmailUsed(email: string) {
  * @returns {number} - users id
  */
 function isPasswordCorrect(email: string, password: string) {
-  const data: Data = getData();
+  const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
       if (password === user.password) {
@@ -116,7 +124,7 @@ function authLoginV1(email: string, password: string) {
     return { error: 'Password is incorrect' };
   }
 
-  const data: Data = getData();
+  const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
       return {
@@ -134,7 +142,7 @@ function authLoginV1(email: string, password: string) {
  * @returns {number} - unique user id
  */
 
-function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
+function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): AuthUserId | Error {
   if (!validator.isEmail(email)) {
     return { error: 'Invalid Email' };
   }
@@ -158,11 +166,11 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   const authUserId: number = generateAuthUserId();
 
   let globalPermission: GlobalPermision = 'member';
-  if (authUserId === 0) {
+  if (authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
 
-  const userDetails: User = {
+  const userDetails: UserStore = {
     uId: authUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
@@ -172,11 +180,11 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     globalPermission: globalPermission,
   };
 
-  const data: Data = getData();
+  const data: DataStore = getData();
   data.users.push(userDetails);
   setData(data);
 
-  return { authUserId: authUserId };
+  return <AuthUserId>{ authUserId: authUserId };
 }
 
 export {

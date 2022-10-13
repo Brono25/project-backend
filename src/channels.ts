@@ -8,6 +8,19 @@ import {
   isValidAuthUserId,
   isAuthUserMember,
 } from './other';
+import {
+  Channel,
+  Data,
+  ChannelId,
+  UserId,
+  Error
+} from './data.types';
+
+type ChannelsList = {
+  name: string;
+  channelId: number
+}[];
+type ChannelsListReturn = { channels: ChannelsList} | Error;
 
 // ------------------Channels Helper functions------------------
 /**
@@ -19,8 +32,8 @@ import {
  * @returns {number} - unique channel id
  */
 function generateChannelId() {
-  const data = getData();
-  const id = data.channels.length;
+  const data: Data = getData();
+  const id: number = data.channels.length;
   return id;
 }
 
@@ -31,7 +44,7 @@ function generateChannelId() {
  * @param {number, string, boolean} - user ID, channel name, is public
  * @returns {number} - channel ID
  */
-function channelsCreateV1(authUserId, name, isPublic) {
+function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): ChannelId | Error {
   const maxChars = 20;
   const minChars = 1;
   if (name.length > maxChars || name.length < minChars) {
@@ -41,18 +54,19 @@ function channelsCreateV1(authUserId, name, isPublic) {
     return { error: 'Invalid User ID' };
   }
 
+  const userId: UserId = { uId: authUserId };
   const channelId = generateChannelId();
-  const channelDetails = {
+  const channel: Channel = {
     channelId: channelId,
     name: name,
     isPublic: isPublic,
-    ownerMembers: [{ uId: authUserId }],
-    allMembers: [{ uId: authUserId }],
+    ownerMembers: [userId],
+    allMembers: [userId],
     messages: [],
   };
 
   const data = getData();
-  data.channels.push(channelDetails);
+  data.channels.push(channel);
   setData(data);
 
   return {
@@ -66,17 +80,18 @@ function channelsCreateV1(authUserId, name, isPublic) {
  * @param {string} - user ID
  * @returns {Array} - list of channels
  */
-function channelsListAllV1(authUserId) {
+function channelsListAllV1(authUserId: number): ChannelsListReturn {
   // check if authUserId is valid
   if (isValidAuthUserId(authUserId) === false) {
     return { error: 'Invalid user ID' };
   }
 
   // check all created channels
-  const channels = [];
-  const data = getData();
+  const channels: ChannelsList;
+  const data: Data = getData();
+
   for (const channel of data.channels) {
-    channels.push({ name: channel.name, channelId: channel.channelId });
+    channels.push(<Channel>{ name: channel.name, channelId: channel.channelId });
   }
   return { channels };
 }
@@ -87,23 +102,21 @@ function channelsListAllV1(authUserId) {
  * @param {string} - user ID
  * @returns {Array} - list of channels
  */
-function channelsListV1(authUserId) {
+
+function channelsListV1(authUserId: number): ChannelsListReturn {
   if (!isValidAuthUserId(authUserId)) {
     return { error: 'Invalid User ID' };
   }
 
-  const data = getData();
-  const channels = [];
+  const data: Data = getData();
+  const usersChannels: ChannelsList = [];
 
   for (const channel of data.channels) {
     if (isAuthUserMember(authUserId, channel.channelId)) {
-      channels.push({
-        name: channel.name,
-        channelId: channel.channelId
-      });
+      usersChannels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
-  return { channels: channels };
+  return { channels: usersChannels };
 }
 
 export {

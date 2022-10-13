@@ -4,6 +4,12 @@ import {
   getData,
 } from './dataStore';
 
+import {
+  DataStore,
+  ChannelStore,
+  UserStore,
+} from './data.types';
+
 /**
  * Set data back to initial state.
  * @param {}
@@ -73,26 +79,24 @@ function isAuthUserMember(authUserId, channelId) {
   return false;
 }
 
-function getUserDetailsFromId(uId) {
-  const data = getData();
+function getUserStoreFromId(uId): UserStore {
+  const data: DataStore = getData();
 
   for (const user of data.users) {
     if (user.uId === uId) {
       return user;
     }
   }
-  return {};
 }
 
-function getChannelDetailsFromId(channelId) {
-  const data = getData();
+function getChannelStoreFromId(channelId):ChannelStore {
+  const data: DataStore = getData();
 
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       return channel;
     }
   }
-  return {};
 }
 
 export {
@@ -100,6 +104,6 @@ export {
   isValidAuthUserId,
   isValidChannelId,
   isAuthUserMember,
-  getUserDetailsFromId,
-  getChannelDetailsFromId,
+  getUserStoreFromId,
+  getChannelStoreFromId,
 };
