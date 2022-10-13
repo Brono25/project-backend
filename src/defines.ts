@@ -1,4 +1,6 @@
 
+type GlobalPermision = 'owner' | 'member';
+
 type Member = {
   uId: number;
 }
@@ -27,7 +29,8 @@ type User = {
   nameLast: string;
   email: string;
   handleStr: string;
-  globalPermission: 'owner' | 'member';
+  globalPermission: GlobalPermision;
+  password: string;
 }
 
 type Data = {
@@ -41,5 +44,6 @@ export {
   Message,
   Channel,
   User,
-  Data
+  Data,
+  GlobalPermision,
 };
