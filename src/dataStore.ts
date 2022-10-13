@@ -10,6 +10,7 @@ let data = {
       email: 'hayhay123@gmail.com',
       handleStr: 'haydensmith',
       globalPermission: 'owner',
+      password: '123'
     }, */
   ],
 
