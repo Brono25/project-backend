@@ -1,8 +1,7 @@
 
+import { DataStore, Error, User } from './data.types';
 import { isValidAuthUserId } from './other';
-import {
-  getData,
-} from './dataStore';
+import { getData } from './dataStore';
 
 /**
  * For a valid user, returns information about their user ID, email, first name, last name, and handle
@@ -10,26 +9,26 @@ import {
  * @param {number, number} - the uId of the user and the user to view
  * @returns {user} -Object containing uId, email, nameFirst, nameLast, handleStr
  */
-function userProfileV1(authUserId, uId) {
-  if (isValidAuthUserId(authUserId) === false) {
+
+function userProfileV1(authUserId: number, uId: number): {user: User} | Error {
+  if (!isValidAuthUserId(authUserId)) {
     return { error: 'authUserId is invalid!' };
   }
-  const data = getData();
+  const data: DataStore = getData();
 
   for (const user of data.users) {
     if (user.uId === uId) {
       return {
         user: {
-          uId: uId,
+          uId: user.uId,
           email: user.email,
           nameFirst: user.nameFirst,
           nameLast: user.nameLast,
-          handleString: user.handleStr,
+          handleStr: user.handleStr,
         }
       };
     }
   }
-
   return { error: 'User to view is invalid!' };
 }
 
