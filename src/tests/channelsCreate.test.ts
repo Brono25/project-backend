@@ -5,7 +5,6 @@ import { authRegisterV1 } from '../auth';
 import { clearV1 } from '../other';
 import * as h from './test.helper';
 
-
 // Setup
 let authUserId0: number;
 let invalidAuthUserId: number;
