@@ -1,6 +1,5 @@
-
+import { User } from '../data.types';
 import { authRegisterV1 } from '../auth';
-
 import { userProfileV1 } from '../users';
 import { clearV1 } from '../other';
 import * as h from './test.helper';
@@ -35,12 +34,12 @@ describe('Function Testing', () => {
     const userId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
 
     expect(userProfileV1(userId0, userId1)).toStrictEqual({
-      user: {
+      user: <User> {
         uId: userId1,
         email: h.email1,
         nameFirst: h.firstName1,
         nameLast: h.lastName1,
-        handleString: expect.any(String),
+        handleStr: expect.any(String),
       }
     });
   });

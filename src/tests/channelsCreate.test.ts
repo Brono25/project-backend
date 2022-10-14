@@ -1,8 +1,10 @@
 
+import { ChannelId } from '../data.types';
 import { channelsCreateV1 } from '../channels';
 import { authRegisterV1 } from '../auth';
 import { clearV1 } from '../other';
 import * as h from './test.helper';
+
 
 // Setup
 let authUserId0: number;
@@ -40,7 +42,7 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Create channel', () => {
     const args: h.Args = [authUserId0, h.channelName1, h.isPublic];
-    expect(channelsCreateV1(...args)).toStrictEqual({ channelId: expect.any(Number) });
+    expect(channelsCreateV1(...args)).toStrictEqual(<ChannelId>{ channelId: expect.any(Number) });
   });
 
   test('One user create 100 channels and get 100 unique ID\'s', () => {

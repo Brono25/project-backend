@@ -6,13 +6,13 @@ import { clearV1 } from '../other';
 import * as h from './test.helper';
 
 // Setup
-let authUserId0: number = null;
-let invalidAuthUserId: number = null;
-let channelId0: number = null;
-let invalidChannelId: number = null;
-let authUserId1: number = null;
-let channelIdPriv: number = null;
-let authUserId2: number = null;
+let authUserId0: number;
+let invalidAuthUserId: number;
+let channelId0: number;
+let invalidChannelId: number;
+let authUserId1: number;
+let channelIdPriv: number;
+let authUserId2: number;
 beforeEach(() => {
   // Users 0,1,2
   let args: h.Args;

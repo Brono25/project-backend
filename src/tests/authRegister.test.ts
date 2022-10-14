@@ -2,9 +2,8 @@
 import {
   authRegisterV1,
 } from '../auth';
-
+import { AuthUserId } from '../data.types';
 import { clearV1 } from '../other';
-
 import * as h from './test.helper';
 
 // Tear down
@@ -59,13 +58,13 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Create new user and get a number user ID', () => {
     const args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual({ authUserId: expect.any(Number) });
+    expect(authRegisterV1(...args)).toStrictEqual(<AuthUserId>{ authUserId: expect.any(Number) });
   });
   test('Create new user with existing names and password but different email', () => {
     const args0: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
     authRegisterV1(...args0);
     const args1: h.Args = [h.email1, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args1)).toStrictEqual({ authUserId: expect.any(Number) });
+    expect(authRegisterV1(...args1)).toStrictEqual(<AuthUserId>{ authUserId: expect.any(Number) });
   });
   test('Create 100 users and get 100 unique ID\'s', () => {
     const numberOfUsers = 100;

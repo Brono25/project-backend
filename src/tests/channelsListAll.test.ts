@@ -3,7 +3,7 @@ import {
   channelsListAllV1,
   channelsCreateV1,
 } from '../channels';
-
+import { Channel } from '../data.types';
 import { authRegisterV1 } from '../auth';
 import { clearV1 } from '../other';
 import { channelJoinV1 } from '../channel';
@@ -51,7 +51,7 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Function Test: Private and Public channels', () => {
     expect(channelsListAllV1(userId1)).toStrictEqual({
-      channels: [
+      channels: <Channel[]>[
         {
           channelId: publicChannelId,
           name: h.channelName0,

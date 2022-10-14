@@ -1,31 +1,22 @@
 
+import { authRegisterV1 } from '../auth';
+import { channelsCreateV1 } from '../channels';
+import { clearV1 } from '../other';
+import { ChannelDetails } from '../data.types';
+import * as h from './test.helper';
 import {
   channelDetailsV1,
   channelJoinV1,
 } from '../channel';
 
-import {
-  authRegisterV1,
-} from '../auth';
-
-import {
-  channelsCreateV1,
-} from '../channels';
-
-import {
-  clearV1,
-} from '../other';
-
-import * as h from './test.helper';
-
 // SETUP
-let userId0: number = null;
-let userId1: number = null;
-let channelId0: number = null;
-let channelId1: number = null;
-let channelId2: number = null;
-let invalidUserId: number = null;
-let invalidChannelId: number = null;
+let userId0: number;
+let userId1: number;
+let channelId0: number;
+let channelId1: number;
+let channelId2: number;
+let invalidUserId: number;
+let invalidChannelId: number;
 beforeEach(() => {
   // Users 0, 1
   let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
@@ -65,7 +56,7 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Function Test: Member of a channel with more than one member', () => {
     expect(channelDetailsV1(userId0, channelId1)).toStrictEqual(
-      {
+      <ChannelDetails>{
         name: h.channelName1,
         isPublic: h.isPublic,
         ownerMembers: [
@@ -99,7 +90,7 @@ describe('Function Testing', () => {
 
   test('Function Test: Member of a single-member channel', () => {
     expect(channelDetailsV1(userId0, channelId0)).toStrictEqual(
-      {
+      <ChannelDetails>{
         name: h.channelName0,
         isPublic: h.isPublic,
         ownerMembers: [
@@ -126,7 +117,7 @@ describe('Function Testing', () => {
 
   test('Function Test: Member of a private channel', () => {
     expect(channelDetailsV1(userId0, channelId2)).toStrictEqual(
-      {
+      <ChannelDetails>{
         name: h.channelName2,
         isPublic: h.isNotPublic,
         ownerMembers: [

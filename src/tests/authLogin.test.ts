@@ -4,15 +4,13 @@ import {
   authLoginV1,
 } from '../auth';
 
-import {
-  clearV1,
-} from '../other';
-
+import { clearV1 } from '../other';
+import { AuthUserId } from '../data.types';
 import * as h from './test.helper';
 
 // Setup
-let authUserId0: number = null;
-let authUserId2: number = null;
+let authUserId0: number;
+let authUserId2: number;
 beforeEach(() => {
   // user 0
   let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
@@ -45,12 +43,12 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Authorise login for first user in database', () => {
-    expect(authLoginV1(h.email0, h.password0)).toStrictEqual({ authUserId: authUserId0 });
+    expect(authLoginV1(h.email0, h.password0)).toStrictEqual(<AuthUserId>{ authUserId: authUserId0 });
   });
   test('Authorise login for last user in database', () => {
-    expect(authLoginV1(h.email2, h.password2)).toStrictEqual({ authUserId: authUserId2 });
+    expect(authLoginV1(h.email2, h.password2)).toStrictEqual(<AuthUserId>{ authUserId: authUserId2 });
   });
   test('Authorise Login using upper case email matching lowercase', () => {
-    expect(authLoginV1(h.email0AltCase, h.password0)).toStrictEqual({ authUserId: authUserId0 });
+    expect(authLoginV1(h.email0AltCase, h.password0)).toStrictEqual(<AuthUserId>{ authUserId: authUserId0 });
   });
 });

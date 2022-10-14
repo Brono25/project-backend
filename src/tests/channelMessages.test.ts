@@ -1,6 +1,5 @@
 
 import { channelMessagesV1 } from '../channel';
-
 import { authRegisterV1 } from '../auth';
 import { channelsCreateV1 } from '../channels';
 import { clearV1 } from '../other';
