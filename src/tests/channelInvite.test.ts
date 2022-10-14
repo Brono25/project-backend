@@ -3,7 +3,7 @@ import { channelInviteV1 } from '../channel';
 import { authRegisterV1 } from '../auth';
 import { channelsCreateV1 } from '../channels';
 import { clearV1 } from '../other';
-import * as h from './helper.test';
+import * as h from './test.helper';
 
 // Setup
 let authUserId0: number = null;

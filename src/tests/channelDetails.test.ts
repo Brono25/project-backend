@@ -16,7 +16,7 @@ import {
   clearV1,
 } from '../other';
 
-import * as h from './helper.test';
+import * as h from './test.helper';
 
 // SETUP
 let userId0: number = null;

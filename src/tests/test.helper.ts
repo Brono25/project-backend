@@ -39,6 +39,7 @@ export const invalidLongChannelName = 'ChannelsNamesMoreThanTwentyCharactersAreI
 export const channelName0 = 'Channel 0';
 export const channelName1 = 'Channel 1';
 export const channelName2 = 'Channel 2';
+export const channelName3 = 'Channel 3';
 export const isPublic = true;
 export const isNotPublic = false;
 
@@ -56,4 +57,4 @@ export function channelsCreateReturnGaurd(channelId: ChannelId | Error) {
   return null;
 }
 
-export * from './helper.test';
+export * from './test.helper';

@@ -2,18 +2,14 @@
 import { channelsCreateV1 } from '../channels';
 import { authRegisterV1 } from '../auth';
 import { clearV1 } from '../other';
-import * as h from './helper.test';
+import * as h from './test.helper';
 
 // Setup
 let authUserId0: number;
 let invalidAuthUserId: number;
 beforeEach(() => {
   // Register users
-  const args: h.Args = [h.email0,
-    h.password0,
-    h.firstName0,
-    h.lastName0
-  ];
+  const args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
   authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   invalidAuthUserId = Math.abs(authUserId0) + 10;
 });

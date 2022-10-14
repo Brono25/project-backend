@@ -5,7 +5,7 @@ import { authRegisterV1 } from '../auth';
 import { channelsCreateV1 } from '../channels';
 import { clearV1 } from '../other';
 
-import * as h from './helper.test';
+import * as h from './test.helper';
 
 let userId0: number;
 let userId1: number;
