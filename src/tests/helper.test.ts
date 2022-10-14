@@ -5,7 +5,9 @@ import {
   Error,
 } from '../data.types';
 
-export type AuthRegisterArgs = [string, string, string, string];
+type AuthRegisterArgs = [string, string, string, string];
+type ChannelsCreateArgs = [number, string, boolean];
+export type Args = AuthRegisterArgs | ChannelsCreateArgs;
 
 export const firstName0 = 'First Name 0';
 export const lastName0 = 'Last Name 0';
@@ -31,6 +33,8 @@ export const invalidShortPassword = '12345';
 export const invalidEmptyName = '';
 export const invalidLongFirstName = 'FirstNameLongerThanFiftyCharactersIsAnInvalidFirstName';
 export const invalidLongLastName = 'LastNameLongerThanFiftyCharactersIsAnInvalidLastName';
+export const invalidEmptyChannelName = '';
+export const invalidLongChannelName = 'ChannelsNamesMoreThanTwentyCharactersAreInvalid';
 
 export const channelName0 = 'Channel 0';
 export const channelName1 = 'Channel 1';

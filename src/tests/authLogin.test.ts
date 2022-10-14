@@ -15,7 +15,7 @@ let authUserId0: number = null;
 let authUserId2: number = null;
 beforeEach(() => {
   // user 0
-  let args: h.AuthRegisterArgs = [h.email0, h.password0, h.firstName0, h.lastName0];
+  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
   authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   // user 1
   args = [h.email1, h.password1, h.firstName1, h.lastName1];

@@ -19,16 +19,16 @@ import {
 import * as h from './helper.test';
 
 // SETUP
-let userId0 = null;
-let userId1 = null;
-let channelId0 = null;
-let channelId1 = null;
-let channelId2 = null;
-let invalidUserId = null;
-let invalidChannelId = null;
+let userId0: number = null;
+let userId1: number = null;
+let channelId0: number = null;
+let channelId1: number = null;
+let channelId2: number = null;
+let invalidUserId: number = null;
+let invalidChannelId: number = null;
 beforeEach(() => {
   // Users 0, 1
-  let args: h.AuthRegisterArgs = [h.email0, h.password0, h.firstName0, h.lastName0];
+  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
   userId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   args = [h.email1, h.password1, h.firstName1, h.lastName1];
   userId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
