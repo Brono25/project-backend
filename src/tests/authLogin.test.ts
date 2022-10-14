@@ -16,13 +16,13 @@ let authUserId2: number = null;
 beforeEach(() => {
   // user 0
   let args: h.AuthRegisterArgs = [h.email0, h.password0, h.firstName0, h.lastName0];
-  authUserId0 = h.authUserIdReturnGaurd(authRegisterV1(...args));
+  authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   // user 1
   args = [h.email1, h.password1, h.firstName1, h.lastName1];
   authRegisterV1(...args);
   // user 2
   args = [h.email2, h.password2, h.firstName2, h.lastName2];
-  authUserId2 = h.authUserIdReturnGaurd(authRegisterV1(...args));
+  authUserId2 = h.authRegisterReturnGaurd(authRegisterV1(...args));
 });
 
 // Tear down
