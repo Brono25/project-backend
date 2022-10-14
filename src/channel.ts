@@ -18,6 +18,7 @@ import {
   ChannelDetails,
   User,
   UserStore,
+  Message,
   Error
 } from './data.types';
 
@@ -137,7 +138,7 @@ function getMembers (channelId: number) : User[] {
  * @param {number, number} - user id and channel id
  * @returns {Array} list of objects containing owner details
  */
-function getOwners (channelId: number) {
+function getOwners (channelId: number): User[] {
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
 
   // commenting out for now to pass linter checks
@@ -152,7 +153,7 @@ function getOwners (channelId: number) {
     nameLast: userStore.nameLast,
     handleStr: userStore.handleStr
   };
-  return owner;
+  return [owner];
   // }
 }
 
@@ -205,7 +206,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
     return { error: 'Invalid User Id' };
   }
 
-  const data: Data = getData();
+  const data: DataStore = getData();
   // Replace this
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
@@ -223,19 +224,23 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
  * @returns {object} - { messages, start, end }
  */
 
-function channelMessagesV1(authUserId: number, channelId: number, start: number) {
-  if (!isValidChannelId(channelId)) {
+type ChannelMessagesReturn = {
+  messages: Message[];
+  start: number;
+  end: number;
+} | Error;
+
+function channelMessagesV1(
+  authUserId: number,
+  channelId: number,
+  start: number
+): ChannelMessagesReturn {
+  if (isValidChannelId(channelId) === false) {
     return { error: 'Invalid channel Id' };
   }
-
-  const data: Data = getData();
-  let channel: Channel;
-  for (const x of data.channels) {
-    if (x.channelId === channelId) {
-      channel = x;
-    }
-  }
-  const numMessages = channel.messages.length;
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const messages: Message[] = channelStore.messages;
+  const numMessages = messages.length;
 
   if (start >= numMessages) {
     return { error: 'Messages start too high' };
@@ -244,32 +249,33 @@ function channelMessagesV1(authUserId: number, channelId: number, start: number)
   } else if (isAuthUserMember(authUserId, channelId) === false) {
     return { error: 'User is not a member of the channel' };
   }
-  let end = 0;
-  const Messages: Message[] = channel.messages;
 
-  if (start + 50 <= numMessages) {
-    end = start + 50;
+  const MAX_MSG_RETURN = 50;
+  const NO_MORE_MSGS = -1;
+  let end = 0;
+  if (start + MAX_MSG_RETURN <= numMessages) {
+    end = start + MAX_MSG_RETURN;
   } else {
-    end = -1;
+    end = NO_MORE_MSGS;
   }
 
-  const messages = [];
+  const lastFiftyorLessMessages: Message[] = [];
 
-  if (end !== -1) {
+  if (end !== NO_MORE_MSGS) {
     const loopEnd = start + 50;
     for (let i = start; i < loopEnd; i++) {
-      messages.push(Messages[i]);
+      lastFiftyorLessMessages.push(messages[i]);
     }
-    return {
+    return <ChannelMessagesReturn>{
       messages,
       start,
       end,
     };
   } else {
     for (let i = start; i < numMessages; i++) {
-      messages.push(Messages[i]);
+      lastFiftyorLessMessages.push(messages[i]);
     }
-    return {
+    return <ChannelMessagesReturn>{
       messages,
       start,
       end,

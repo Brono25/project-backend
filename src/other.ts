@@ -16,7 +16,7 @@ import {
  * @returns {}
  */
 function clearV1() {
-  let data = getData();
+  let data: DataStore = getData();
   data = {
     users: [],
     channels: [],
@@ -29,8 +29,8 @@ function clearV1() {
  * @param {string} - users handle
  * @returns {boolean} - is handle unique
  */
-function isValidAuthUserId(authUserId) {
-  const data = getData();
+function isValidAuthUserId(authUserId: number) {
+  const data: DataStore = getData();
 
   if (!data.users.length) {
     return false;
@@ -48,8 +48,8 @@ function isValidAuthUserId(authUserId) {
  * @returns {boolean} - does channel exist
  */
 
-function isValidChannelId(channelId) {
-  const data = getData();
+function isValidChannelId(channelId: number) {
+  const data: DataStore = getData();
 
   if (!data.channels.length) {
     return false;
@@ -66,8 +66,8 @@ function isValidChannelId(channelId) {
  * @param {number, number} - authorised user's id and channel id
  * @returns {boolean} - is user already member of channel
  */
-function isAuthUserMember(authUserId, channelId) {
-  const data = getData();
+function isAuthUserMember(authUserId: number, channelId: number) {
+  const data: DataStore = getData();
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       if (channel.allMembers.find(a => a.uId === authUserId)) {
@@ -75,11 +75,10 @@ function isAuthUserMember(authUserId, channelId) {
       }
     }
   }
-
   return false;
 }
 
-function getUserStoreFromId(uId): UserStore {
+function getUserStoreFromId(uId: number): UserStore {
   const data: DataStore = getData();
 
   for (const user of data.users) {
@@ -89,7 +88,7 @@ function getUserStoreFromId(uId): UserStore {
   }
 }
 
-function getChannelStoreFromId(channelId):ChannelStore {
+function getChannelStoreFromId(channelId: number):ChannelStore {
   const data: DataStore = getData();
 
   for (const channel of data.channels) {

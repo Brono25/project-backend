@@ -9,18 +9,13 @@ import {
   isAuthUserMember,
 } from './other';
 import {
-  Channel,
-  Data,
+  ChannelStore,
+  DataStore,
   ChannelId,
+  Channel,
   UserId,
   Error
 } from './data.types';
-
-type ChannelsList = {
-  name: string;
-  channelId: number
-}[];
-type ChannelsListReturn = { channels: ChannelsList} | Error;
 
 // ------------------Channels Helper functions------------------
 /**
@@ -29,12 +24,12 @@ type ChannelsListReturn = { channels: ChannelsList} | Error;
  * from their the channel ID easy and ensures unique ID's.
  *
  * @param {}
- * @returns {number} - unique channel id
+ * @returns {ChannelId} - unique channel id
  */
-function generateChannelId() {
-  const data: Data = getData();
+function generateChannelId(): ChannelId {
+  const data: DataStore = getData();
   const id: number = data.channels.length;
-  return id;
+  return { channelId: id };
 }
 
 // ------------------Channels Main functions------------------
@@ -44,7 +39,10 @@ function generateChannelId() {
  * @param {number, string, boolean} - user ID, channel name, is public
  * @returns {number} - channel ID
  */
-function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): ChannelId | Error {
+function channelsCreateV1(authUserId: number,
+  name: string,
+  isPublic: boolean
+): ChannelId | Error {
   const maxChars = 20;
   const minChars = 1;
   if (name.length > maxChars || name.length < minChars) {
@@ -55,9 +53,9 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
   }
 
   const userId: UserId = { uId: authUserId };
-  const channelId = generateChannelId();
-  const channel: Channel = {
-    channelId: channelId,
+  const channelId: ChannelId = generateChannelId();
+  const channel: ChannelStore = {
+    channelId: channelId.channelId,
     name: name,
     isPublic: isPublic,
     ownerMembers: [userId],
@@ -65,13 +63,11 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
     messages: [],
   };
 
-  const data = getData();
+  const data: DataStore = getData();
   data.channels.push(channel);
   setData(data);
 
-  return {
-    channelId: channelId,
-  };
+  return channelId;
 }
 
 /**
@@ -80,15 +76,21 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
  * @param {string} - user ID
  * @returns {Array} - list of channels
  */
+type ChannelsListReturn = {
+  channels: {
+    name: string;
+    channelId: number
+  }[];
+} | Error;
+
 function channelsListAllV1(authUserId: number): ChannelsListReturn {
-  // check if authUserId is valid
   if (isValidAuthUserId(authUserId) === false) {
     return { error: 'Invalid user ID' };
   }
 
   // check all created channels
-  const channels: ChannelsList;
-  const data: Data = getData();
+  const channels: Channel[] = [];
+  const data: DataStore = getData();
 
   for (const channel of data.channels) {
     channels.push(<Channel>{ name: channel.name, channelId: channel.channelId });
@@ -108,8 +110,8 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
     return { error: 'Invalid User ID' };
   }
 
-  const data: Data = getData();
-  const usersChannels: ChannelsList = [];
+  const data: DataStore = getData();
+  const usersChannels: Channel[] = [];
 
   for (const channel of data.channels) {
     if (isAuthUserMember(authUserId, channel.channelId)) {

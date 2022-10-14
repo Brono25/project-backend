@@ -66,10 +66,10 @@ function generateHandleStr(nameFirst: string, nameLast: string) {
  * @param {}
  * @returns {number} - unique user id
  */
-function generateAuthUserId() {
+function generateAuthUserId(): AuthUserId {
   const data: DataStore = getData();
   const id: number = data.users.length;
-  return id;
+  return { authUserId: id };
 }
 
 /**
@@ -115,7 +115,7 @@ function isPasswordCorrect(email: string, password: string) {
  * @param {string, string} - users and password
  * @returns {number} - authUserId
  */
-function authLoginV1(email: string, password: string) {
+function authLoginV1(email: string, password: string): AuthUserId | Error {
   if (isEmailUsed(email) === false) {
     return { error: 'Email does not belong to a user' };
   }
@@ -127,12 +127,10 @@ function authLoginV1(email: string, password: string) {
   const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
-      return {
-        authUserId: user.uId,
-      };
+      const ret: AuthUserId = { authUserId: user.uId };
+      return ret;
     }
   }
-  return {};
 }
 
 /**
@@ -142,7 +140,12 @@ function authLoginV1(email: string, password: string) {
  * @returns {number} - unique user id
  */
 
-function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): AuthUserId | Error {
+function authRegisterV1(
+  email: string,
+  password: string,
+  nameFirst: string,
+  nameLast: string
+): AuthUserId | Error {
   if (!validator.isEmail(email)) {
     return { error: 'Invalid Email' };
   }
@@ -163,15 +166,15 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   }
 
   const handleStr: string = generateHandleStr(nameFirst, nameLast);
-  const authUserId: number = generateAuthUserId();
+  const authUserId: AuthUserId = generateAuthUserId();
 
   let globalPermission: GlobalPermision = 'member';
-  if (authUserId === GLOBAL_OWNER) {
+  if (authUserId.authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
 
   const userDetails: UserStore = {
-    uId: authUserId,
+    uId: authUserId.authUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
@@ -184,7 +187,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   data.users.push(userDetails);
   setData(data);
 
-  return <AuthUserId>{ authUserId: authUserId };
+  return authUserId;
 }
 
 export {
