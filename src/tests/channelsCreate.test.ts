@@ -1,43 +1,37 @@
 
+import { ChannelId } from '../data.types';
 import { channelsCreateV1 } from '../channels';
 import { authRegisterV1 } from '../auth';
 import { clearV1 } from '../other';
-
-type Args = [number, string, boolean];
-
-// Test data
-const firstName1 = 'First Name 1';
-const lastName1 = 'Last Name 1';
-const email1 = 'email_1@gmail.com';
-const password1 = 'password1';
-const channelName1 = 'Channel 1';
-const isPublic = true;
-const invalidEmptyChannelName = '';
-const invalidLongChannelName = 'ChannelsNamesMoreThanTwentyCharactersAreInvalid';
+import * as h from './test.helper';
 
 // Setup
-let authUserId1 = null;
-let invalidAuthUserId = null;
+let authUserId0: number;
+let invalidAuthUserId: number;
 beforeEach(() => {
-  authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
-  invalidAuthUserId = Math.abs(authUserId1) + 10;
+  // Register users
+  const args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
+  authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  invalidAuthUserId = Math.abs(authUserId0) + 10;
 });
 // Tear down
-afterEach(() => { clearV1(); });
+afterEach(() => {
+  clearV1();
+});
 
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
   test('Channel name too long', () => {
-    const args: Args = [authUserId1, invalidLongChannelName, isPublic];
+    const args: h.Args = [authUserId0, h.invalidLongChannelName, h.isPublic];
     expect(channelsCreateV1(...args)).toStrictEqual({ error: expect.any(String) });
   });
   test('Channel name empty', () => {
-    const args: Args = [authUserId1, invalidEmptyChannelName, isPublic];
+    const args: h.Args = [authUserId0, h.invalidEmptyChannelName, h.isPublic];
     expect(channelsCreateV1(...args)).toStrictEqual({ error: expect.any(String) });
   });
   test('Invalid user ID', () => {
-    const args: Args = [invalidAuthUserId, channelName1, isPublic];
+    const args: h.Args = [invalidAuthUserId, h.channelName0, h.isPublic];
     expect(channelsCreateV1(...args)).toStrictEqual({ error: expect.any(String) });
   });
 });
@@ -46,15 +40,15 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Create channel', () => {
-    const args: Args = [authUserId1, channelName1, isPublic];
-    expect(channelsCreateV1(...args)).toStrictEqual({ channelId: expect.any(Number) });
+    const args: h.Args = [authUserId0, h.channelName1, h.isPublic];
+    expect(channelsCreateV1(...args)).toStrictEqual(<ChannelId>{ channelId: expect.any(Number) });
   });
 
   test('One user create 100 channels and get 100 unique ID\'s', () => {
     const numberOfChannels = 100;
     const channelIdList = new Set();
     for (let n = 0; n < numberOfChannels; n++) {
-      const args: Args = [authUserId1, n.toString().concat(channelName1), isPublic];
+      const args: h.Args = [authUserId0, n.toString().concat(h.channelName0), h.isPublic];
       const channelId = channelsCreateV1(...args);
       channelIdList.add(channelId);
     }

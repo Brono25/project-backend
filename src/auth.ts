@@ -1,9 +1,14 @@
 
 import validator from 'validator';
+import { setData, getData } from './dataStore';
 import {
-  setData,
-  getData,
-} from './dataStore';
+  DataStore,
+  UserStore,
+  GlobalPermision,
+  GLOBAL_OWNER,
+  AuthUserId,
+  Error
+} from './data.types';
 
 // ------------------Auth Helper functions------------------
 
@@ -11,8 +16,8 @@ import {
  * @param {string} - users handle
  * @returns {boolean} - is handle unique
  */
-function isHandleStrUnique(handleStr) {
-  const data = getData();
+function isHandleStrUnique(handleStr: string) {
+  const data: DataStore = getData();
 
   if (!data.users.length) {
     return true;
@@ -31,11 +36,12 @@ function isHandleStrUnique(handleStr) {
  *
  * @param {string, string} - firstName, lastName
  * @returns {string} - always returns a unique handle string
+ *
  */
-function generateHandleStr(nameFirst, nameLast) {
-  const filteredFirstName = nameFirst.match(/[a-z0-9]+/ig).join('').toLowerCase();
-  const filteredLastName = nameLast.match(/[a-z0-9]+/ig).join('').toLowerCase();
-  let handleStr = filteredFirstName.concat(filteredLastName);
+function generateHandleStr(nameFirst: string, nameLast: string) {
+  const filteredFirstName: string = nameFirst.match(/[a-z0-9]+/ig).join('').toLowerCase();
+  const filteredLastName: string = nameLast.match(/[a-z0-9]+/ig).join('').toLowerCase();
+  let handleStr: string = filteredFirstName.concat(filteredLastName);
 
   const maxChars = 20;
   if (handleStr.length > maxChars) {
@@ -60,18 +66,18 @@ function generateHandleStr(nameFirst, nameLast) {
  * @param {}
  * @returns {number} - unique user id
  */
-function generateAuthUserId() {
-  const data = getData();
-  const id = data.users.length;
-  return id;
+function generateAuthUserId(): AuthUserId {
+  const data: DataStore = getData();
+  const id: number = data.users.length;
+  return { authUserId: id };
 }
 
 /**
  * @param {string} - users email
  * @returns {boolean} - is email already claimed by another user
  */
-function isEmailUsed(email) {
-  const data = getData();
+function isEmailUsed(email: string) {
+  const data: DataStore = getData();
 
   if (!data.users.length) {
     return false;
@@ -88,8 +94,8 @@ function isEmailUsed(email) {
  * @param {string, string} - users email and password
  * @returns {number} - users id
  */
-function isPasswordCorrect(email, password) {
-  const data = getData();
+function isPasswordCorrect(email: string, password: string) {
+  const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
       if (password === user.password) {
@@ -109,7 +115,7 @@ function isPasswordCorrect(email, password) {
  * @param {string, string} - users and password
  * @returns {number} - authUserId
  */
-function authLoginV1(email, password) {
+function authLoginV1(email: string, password: string): AuthUserId | Error {
   if (isEmailUsed(email) === false) {
     return { error: 'Email does not belong to a user' };
   }
@@ -118,15 +124,13 @@ function authLoginV1(email, password) {
     return { error: 'Password is incorrect' };
   }
 
-  const data = getData();
+  const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
-      return {
-        authUserId: user.uId,
-      };
+      const ret: AuthUserId = { authUserId: user.uId };
+      return ret;
     }
   }
-  return {};
 }
 
 /**
@@ -136,7 +140,12 @@ function authLoginV1(email, password) {
  * @returns {number} - unique user id
  */
 
-function authRegisterV1(email, password, nameFirst, nameLast) {
+function authRegisterV1(
+  email: string,
+  password: string,
+  nameFirst: string,
+  nameLast: string
+): AuthUserId | Error {
   if (!validator.isEmail(email)) {
     return { error: 'Invalid Email' };
   }
@@ -156,16 +165,16 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     return { error: 'Last name must be between 1-50 characters long (inclusive)' };
   }
 
-  const handleStr = generateHandleStr(nameFirst, nameLast);
-  const authUserId = generateAuthUserId();
+  const handleStr: string = generateHandleStr(nameFirst, nameLast);
+  const authUserId: AuthUserId = generateAuthUserId();
 
-  let globalPermission = 'member';
-  if (authUserId === 0) {
+  let globalPermission: GlobalPermision = 'member';
+  if (authUserId.authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
 
-  const userDetails = {
-    uId: authUserId,
+  const userDetails: UserStore = {
+    uId: authUserId.authUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
@@ -174,11 +183,11 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
     globalPermission: globalPermission,
   };
 
-  const data = getData();
+  const data: DataStore = getData();
   data.users.push(userDetails);
   setData(data);
 
-  return { authUserId: authUserId };
+  return authUserId;
 }
 
 export {

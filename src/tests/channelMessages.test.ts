@@ -1,74 +1,65 @@
 
-import {
-  channelMessagesV1,
-} from '../channel';
-
+import { channelMessagesV1 } from '../channel';
 import { authRegisterV1 } from '../auth';
 import { channelsCreateV1 } from '../channels';
 import { clearV1 } from '../other';
 
-// Test data
-const firstName1 = 'First Name 1';
-const lastName1 = 'Last Name 1';
-const email1 = 'email_1@gmail.com';
-const password1 = 'password1';
+import * as h from './test.helper';
 
-const firstName2 = 'First Name 2';
-const lastName2 = 'Last Name 2';
-const email2 = 'email_2@gmail.com';
-const password2 = 'password2';
-
-const channelName1 = 'Channel 1';
-const channelName2 = 'Channel 2';
-
-const isNotPublic = false;
-
-let userId1;
-let userId2;
-let channelId1;
-let channelId2;
-
+let userId0: number;
+let userId1: number;
+let channelId0: number;
+let channelId1: number;
+let invalidChannelId: number;
+let invalidUserId: number;
+const start = 0;
+const invalidStart = 10;
 // Setup
 beforeEach(() => {
   // Register users
-  userId1 = authRegisterV1(
-    email1, password1, firstName1, lastName1
-  ).authUserId;
-  userId2 = authRegisterV1(
-    email2, password2, firstName2, lastName2
-  ).authUserId;
+  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
+  userId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  args = [h.email1, h.password1, h.firstName1, h.lastName1];
+  userId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   // Create channels
-  channelId1 = channelsCreateV1(userId1, channelName1, isNotPublic).channelId;
-  channelId2 = channelsCreateV1(userId2, channelName2, isNotPublic).channelId;
+  args = [userId0, h.channelName0, h.isNotPublic];
+  channelId0 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
+  args = [userId1, h.channelName1, h.isNotPublic];
+  channelId1 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
+  // Invalid input
+  invalidUserId = Math.abs(userId0) + Math.abs(userId1) + 10;
+  invalidChannelId = Math.abs(channelId0) + 10;
 });
 
 // Tear down
-afterEach(() => { clearV1(); });
+afterEach(() => {
+  clearV1();
+});
 
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
   test('Invalid authUserId', () => {
-    expect(channelMessagesV1(userId1 + userId2, channelId1, 0)).toStrictEqual(
+    expect(channelMessagesV1(invalidUserId, channelId0, start)).toStrictEqual(
       { error: expect.any(String) }
     );
   });
 
   test('Invalid channelId', () => {
     expect(
-      channelMessagesV1(userId1, channelId2 + channelId1, 0)).toStrictEqual(
+      channelMessagesV1(userId0, invalidChannelId, start)).toStrictEqual(
       { error: expect.any(String) }
     );
   });
 
   test('Valid channelId, authUserId not a member', () => {
-    expect(channelMessagesV1(userId1, channelId2, 0)).toStrictEqual(
+    expect(channelMessagesV1(userId0, channelId1, start)).toStrictEqual(
       { error: expect.any(String) }
     );
   });
 
   test('start greater than num messages', () => {
-    expect(channelMessagesV1(userId1, channelId1, 10)).toStrictEqual(
+    expect(channelMessagesV1(userId0, channelId0, invalidStart)).toStrictEqual(
       { error: expect.any(String) }
     );
   });

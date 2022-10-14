@@ -5,50 +5,37 @@ import {
 } from '../auth';
 
 import { clearV1 } from '../other';
-
-// Test data
-const firstName1 = 'First Name 1';
-const lastName1 = 'Last Name 1';
-const email1 = 'email_1@gmail.com';
-const email1AltCase = 'EMAIL_1@GMAIL.COM';
-const password1 = 'password1';
-
-const firstName2 = 'First Name 2';
-const lastName2 = 'Last Name 2';
-const email2 = 'email_2@gmail.com';
-const password2 = 'password2';
-
-const wrongEmail = 'anything@gmail.com';
-const wrongPassword = 'wrongpassword';
-
-type Args1 = [string, string, string, string];
-type Args2 = [string, string];
+import { AuthUserId } from '../data.types';
+import * as h from './test.helper';
 
 // Setup
-
-let userId1 = null;
-let userId3 = null;
+let authUserId0: number;
+let authUserId2: number;
 beforeEach(() => {
-  // create database of 3 users
-  let args: Args1 = [email1, password1, firstName1, lastName1];
-  userId1 = authRegisterV1(...args).authUserId;
-  args = ['middleUser'.concat(email1), password1, firstName1, lastName2];
+  // user 0
+  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
+  authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  // user 1
+  args = [h.email1, h.password1, h.firstName1, h.lastName1];
   authRegisterV1(...args);
-  args = [email2, password2, firstName2, lastName2];
-  userId3 = authRegisterV1(...args).authUserId;
+  // user 2
+  args = [h.email2, h.password2, h.firstName2, h.lastName2];
+  authUserId2 = h.authRegisterReturnGaurd(authRegisterV1(...args));
 });
 
 // Tear down
-afterEach(() => { clearV1(); });
+afterEach(() => {
+  clearV1();
+});
 
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
   test('Incorrect  email', () => {
-    expect(authLoginV1(wrongEmail, password1)).toStrictEqual({ error: expect.any(String) });
+    expect(authLoginV1(h.wrongEmail, h.password0)).toStrictEqual({ error: expect.any(String) });
   });
   test('Incorrect password', () => {
-    expect(authLoginV1(email1, wrongPassword)).toStrictEqual({ error: expect.any(String) });
+    expect(authLoginV1(h.email0, h.wrongPassword)).toStrictEqual({ error: expect.any(String) });
   });
 });
 
@@ -56,14 +43,12 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Authorise login for first user in database', () => {
-    const args: Args2 = [email1, password1];
-    expect(authLoginV1(...args)).toStrictEqual({ authUserId: userId1 });
+    expect(authLoginV1(h.email0, h.password0)).toStrictEqual(<AuthUserId>{ authUserId: authUserId0 });
   });
   test('Authorise login for last user in database', () => {
-    const args: Args2 = [email2, password2];
-    expect(authLoginV1(...args)).toStrictEqual({ authUserId: userId3 });
+    expect(authLoginV1(h.email2, h.password2)).toStrictEqual(<AuthUserId>{ authUserId: authUserId2 });
   });
   test('Authorise Login using upper case email matching lowercase', () => {
-    expect(authLoginV1(email1AltCase, password1)).toStrictEqual({ authUserId: userId1 });
+    expect(authLoginV1(h.email0AltCase, h.password0)).toStrictEqual(<AuthUserId>{ authUserId: authUserId0 });
   });
 });

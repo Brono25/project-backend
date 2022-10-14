@@ -3,56 +3,46 @@ import {
   channelsCreateV1,
   channelsListV1,
 } from '../channels';
-
+import { Channel } from '../data.types';
 import { authRegisterV1 } from '../auth';
 import { clearV1 } from '../other';
 import { channelInviteV1 } from '../channel';
+import * as h from './test.helper';
 
-// Test data
-const firstName1 = 'First Name 1';
-const lastName1 = 'Last Name 1';
-const email1 = 'email_1@gmail.com';
-const password1 = 'password1';
-
-const firstName2 = 'First Name 2';
-const lastName2 = 'Last Name 2';
-const email2 = 'email_2@gmail.com';
-const password2 = 'password2';
-
-const channelName1 = 'Channel 1';
-const channelName2 = 'Channel 2';
-const channelName3 = 'Channel 3';
-const channelName4 = 'Channel 4';
-const isPublic = true;
-const isNotPublic = false;
-
-let authUserId1 = null;
-let authUserId2 = null;
-let invalidAuthUserId = null;
-let publicChannelId1 = null;
-let publicChannelId2 = null;
-let privateChannelId1 = null;
-let privateChannelId2 = null;
+let authUserId0: number;
+let authUserId1: number;
+let invalidAuthUserId: number;
+let publicChannelId0: number;
+let publicChannelId1: number;
+let privateChannelId0: number;
+let privateChannelId1: number;
 // Setup
 beforeEach(() => {
-  authUserId1 = authRegisterV1(email1, password1, firstName1, lastName1).authUserId;
-  authUserId2 = authRegisterV1(email2, password2, firstName2, lastName2).authUserId;
+  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
+  authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  args = [h.email1, h.password1, h.firstName1, h.lastName1];
+  authUserId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
 
   // User 1's owner of channels
-  publicChannelId1 = channelsCreateV1(authUserId1, channelName1, isPublic).channelId;
-  publicChannelId2 = channelsCreateV1(authUserId1, channelName2, isPublic).channelId;
-  privateChannelId1 = channelsCreateV1(authUserId1, channelName3, isNotPublic).channelId;
-  privateChannelId2 = channelsCreateV1(authUserId1, channelName4, isNotPublic).channelId;
+  args = [authUserId0, h.channelName0, h.isPublic];
+  publicChannelId0 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
+  args = [authUserId0, h.channelName1, h.isPublic];
+  publicChannelId1 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
+  args = [authUserId0, h.channelName2, h.isNotPublic];
+  privateChannelId0 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
+  args = [authUserId0, h.channelName3, h.isNotPublic];
+  privateChannelId1 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
 
   // User 2 member of channels
-  channelInviteV1(authUserId1, privateChannelId1, authUserId2);
-  channelInviteV1(authUserId1, publicChannelId1, authUserId2);
-  channelInviteV1(authUserId1, publicChannelId2, authUserId2);
+  channelInviteV1(authUserId0, privateChannelId0, authUserId1);
+  channelInviteV1(authUserId0, publicChannelId0, authUserId1);
 
-  invalidAuthUserId = Math.abs(authUserId1) + 10;
+  invalidAuthUserId = Math.abs(authUserId0) + Math.abs(authUserId1) + 10;
 });
 // Tear down
-afterEach(() => { clearV1(); });
+afterEach(() => {
+  clearV1();
+});
 
 // ------------------Error Testing------------------//
 
@@ -65,42 +55,38 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
-  test('List channels for public', () => {
-    expect(channelsListV1(authUserId1)).toStrictEqual({
-      channels: [
+  test('List users channels with mix of public and private channels', () => {
+    expect(channelsListV1(authUserId0)).toStrictEqual({
+      channels: <Channel[]>[
         {
-          channelId: publicChannelId1,
-          name: channelName1,
+          channelId: publicChannelId0,
+          name: h.channelName0,
         },
         {
-          channelId: publicChannelId2,
-          name: channelName2,
+          channelId: publicChannelId1,
+          name: h.channelName1,
+        },
+        {
+          channelId: privateChannelId0,
+          name: h.channelName2,
         },
         {
           channelId: privateChannelId1,
-          name: channelName3,
-        },
-        {
-          channelId: privateChannelId2,
-          name: channelName4,
+          name: h.channelName3,
         },
       ]
     });
   });
-  test('List channels for private', () => {
-    expect(channelsListV1(authUserId2)).toStrictEqual({
-      channels: [
+  test('List channels when user has only private channels', () => {
+    expect(channelsListV1(authUserId1)).toStrictEqual({
+      channels: <Channel[]>[
         {
-          channelId: publicChannelId1,
-          name: channelName1,
+          channelId: publicChannelId0,
+          name: h.channelName0,
         },
         {
-          channelId: publicChannelId2,
-          name: channelName2,
-        },
-        {
-          channelId: privateChannelId1,
-          name: channelName3,
+          channelId: privateChannelId0,
+          name: h.channelName2,
         },
       ]
     });

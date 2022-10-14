@@ -8,9 +8,19 @@ import {
   isValidAuthUserId,
   isValidChannelId,
   isAuthUserMember,
-  getChannelDetailsFromId,
-  getUserDetailsFromId,
+  getChannelStoreFromId,
+  getUserStoreFromId,
 } from './other';
+
+import {
+  DataStore,
+  ChannelStore,
+  ChannelDetails,
+  User,
+  UserStore,
+  Message,
+  Error
+} from './data.types';
 
 // ------------------ Channel Helper functions------------------
 
@@ -19,8 +29,8 @@ import {
  * @param {number} - channelId
  * @returns {boolean} - is channel private
  */
-function isChannelPrivate (channelId) {
-  const data = getData();
+function isChannelPrivate (channelId: number) {
+  const data: DataStore = getData();
 
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
@@ -29,7 +39,6 @@ function isChannelPrivate (channelId) {
       }
     }
   }
-
   return true;
 }
 
@@ -37,8 +46,8 @@ function isChannelPrivate (channelId) {
  * @param {number} - uId
  * @returns {boolean} - is user a global owner
  */
-function isGlobalOwner (authUserId) {
-  const data = getData();
+function isGlobalOwner (authUserId: number) {
+  const data: DataStore = getData();
 
   for (const user of data.users) {
     if (user.uId === authUserId) {
@@ -47,7 +56,6 @@ function isGlobalOwner (authUserId) {
       }
     }
   }
-
   return true;
 }
 
@@ -72,7 +80,7 @@ function isGlobalOwner (authUserId) {
  *a member of, provides basic details about the channel.
  */
 
-function channelDetailsV1(authUserId, channelId) {
+function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetails | Error {
   if (!isValidAuthUserId(authUserId)) {
     return { error: 'Invalid User Id' };
   }
@@ -85,16 +93,16 @@ function channelDetailsV1(authUserId, channelId) {
     return { error: 'User is not a member of this channel' };
   }
 
-  const channel = getChannelDetailsFromId(channelId);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
 
-  const ownerMembersDetailsList = ownerMemberDetails(channelId);
-  const userMemberDetailsList = userMemberDetails(channelId);
+  const ownerMembersDetailsList: User[] = getOwners(channelId);
+  const getMembersList: User[] = getMembers(channelId);
 
-  const channelDetails = {
-    name: channel.name,
-    isPublic: channel.isPublic,
+  const channelDetails: ChannelDetails = {
+    name: channelStore.name,
+    isPublic: channelStore.isPublic,
     ownerMembers: ownerMembersDetailsList,
-    allMembers: userMemberDetailsList,
+    allMembers: getMembersList,
   };
 
   return channelDetails;
@@ -106,23 +114,22 @@ function channelDetailsV1(authUserId, channelId) {
  * @param {number} - channel ID
  * @returns {Array} list of objects containing members details
  */
-function userMemberDetails (channelId) {
-  const memberDetailsList = [];
-
-  const channel = getChannelDetailsFromId(channelId);
+function getMembers (channelId: number) : User[] {
+  const channel: ChannelStore = getChannelStoreFromId(channelId);
+  const members: User[] = [];
 
   for (const member of channel.allMembers) {
-    const memberDetails = getUserDetailsFromId(member.uId);
+    const userStore: UserStore = getUserStoreFromId(member.uId);
 
-    memberDetailsList.push({
-      uId: memberDetails.uId,
-      email: memberDetails.email,
-      nameFirst: memberDetails.nameFirst,
-      nameLast: memberDetails.nameLast,
-      handleStr: memberDetails.handleStr
+    members.push({
+      uId: userStore.uId,
+      email: userStore.email,
+      nameFirst: userStore.nameFirst,
+      nameLast: userStore.nameLast,
+      handleStr: userStore.handleStr
     });
   }
-  return memberDetailsList;
+  return members;
 }
 
 /**
@@ -131,23 +138,22 @@ function userMemberDetails (channelId) {
  * @param {number, number} - user id and channel id
  * @returns {Array} list of objects containing owner details
  */
-function ownerMemberDetails (channelId) {
-  const ownerDetailsList = [];
-  const channel = getChannelDetailsFromId(channelId);
+function getOwners (channelId: number): User[] {
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
 
-  // commenting out to pass linter as
+  // commenting out for now to pass linter checks
   // for (const owner of channel.ownerMembers) {
-  const owner = channel.ownerMembers[0];
-  const ownerDetails = getUserDetailsFromId(owner.uId);
 
-  ownerDetailsList.push({
-    uId: ownerDetails.uId,
-    email: ownerDetails.email,
-    nameFirst: ownerDetails.nameFirst,
-    nameLast: ownerDetails.nameLast,
-    handleStr: ownerDetails.handleStr
-  });
-  return ownerDetailsList;
+  const uId: number = channelStore.ownerMembers[0].uId;
+  const userStore: UserStore = getUserStoreFromId(uId);
+  const owner: User = {
+    uId: userStore.uId,
+    email: userStore.email,
+    nameFirst: userStore.nameFirst,
+    nameLast: userStore.nameLast,
+    handleStr: userStore.handleStr
+  };
+  return [owner];
   // }
 }
 
@@ -157,7 +163,7 @@ function ownerMemberDetails (channelId) {
  * @returns {}
  */
 
-function channelJoinV1(authUserId, channelId) {
+function channelJoinV1(authUserId: number, channelId: number) {
   if (!isValidChannelId(channelId)) {
     return { error: 'Invalid channel Id' };
   } else if (!isValidAuthUserId(authUserId)) {
@@ -170,9 +176,9 @@ function channelJoinV1(authUserId, channelId) {
     return { error: 'Private channel' };
   }
 
-  const data = getData();
-  const channel = getChannelDetailsFromId(channelId);
-  channel.allMembers.push({ uId: authUserId });
+  const data: DataStore = getData();
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  channelStore.allMembers.push({ uId: authUserId });
   setData(data);
 
   return {};
@@ -184,24 +190,24 @@ function channelJoinV1(authUserId, channelId) {
  * @returns {}
  */
 
-function channelInviteV1(authUserId, channelId, uId) {
-  if (isValidChannelId(channelId) === false) {
+function channelInviteV1(authUserId: number, channelId: number, uId: number) {
+  if (!isValidChannelId(channelId)) {
     return { error: 'Invalid channel Id' };
-  } else if (isValidAuthUserId(authUserId) === false) {
+  } else if (!isValidAuthUserId(authUserId)) {
     return { error: 'Invalid User Id' };
-  } else if (isAuthUserMember(uId, channelId) === true) {
+  } else if (isAuthUserMember(uId, channelId)) {
     return { error: 'User is already a member of the channel' };
-  } else if (isAuthUserMember(authUserId, channelId) === false) {
-    const authUser = getUserDetailsFromId(authUserId);
+  } else if (!isAuthUserMember(authUserId, channelId)) {
+    const authUser = getUserStoreFromId(authUserId);
     if (authUser.globalPermission !== 'owner') {
       return { error: 'User is not a member of the channel' };
     }
-  } else if (isValidAuthUserId(uId) === false) {
+  } else if (!isValidAuthUserId(uId)) {
     return { error: 'Invalid User Id' };
   }
 
-  const data = getData();
-
+  const data: DataStore = getData();
+  // Replace this
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       channel.allMembers.push({ uId: uId });
@@ -218,19 +224,23 @@ function channelInviteV1(authUserId, channelId, uId) {
  * @returns {object} - { messages, start, end }
  */
 
-function channelMessagesV1(authUserId, channelId, start) {
+type ChannelMessagesReturn = {
+  messages: Message[];
+  start: number;
+  end: number;
+} | Error;
+
+function channelMessagesV1(
+  authUserId: number,
+  channelId: number,
+  start: number
+): ChannelMessagesReturn {
   if (isValidChannelId(channelId) === false) {
     return { error: 'Invalid channel Id' };
   }
-
-  const data = getData();
-  let channel;
-  for (const x of data.channels) {
-    if (x.channelId === channelId) {
-      channel = x;
-    }
-  }
-  const numMessages = channel.messages.length;
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const messages: Message[] = channelStore.messages;
+  const numMessages = messages.length;
 
   if (start >= numMessages) {
     return { error: 'Messages start too high' };
@@ -239,32 +249,33 @@ function channelMessagesV1(authUserId, channelId, start) {
   } else if (isAuthUserMember(authUserId, channelId) === false) {
     return { error: 'User is not a member of the channel' };
   }
-  let end = 0;
-  const Messages = channel.messages;
 
-  if (start + 50 <= numMessages) {
-    end = start + 50;
+  const MAX_MSG_RETURN = 50;
+  const NO_MORE_MSGS = -1;
+  let end = 0;
+  if (start + MAX_MSG_RETURN <= numMessages) {
+    end = start + MAX_MSG_RETURN;
   } else {
-    end = -1;
+    end = NO_MORE_MSGS;
   }
 
-  const messages = [];
+  const lastFiftyorLessMessages: Message[] = [];
 
-  if (end !== -1) {
+  if (end !== NO_MORE_MSGS) {
     const loopEnd = start + 50;
     for (let i = start; i < loopEnd; i++) {
-      messages.push(Messages[i]);
+      lastFiftyorLessMessages.push(messages[i]);
     }
-    return {
+    return <ChannelMessagesReturn>{
       messages,
       start,
       end,
     };
   } else {
     for (let i = start; i < numMessages; i++) {
-      messages.push(Messages[i]);
+      lastFiftyorLessMessages.push(messages[i]);
     }
-    return {
+    return <ChannelMessagesReturn>{
       messages,
       start,
       end,

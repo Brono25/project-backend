@@ -12,7 +12,7 @@ app.use(json());
 app.use(cors());
 
 const PORT: number = parseInt(process.env.PORT || config.port);
-const HOST: string = process.env.IP || 'localhost';
+const HOST: string = process.env.IP;
 
 // Example get request
 app.get('/echo', (req: Request, res: Response, next) => {
