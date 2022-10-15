@@ -10,6 +10,7 @@ import {
   isAuthUserMember,
   getChannelStoreFromId,
   getUserStoreFromId,
+  isGlobalOwner,
 } from './other';
 
 import {
@@ -22,62 +23,13 @@ import {
   Error
 } from './data.types';
 
-// ------------------ Channel Helper functions------------------
-
-/**
- * Given a channelId, checks if the channel is private. Return false is public, true if private.
- * @param {number} - channelId
- * @returns {boolean} - is channel private
- */
-function isChannelPrivate (channelId: number) {
-  const data: DataStore = getData();
-
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      if (channel.isPublic === true) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-/**
- * @param {number} - uId
- * @returns {boolean} - is user a global owner
- */
-function isGlobalOwner (authUserId: number) {
-  const data: DataStore = getData();
-
-  for (const user of data.users) {
-    if (user.uId === authUserId) {
-      if (user.globalPermission !== 'owner') {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-// ------------------Channel Main functions------------------
+// ------------------channelDetailsV1------------------
 
 /**
  *Given a channel with ID channelId that the authorised user is
  *a member of, provides basic details about the channel.
- * @param {number, number} - authUserId and channelId
- * @returns {} -
- */
-
-/**
- * @param {number} - channelId
- * @param {integer} - uId
- * @returns {string} - channel name
- * @returns {boolean} - isPublic
- * @returns {array} - ownerMembers
- * @returns {array} - allMembers
-
- *Given a channel with ID channelId that the authorised user is
- *a member of, provides basic details about the channel.
+ * @param {number, number} - uId
+ * @returns {ChannelDetails} - channel name
  */
 
 function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetails | Error {
@@ -95,68 +47,20 @@ function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetail
 
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
 
-  const ownerMembersDetailsList: User[] = getOwners(channelId);
-  const getMembersList: User[] = getMembers(channelId);
+  const ownerMembersDetailsList: User[] = getChannelOwners(channelId);
+  const getChannelMembersList: User[] = getChannelMembers(channelId);
 
   const channelDetails: ChannelDetails = {
     name: channelStore.name,
     isPublic: channelStore.isPublic,
     ownerMembers: ownerMembersDetailsList,
-    allMembers: getMembersList,
+    allMembers: getChannelMembersList,
   };
 
   return channelDetails;
 }
 
-/**
- * Return a list containing all members and their details
- * of a given channel ID
- * @param {number} - channel ID
- * @returns {Array} list of objects containing members details
- */
-function getMembers (channelId: number) : User[] {
-  const channel: ChannelStore = getChannelStoreFromId(channelId);
-  const members: User[] = [];
-
-  for (const member of channel.allMembers) {
-    const userStore: UserStore = getUserStoreFromId(member.uId);
-
-    members.push({
-      uId: userStore.uId,
-      email: userStore.email,
-      nameFirst: userStore.nameFirst,
-      nameLast: userStore.nameLast,
-      handleStr: userStore.handleStr
-    });
-  }
-  return members;
-}
-
-/**
- * Return a list containing owners and their details
- * of a given channel ID
- * @param {number, number} - user id and channel id
- * @returns {Array} list of objects containing owner details
- */
-function getOwners (channelId: number): User[] {
-  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
-
-  // commenting out for now to pass linter checks
-  // for (const owner of channel.ownerMembers) {
-
-  const uId: number = channelStore.ownerMembers[0].uId;
-  const userStore: UserStore = getUserStoreFromId(uId);
-  const owner: User = {
-    uId: userStore.uId,
-    email: userStore.email,
-    nameFirst: userStore.nameFirst,
-    nameLast: userStore.nameLast,
-    handleStr: userStore.handleStr
-  };
-  return [owner];
-  // }
-}
-
+// ------------------channelJoinV1------------------
 /**
  * Given a channelId of a channel that the authorised user can join, adds them to that channel.
  * @param {number, number} - user id and channel id
@@ -184,6 +88,7 @@ function channelJoinV1(authUserId: number, channelId: number) {
   return {};
 }
 
+// ------------------channelInviteV1------------------
 /**
  *Invites a user with ID uId to join a channel with ID channelId.
  * @param {number, number, number} - authUserId, channelId and uId
@@ -217,18 +122,20 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   return {};
 }
 
-/**
- * Given a channel with ID channelId that the authorised user
- * is a member of, returns up to 50 messages between index "start" and "start + 50".
- * @param {number, number, number} - authUserId, channelId, start
- * @returns {object} - { messages, start, end }
- */
+// ------------------channelMessagesV1------------------
 
 type ChannelMessagesReturn = {
   messages: Message[];
   start: number;
   end: number;
 } | Error;
+
+/**
+ * Given a channel with ID channelId that the authorised user
+ * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ * @param {number, number, number} - authUserId, channelId, start
+ * @returns {ChannelMessagesReturn} - { messages, start, end }
+ */
 
 function channelMessagesV1(
   authUserId: number,
@@ -281,6 +188,74 @@ function channelMessagesV1(
       end,
     };
   }
+}
+
+// ------------------ Channel Helper functions------------------
+/**
+ * Return a list containing owners and their details
+ * of a given channel ID
+ * @param {number, number} - user id and channel id
+ * @returns {Array} list of objects containing owner details
+ */
+function getChannelOwners (channelId: number): User[] {
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+
+  // commenting out for now to pass linter checks
+  // for (const owner of channel.ownerMembers) {
+
+  const uId: number = channelStore.ownerMembers[0].uId;
+  const userStore: UserStore = getUserStoreFromId(uId);
+  const owner: User = {
+    uId: userStore.uId,
+    email: userStore.email,
+    nameFirst: userStore.nameFirst,
+    nameLast: userStore.nameLast,
+    handleStr: userStore.handleStr
+  };
+  return [owner];
+  // }
+}
+
+/**
+ * Return a list containing all members and their details
+ * of a given channel ID
+ * @param {number} - channel ID
+ * @returns {Array} list of objects containing members details
+ */
+function getChannelMembers (channelId: number) : User[] {
+  const channel: ChannelStore = getChannelStoreFromId(channelId);
+  const members: User[] = [];
+
+  for (const member of channel.allMembers) {
+    const userStore: UserStore = getUserStoreFromId(member.uId);
+
+    members.push({
+      uId: userStore.uId,
+      email: userStore.email,
+      nameFirst: userStore.nameFirst,
+      nameLast: userStore.nameLast,
+      handleStr: userStore.handleStr
+    });
+  }
+  return members;
+}
+
+/**
+ * Given a channelId, checks if the channel is private. Return false is public, true if private.
+ * @param {number} - channelId
+ * @returns {boolean} - is channel private
+ */
+function isChannelPrivate (channelId: number) {
+  const data: DataStore = getData();
+
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      if (channel.isPublic === true) {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 export {
