@@ -107,7 +107,7 @@ function isPasswordCorrect(email: string, password: string) {
   }
 }
 
-// ------------------Auth Main functions------------------
+// ------------------authLoginV1------------------
 
 /**
  * Given a registered user's email and password, returns their authUserId value.
@@ -133,6 +133,7 @@ function authLoginV1(email: string, password: string): AuthUserId | Error {
   }
 }
 
+// ------------------authRegisterV1------------------
 /**
  * Adds a new user to the dataStore.
  *
