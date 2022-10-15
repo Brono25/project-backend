@@ -3,6 +3,12 @@ import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
+import {
+  authLoginV1,
+  authRegisterV1,
+} from './auth';
+
+import { clearV1 } from './other';
 
 // Set up web app
 const app = express();
@@ -23,9 +29,24 @@ app.get('/echo', (req: Request, res: Response, next) => {
     next(err);
   }
 });
-
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
+
+// ------------------Interface Wrappers------------------
+app.post('auth/login/v2', (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  res.json(authLoginV1(email, password));
+});
+
+app.post('auth/register/v2', (req: Request, res: Response) => {
+  const { email, password, nameFirst, nameLast } = req.body;
+  res.json(authRegisterV1(email, password, nameFirst, nameLast));
+});
+
+app.delete('/clear', (req: Request, res: Response) => {
+  res.json(clearV1());
+});
+// ------------------------------------------------------
 
 // start server
 const server = app.listen(PORT, HOST, () => {
