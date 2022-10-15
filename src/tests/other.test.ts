@@ -2,16 +2,23 @@
 import {
   authRegisterV1,
 } from '../auth';
-
+import { AuthRegistorReturn } from '../data.types';
+import * as h from './test.helper';
 import { clearV1 } from '../other';
-
-type Args = [string, string, string, string];
 
 describe('clearV1()', () => {
   test('Adding duplicate user after clearV1', () => {
-    const args: Args = ['test@gmail.com', '123456', 'firstName', 'lastName'];
-    expect(authRegisterV1(...args)).toStrictEqual({ authUserId: expect.any(Number) });
+    const args: h.Args = ['test@gmail.com', '123456', 'firstName', 'lastName'];
+    expect(authRegisterV1(...args)).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
+
     clearV1();
-    expect(authRegisterV1(...args)).toStrictEqual({ authUserId: expect.any(Number) });
+
+    expect(authRegisterV1(...args)).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
   });
 });

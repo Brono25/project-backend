@@ -7,7 +7,7 @@ import {
   authLoginV1,
   authRegisterV1,
 } from './auth';
-
+import { debug } from './debug';
 import { clearV1 } from './other';
 
 // Set up web app
@@ -33,21 +33,26 @@ app.get('/echo', (req: Request, res: Response, next) => {
 app.use(morgan('dev'));
 
 // ------------------Interface Wrappers------------------
-app.post('auth/login/v2', (req: Request, res: Response) => {
+app.post('/auth/login/v2', (req: Request, res: Response) => {
   const { email, password } = req.body;
   res.json(authLoginV1(email, password));
 });
 
-app.post('auth/register/v2', (req: Request, res: Response) => {
+app.post('/auth/register/v2', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
   res.json(authRegisterV1(email, password, nameFirst, nameLast));
 });
 
-app.delete('/clear', (req: Request, res: Response) => {
+app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 // ------------------------------------------------------
 
+// -----------------for debugging delete later-------------
+app.post('/debug', (req: Request, res: Response) => {
+  res.json(debug());
+});
+// --------------------------------------------------------
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE

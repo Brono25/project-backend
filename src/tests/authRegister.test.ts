@@ -2,21 +2,25 @@
 import {
   authRegisterV1,
 } from '../auth';
-import { AuthUserId } from '../data.types';
-import { clearV1 } from '../other';
+import { AuthRegistorReturn } from '../data.types';
 import * as h from './test.helper';
 
 // Tear down
 afterEach(() => {
-  clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
 });
 
 // ------------------Test------------------//
 
 describe('Error Handling', () => {
   test('Invalid email', () => {
-    const args: h.Args = [h.invalidEmail, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.invalidEmail,
+      password: h.password0,
+      nameFirst: h.firstName0,
+      nameLast: h.lastName0,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Email address already in use', () => {
     const args0: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
@@ -56,15 +60,21 @@ describe('Error Handling', () => {
 });
 
 describe('Function Testing', () => {
-  test('Create new user and get a number user ID', () => {
+  test('Create new user and get a number user ID and token', () => {
     const args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual(<AuthUserId>{ authUserId: expect.any(Number) });
+    expect(authRegisterV1(...args)).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
   });
   test('Create new user with existing names and password but different email', () => {
     const args0: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
     authRegisterV1(...args0);
     const args1: h.Args = [h.email1, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args1)).toStrictEqual(<AuthUserId>{ authUserId: expect.any(Number) });
+    expect(authRegisterV1(...args1)).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
   });
   test('Create 100 users and get 100 unique ID\'s', () => {
     const numberOfUsers = 100;

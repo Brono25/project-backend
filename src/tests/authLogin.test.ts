@@ -8,7 +8,6 @@ import { clearV1 } from '../other';
 import { AuthLoginReturn } from '../data.types';
 import * as h from './test.helper';
 
-
 // Setup
 let authUserId0: number;
 let authUserId2: number;
@@ -56,7 +55,7 @@ describe('Function Testing', () => {
     });
   });
   test('Authorise Login using upper case email matching lowercase', () => {
-    expect(authLoginV1(h.email0AltCase, h.password0)).toStrictEqual(<AuthLoginReturn>{ 
+    expect(authLoginV1(h.email0AltCase, h.password0)).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
       token: expect.any(String),
     });

@@ -1,9 +1,17 @@
-
+import request from 'sync-request';
+import config from '../config.json';
 import {
   AuthUserId,
   ChannelId,
   Error,
 } from '../data.types';
+
+export const OK = 200;
+const port = config.port;
+const url = config.url;
+export const CLEAR_URL = `${url}:${port}/clear/v1`;
+export const REGISTER_URL = `${url}:${port}/auth/register/v2`;
+export const LOGIN_URL = `${url}:${port}/auth/login/v2`;
 
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
@@ -56,5 +64,23 @@ export function channelsCreateReturnGaurd(channelId: ChannelId | Error) {
   }
   return null;
 }
+
+export const postRequest = (url: string, data: any) => {
+  const res = request('POST', url, { json: data });
+  const bodyObj = JSON.parse(res.getBody() as string);
+  return bodyObj;
+};
+
+export const getRequest = (url: string, data: any) => {
+  const res = request('GET', url, { qs: data });
+  const bodyObj = JSON.parse(res.getBody() as string);
+  return bodyObj;
+};
+
+export const deleteRequest = (url: string, data: any) => {
+  const res = request('DELETE', url, {});
+  const bodyObj = JSON.parse(res.getBody() as string);
+  return bodyObj;
+};
 
 export * from './test.helper';
