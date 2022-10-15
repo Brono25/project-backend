@@ -5,7 +5,8 @@
         "lint": "eslint './**/*.ts'",
         "lint-fix": "eslint --fix './**/*.ts'",
         "start": "ts-node -T src/server.ts",
-        "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1"
+        "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1",
+        "full-test": "npm run start & PID=$!; echo $PID ; npm run test ;killall node; npm run tsc ; npm run lint-fix"
     },
     "dependencies": {
         "cors": "^2.8.5",
