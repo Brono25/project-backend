@@ -8,9 +8,9 @@ import {
   GlobalPermision,
   GLOBAL_OWNER,
   AuthUserId,
-  Error,
   Token,
-  AuthLoginReturn
+  AuthLoginReturn,
+  AuthRegistorReturn
 } from './data.types';
 
 // ------------------Auth Helper functions------------------
@@ -131,19 +131,20 @@ function authLoginV1(email: string, password: string): AuthLoginReturn {
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
       const token: Token = generateToken(email);
-      user.sessions.push(token);
-      data.sessions.push(token);
-      return <AuthLoginReturn> { token: token.session, authUserId: user.uId };
+      user.activeTokens.push(token);
+      data.activeTokens.push(token);
+      return <AuthLoginReturn> { token: token.token, authUserId: user.uId };
     }
   }
 }
 
 // ------------------authRegisterV1------------------
+
 /**
  * Adds a new user to the dataStore.
  *
  * @param {string, string, string, string} - user information to store
- * @returns {number} - unique user id
+ * @returns {AuthRegistorReturn} - unique user id
  */
 
 function authRegisterV1(
@@ -151,7 +152,7 @@ function authRegisterV1(
   password: string,
   nameFirst: string,
   nameLast: string
-): AuthUserId | Error {
+): AuthRegistorReturn {
   if (!validator.isEmail(email)) {
     return { error: 'Invalid Email' };
   }
@@ -178,8 +179,8 @@ function authRegisterV1(
   if (authUserId.authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
-
-  const userDetails: UserStore = {
+  const token: Token = generateToken(email);
+  const userStore: UserStore = {
     uId: authUserId.authUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
@@ -187,14 +188,17 @@ function authRegisterV1(
     password: password,
     handleStr: handleStr,
     globalPermission: globalPermission,
-    sessions: [],
+    activeTokens: [],
   };
 
   const data: DataStore = getData();
-  data.users.push(userDetails);
+
+  userStore.activeTokens.push(token);
+  data.activeTokens.push(token);
+  data.users.push(userStore);
   setData(data);
 
-  return authUserId;
+  return <AuthRegistorReturn> { token: token.token, authUserId: authUserId.authUserId };
 }
 
 export {
