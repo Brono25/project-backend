@@ -1,4 +1,6 @@
 
+/* import MD5 from 'crypto-md5'; */
+const MD5 = require('crypto-md5');
 import {
   setData,
   getData,
@@ -8,7 +10,24 @@ import {
   DataStore,
   ChannelStore,
   UserStore,
+  Token,
 } from './data.types';
+
+function getTimeInSecs() {
+  const time: number = Math.floor(Date.now() / 1000);
+  return time;
+}
+
+/**
+ * Set data back to initial state.
+ * @param {}
+ * @returns {}
+ */
+function generateToken(email: string) {
+  const time = getTimeInSecs().toString();
+  const token: Token = { session: MD5(time + email.toString().toString()) };
+  return token;
+}
 
 /**
  * Set data back to initial state.
@@ -20,6 +39,8 @@ function clearV1() {
   data = {
     users: [],
     channels: [],
+    sessions: [],
+    messageIds: [],
   };
   setData(data);
   return {};
@@ -109,4 +130,5 @@ export {
   getUserStoreFromId,
   getChannelStoreFromId,
   isGlobalOwner,
+  generateToken,
 };
