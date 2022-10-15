@@ -1,13 +1,16 @@
 
 import validator from 'validator';
 import { setData, getData } from './dataStore';
+import { generateToken } from './other';
 import {
   DataStore,
   UserStore,
   GlobalPermision,
   GLOBAL_OWNER,
   AuthUserId,
-  Error
+  Error,
+  Token,
+  AuthLoginReturn
 } from './data.types';
 
 // ------------------Auth Helper functions------------------
@@ -113,22 +116,24 @@ function isPasswordCorrect(email: string, password: string) {
  * Given a registered user's email and password, returns their authUserId value.
  *
  * @param {string, string} - users and password
- * @returns {number} - authUserId
+ * @returns {AuthLoginReturn} - authUserId
  */
-function authLoginV1(email: string, password: string): AuthUserId | Error {
-  if (isEmailUsed(email) === false) {
+function authLoginV1(email: string, password: string): AuthLoginReturn {
+  if (!isEmailUsed(email)) {
     return { error: 'Email does not belong to a user' };
   }
 
-  if (isPasswordCorrect(email, password) === false) {
+  if (!isPasswordCorrect(email, password)) {
     return { error: 'Password is incorrect' };
   }
 
   const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
-      const ret: AuthUserId = { authUserId: user.uId };
-      return ret;
+      const token: Token = generateToken(email);
+      user.sessions.push(token);
+      data.sessions.push(token);
+      return <AuthLoginReturn> { token: token.session, authUserId: user.uId };
     }
   }
 }
@@ -182,6 +187,7 @@ function authRegisterV1(
     password: password,
     handleStr: handleStr,
     globalPermission: globalPermission,
+    sessions: [],
   };
 
   const data: DataStore = getData();
