@@ -8,13 +8,9 @@
 
 export const GLOBAL_OWNER = 0;
 
+type MessageId = { messageId: number };
 export type Error = { error: string };
 export type UserId = { uId: number };
-export type AuthUserId = { authUserId: number };
-export type ChannelId = { channelId: number };
-export type AuthLoginReturn = {token: string, authUserId: number} | Error;
-
-type MessageId = { messageId: number };
 
 export type User = {
   uId: number;
@@ -43,7 +39,7 @@ export type ChannelDetails = {
   allMembers: User[];
 }
 export type Token = {
-  session: string;
+  token: string;
 }
 
 export type Dm = {
@@ -54,6 +50,10 @@ export type Dm = {
 export type Uids = {
   uIds: UserId[];
 }
+export type AuthUserId = { authUserId: number };
+export type ChannelId = { channelId: number };
+export type AuthLoginReturn = {token: string, authUserId: number} | Error;
+export type AuthRegistorReturn = {token: string, authUserId: number}| Error;
 /**********************************************************
  * -------------------Data Storage Types-------------------
  **********************************************************/
@@ -80,12 +80,12 @@ export type UserStore = {
   handleStr: string;
   globalPermission: GlobalPermision;
   password: string;
-  sessions: Token[];
+  activeTokens: Token[];
 }
 
 export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
-  sessions: Token[];
+  activeTokens: Token[];
   messageIds: MessageId[];
 }
