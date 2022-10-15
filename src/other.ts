@@ -25,7 +25,7 @@ function getTimeInSecs() {
  */
 function generateToken(email: string) {
   const time = getTimeInSecs().toString();
-  const token: Token = { session: MD5(time + email.toString().toString()) };
+  const token: Token = { token: MD5(time + email.toString().toString()) };
   return token;
 }
 
@@ -39,7 +39,7 @@ function clearV1() {
   data = {
     users: [],
     channels: [],
-    sessions: [],
+    activeTokens: [],
     messageIds: [],
   };
   setData(data);
