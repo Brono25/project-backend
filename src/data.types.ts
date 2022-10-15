@@ -12,6 +12,9 @@ export type Error = { error: string };
 export type UserId = { uId: number };
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
+export type AuthLoginReturn = {token: string, authUserId: number} | Error;
+
+type MessageId = { messageId: number };
 
 export type User = {
   uId: number;
@@ -77,9 +80,12 @@ export type UserStore = {
   handleStr: string;
   globalPermission: GlobalPermision;
   password: string;
+  sessions: Token[];
 }
 
 export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
+  sessions: Token[];
+  messageIds: MessageId[];
 }
