@@ -5,7 +5,7 @@ import { DataStore } from './data.types';
 let data: DataStore = {
   users: [],
   channels: [],
-  sessions: [],
+  activeTokens: [],
   messageIds: [],
 };
 
