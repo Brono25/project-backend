@@ -1,7 +1,4 @@
 
-import {
-  authRegisterV1,
-} from '../auth';
 import { AuthRegistorReturn } from '../data.types';
 import * as h from './test.helper';
 
