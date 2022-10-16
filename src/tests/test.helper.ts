@@ -1,3 +1,4 @@
+import { ok } from 'assert';
 import request from 'sync-request';
 import config from '../config.json';
 import {
@@ -65,20 +66,23 @@ export function channelsCreateReturnGaurd(channelId: ChannelId | Error): number 
   return null;
 }
 
-export const postRequest = (url: string, data: any): any => {
+export const postRequest = (url: string, data: any): object => {
   const res = request('POST', url, { json: data });
+  expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const getRequest = (url: string, data: any): string => {
+export const getRequest = (url: string, data: any): object => {
   const res = request('GET', url, { qs: data });
+  expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const deleteRequest = (url: string, data: any): string => {
+export const deleteRequest = (url: string, data: any): object => {
   const res = request('DELETE', url, {});
+  expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
