@@ -1,19 +1,31 @@
 
 ###
 // Register
-POST http://localhost:3200/auth/register/v2
+POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "Oss",
+    "email": "lawme@gmail.com",
     "password": "1233dfs4",
     "nameFirst": "first name",
     "nameLast": "last name"
 }
 
+
+###
+// Login
+POST http://localhost:3200/auth/login/v2/
+content-type: application/json
+
+{
+    "email": "lawme@gmail.com",
+    "password": "1233dfs4"
+}
+
+
 ###
 //Clear
-DELETE http://localhost:3200/clear/v1
+DELETE http://localhost:3200/clear/v1/
 content-type: application/json
 
 

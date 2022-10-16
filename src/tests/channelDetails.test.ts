@@ -33,7 +33,10 @@ beforeEach(() => {
   invalidChannelId = Math.abs(channelId0) + Math.abs(channelId1) + Math.abs(channelId2) + 10;
 });
 // TEARDOWN
-afterEach(() => { clearV1(); });
+afterEach(() => {
+  clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
+});
 
 // ------------------Error Testing------------------//
 

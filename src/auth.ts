@@ -13,6 +13,101 @@ import {
   AuthRegistorReturn
 } from './data.types';
 
+// ////////////////////////////////////////////////////// //
+//                        AuthLoginV1                     //
+// ////////////////////////////////////////////////////// //
+
+/**
+ * Given a registered user's email and password, returns their authUserId value.
+ *
+ * @param {string, string} - users and password
+ * @returns {AuthLoginReturn} - authUserId
+ */
+function authLoginV1(email: string, password: string): AuthLoginReturn {
+  if (!isEmailUsed(email)) {
+    return { error: 'Email does not belong to a user' };
+  }
+
+  if (!isPasswordCorrect(email, password)) {
+    return { error: 'Password is incorrect' };
+  }
+
+  const data: DataStore = getData();
+  for (const user of data.users) {
+    if (email.toLowerCase() === user.email.toLowerCase()) {
+      const token: Token = generateToken(email);
+      user.activeTokens.push(token);
+      data.activeTokens.push(token);
+      return <AuthLoginReturn> { token: token.token, authUserId: user.uId };
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////// //
+//                     AuthRegisterV1                     //
+// ////////////////////////////////////////////////////// //
+
+/**
+ * Adds a new user to the dataStore.
+ *
+ * @param {string, string, string, string} - user information to store
+ * @returns {AuthRegistorReturn} - unique user id
+ */
+
+function authRegisterV1(
+  email: string,
+  password: string,
+  nameFirst: string,
+  nameLast: string
+): AuthRegistorReturn {
+  if (!validator.isEmail(email)) {
+    return { error: 'Invalid Email' };
+  }
+  if (isEmailUsed(email)) {
+    return { error: 'Email is already taken' };
+  }
+  const minPasswordLength = 6;
+  if (password.length < minPasswordLength) {
+    return { error: 'Passwords must at-least 6 characters' };
+  }
+  const maxNameLength = 50;
+  const minNameLength = 1;
+  if (nameFirst.length < minNameLength || nameFirst.length > maxNameLength) {
+    return { error: 'First name must be between 1-50 characters long (inclusive)' };
+  }
+  if (nameLast.length < minNameLength || nameLast.length > maxNameLength) {
+    return { error: 'Last name must be between 1-50 characters long (inclusive)' };
+  }
+
+  const handleStr: string = generateHandleStr(nameFirst, nameLast);
+  const authUserId: AuthUserId = generateAuthUserId();
+
+  let globalPermission: GlobalPermision = 'member';
+  if (authUserId.authUserId === GLOBAL_OWNER) {
+    globalPermission = 'owner';
+  }
+  const token: Token = generateToken(email);
+  const userStore: UserStore = {
+    uId: authUserId.authUserId,
+    nameFirst: nameFirst,
+    nameLast: nameLast,
+    email: email,
+    password: password,
+    handleStr: handleStr,
+    globalPermission: globalPermission,
+    activeTokens: [],
+  };
+
+  const data: DataStore = getData();
+
+  userStore.activeTokens.push(token);
+  data.activeTokens.push(token);
+  data.users.push(userStore);
+  setData(data);
+
+  return <AuthRegistorReturn> { token: token.token, authUserId: authUserId.authUserId };
+}
+
 // ------------------Auth Helper functions------------------
 
 /**
@@ -108,101 +203,6 @@ function isPasswordCorrect(email: string, password: string) {
       }
     }
   }
-}
-
-// ////////////////////////////////////////////////////// //
-//                        AuthLoginV1                     //
-// ////////////////////////////////////////////////////// //
-
-/**
- * Given a registered user's email and password, returns their authUserId value.
- *
- * @param {string, string} - users and password
- * @returns {AuthLoginReturn} - authUserId
- */
-function authLoginV1(email: string, password: string): AuthLoginReturn {
-  if (!isEmailUsed(email)) {
-    return { error: 'Email does not belong to a user' };
-  }
-
-  if (!isPasswordCorrect(email, password)) {
-    return { error: 'Password is incorrect' };
-  }
-
-  const data: DataStore = getData();
-  for (const user of data.users) {
-    if (email.toLowerCase() === user.email.toLowerCase()) {
-      const token: Token = generateToken(email);
-      user.activeTokens.push(token);
-      data.activeTokens.push(token);
-      return <AuthLoginReturn> { token: token.token, authUserId: user.uId };
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////// //
-//                     AuthRegisterV1                     //
-// ////////////////////////////////////////////////////// //
-
-/**
- * Adds a new user to the dataStore.
- *
- * @param {string, string, string, string} - user information to store
- * @returns {AuthRegistorReturn} - unique user id
- */
-
-function authRegisterV1(
-  email: string,
-  password: string,
-  nameFirst: string,
-  nameLast: string
-): AuthRegistorReturn {
-  if (!validator.isEmail(email)) {
-    return { error: 'Invalid Email' };
-  }
-  if (isEmailUsed(email)) {
-    return { error: 'Email is already taken' };
-  }
-  const minPasswordLength = 6;
-  if (password.length < minPasswordLength) {
-    return { error: 'Passwords must at-least 6 characters' };
-  }
-  const maxNameLength = 50;
-  const minNameLength = 1;
-  if (nameFirst.length < minNameLength || nameFirst.length > maxNameLength) {
-    return { error: 'First name must be between 1-50 characters long (inclusive)' };
-  }
-  if (nameLast.length < minNameLength || nameLast.length > maxNameLength) {
-    return { error: 'Last name must be between 1-50 characters long (inclusive)' };
-  }
-
-  const handleStr: string = generateHandleStr(nameFirst, nameLast);
-  const authUserId: AuthUserId = generateAuthUserId();
-
-  let globalPermission: GlobalPermision = 'member';
-  if (authUserId.authUserId === GLOBAL_OWNER) {
-    globalPermission = 'owner';
-  }
-  const token: Token = generateToken(email);
-  const userStore: UserStore = {
-    uId: authUserId.authUserId,
-    nameFirst: nameFirst,
-    nameLast: nameLast,
-    email: email,
-    password: password,
-    handleStr: handleStr,
-    globalPermission: globalPermission,
-    activeTokens: [],
-  };
-
-  const data: DataStore = getData();
-
-  userStore.activeTokens.push(token);
-  data.activeTokens.push(token);
-  data.users.push(userStore);
-  setData(data);
-
-  return <AuthRegistorReturn> { token: token.token, authUserId: authUserId.authUserId };
 }
 
 export {

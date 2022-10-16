@@ -1,4 +1,4 @@
-import { ok } from 'assert';
+
 import request from 'sync-request';
 import config from '../config.json';
 import {
@@ -7,7 +7,7 @@ import {
   Error,
 } from '../data.types';
 
-export const OK = 200;
+const OK = 200;
 const port = config.port;
 const url = config.url;
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
@@ -16,7 +16,6 @@ export const LOGIN_URL = `${url}:${port}/auth/login/v2`;
 export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v2`;
 export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;
 export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v2`;
-
 export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v2`;
 export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v2`;
 export const CHAN_INV_URL = `${url}:${port}/channel/invite/v2`;

@@ -17,8 +17,8 @@ beforeEach(() => {
 // Tear down
 afterEach(() => {
   clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
 });
-
 describe('Error Handling', () => {
   test('Invalid authUserId', () => {
     expect(userProfileV1(invalidUserId, userId0)).toStrictEqual({ error: expect.any(String) });

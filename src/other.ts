@@ -1,5 +1,4 @@
 
-/* import MD5 from 'crypto-md5'; */
 const MD5 = require('crypto-md5');
 import {
   setData,
@@ -13,28 +12,12 @@ import {
   Token,
 } from './data.types';
 
-function getTimeInSecs() {
-  const time: number = Math.floor(Date.now() / 1000);
-  return time;
-}
-
 /**
  * Set data back to initial state.
  * @param {}
  * @returns {}
  */
-function generateToken(email: string) {
-  const time = getTimeInSecs().toString();
-  const token: Token = { token: MD5(time + email.toString().toString()) };
-  return token;
-}
-
-/**
- * Set data back to initial state.
- * @param {}
- * @returns {}
- */
-function clearV1() {
+export function clearV1() {
   let data: DataStore = getData();
   data = {
     users: [],
@@ -47,10 +30,44 @@ function clearV1() {
 }
 
 /**
+ * Set data back to initial state.
+ * @param {Token}
+ * @returns {boolean}
+ */
+export function isActiveToken(token: Token) {
+  const data: DataStore = getData();
+  if (data.activeTokens.includes(token)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Set data back to initial state.
+ * @param {}
+ * @returns {number}
+ */
+export function getTimeInSecs() {
+  const time: number = Math.floor(Date.now() / 1000);
+  return time;
+}
+
+/**
+ * Set data back to initial state.
+ * @param {}
+ * @returns {Token}
+ */
+export function generateToken(email: string) {
+  const time = Date.now().toString();
+  const token: Token = { token: MD5(time + email.toString()).slice(0, 10) };
+  return token;
+}
+
+/**
  * @param {string} - users handle
  * @returns {boolean} - is handle unique
  */
-function isValidAuthUserId(authUserId: number) {
+export function isValidAuthUserId(authUserId: number) {
   const data: DataStore = getData();
 
   if (!data.users.length) {
@@ -69,7 +86,7 @@ function isValidAuthUserId(authUserId: number) {
  * @returns {boolean} - does channel exist
  */
 
-function isValidChannelId(channelId: number) {
+export function isValidChannelId(channelId: number) {
   const data: DataStore = getData();
 
   if (!data.channels.length) {
@@ -87,7 +104,7 @@ function isValidChannelId(channelId: number) {
  * @param {number, number} - authorised user's id and channel id
  * @returns {boolean} - is user already member of channel
  */
-function isAuthUserMember(authUserId: number, channelId: number) {
+export function isAuthUserMember(authUserId: number, channelId: number) {
   const data: DataStore = getData();
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
@@ -99,13 +116,13 @@ function isAuthUserMember(authUserId: number, channelId: number) {
   return false;
 }
 
-function getUserStoreFromId(uId: number): UserStore {
+export function getUserStoreFromId(uId: number): UserStore {
   const data: DataStore = getData();
   const user: UserStore = data.users.find(a => a.uId === uId);
   return user;
 }
 
-function getChannelStoreFromId(channelId: number):ChannelStore {
+export function getChannelStoreFromId(channelId: number):ChannelStore {
   const data: DataStore = getData();
   const channel: ChannelStore = data.channels.find(a => a.channelId === channelId);
   return channel;
@@ -114,21 +131,10 @@ function getChannelStoreFromId(channelId: number):ChannelStore {
  * @param {number} - uId
  * @returns {boolean} - is user a global owner
  */
-function isGlobalOwner (authUserId: number) {
+export function isGlobalOwner (authUserId: number) {
   const user: UserStore = getUserStoreFromId(authUserId);
   if (user.globalPermission === 'owner') {
     return true;
   }
   return false;
 }
-
-export {
-  clearV1,
-  isValidAuthUserId,
-  isValidChannelId,
-  isAuthUserMember,
-  getUserStoreFromId,
-  getChannelStoreFromId,
-  isGlobalOwner,
-  generateToken,
-};
