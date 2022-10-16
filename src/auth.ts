@@ -110,7 +110,9 @@ function isPasswordCorrect(email: string, password: string) {
   }
 }
 
-// ------------------authLoginV1------------------
+// ////////////////////////////////////////////////////// //
+//                        AuthLoginV1                     //
+// ////////////////////////////////////////////////////// //
 
 /**
  * Given a registered user's email and password, returns their authUserId value.
@@ -138,7 +140,9 @@ function authLoginV1(email: string, password: string): AuthLoginReturn {
   }
 }
 
-// ------------------authRegisterV1------------------
+// ////////////////////////////////////////////////////// //
+//                     AuthRegisterV1                     //
+// ////////////////////////////////////////////////////// //
 
 /**
  * Adds a new user to the dataStore.

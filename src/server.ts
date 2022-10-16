@@ -7,6 +7,7 @@ import {
   authLoginV1,
   authRegisterV1,
 } from './auth';
+import { channelsCreateV1 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
 
@@ -32,7 +33,9 @@ app.get('/echo', (req: Request, res: Response, next) => {
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
 
-// ------------------Interface Wrappers------------------
+// ////////////////////////////////////////////////////// //
+//                    Interface Wrappers                  //
+// ////////////////////////////////////////////////////// //
 app.post('/auth/login/v2', (req: Request, res: Response) => {
   const { email, password } = req.body;
   res.json(authLoginV1(email, password));
@@ -43,16 +46,23 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
   res.json(authRegisterV1(email, password, nameFirst, nameLast));
 });
 
+app.post('channels/create/v2', (req: Request, res: Response) => {
+  const { token, name, isPublic } = req.body;
+  res.json(channelsCreateV1(token, name, isPublic));
+});
+
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
-// ------------------------------------------------------
 
-// -----------------for debugging delete later-------------
+// ////////////////////////////////////////////////////// //
+//                for debugging *delete later*            //
+// ////////////////////////////////////////////////////// //
 app.post('/debug', (req: Request, res: Response) => {
   res.json(debug());
 });
-// --------------------------------------------------------
+// ----------------------------------------------------------
+
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE
