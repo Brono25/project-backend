@@ -5,6 +5,8 @@ import { DataStore } from './data.types';
 let data: DataStore = {
   users: [],
   channels: [],
+  activeTokens: [],
+  messageIds: [],
 };
 
 // Use get() to access the data

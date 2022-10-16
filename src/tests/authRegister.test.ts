@@ -1,80 +1,142 @@
 
-import {
-  authRegisterV1,
-} from '../auth';
-import { AuthUserId } from '../data.types';
-import { clearV1 } from '../other';
+import { AuthRegistorReturn } from '../data.types';
 import * as h from './test.helper';
+
+// Setup
+
+beforeEach(() => {
+  h.postRequest(h.REGISTER_URL, {
+    email: h.email0,
+    password: h.password0,
+    nameFirst: h.firstName0,
+    nameLast: h.lastName0,
+  });
+});
 
 // Tear down
 afterEach(() => {
-  clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
 });
 
 // ------------------Test------------------//
 
 describe('Error Handling', () => {
   test('Invalid email', () => {
-    const args: h.Args = [h.invalidEmail, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.invalidEmail,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Email address already in use', () => {
-    const args0: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-    const args1: h.Args = [h.email0, h.password1, h.firstName1, h.lastName1];
-    authRegisterV1(...args0);
-    expect(authRegisterV1(...args1)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email0,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Attempt to assign uppercase email when lower case email is already taken', () => {
-    const args0: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-    authRegisterV1(...args0);
-    const args1: h.Args = [h.email0AltCase, h.password1, h.firstName1, h.lastName1];
-    expect(authRegisterV1(...args1)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email0AltCase,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 
   test('Invalid password (less than 6 characters)', () => {
-    const args: h.Args = [h.email0, h.invalidShortPassword, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.invalidShortPassword,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 
   test('Invalid first name (greater than 50 characters)', () => {
-    const args: h.Args = [h.email0, h.password0, h.invalidLongFirstName, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.invalidLongFirstName,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 
   test('Invalid last name (greater than 50 characters)', () => {
-    const args: h.Args = [h.email0, h.password0, h.firstName0, h.invalidLongLastName];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.invalidLongLastName,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Invalid empty first name', () => {
-    const args: h.Args = [h.email0, h.password0, h.invalidEmptyName, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.invalidEmptyName,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Invalid empty last name', () => {
-    const args: h.Args = [h.email0, h.password0, h.firstName0, h.invalidEmptyName];
-    expect(authRegisterV1(...args)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.invalidEmptyName,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 });
 
 describe('Function Testing', () => {
-  test('Create new user and get a number user ID', () => {
-    const args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args)).toStrictEqual(<AuthUserId>{ authUserId: expect.any(Number) });
+  test('Create new user and get a number user ID and token', () => {
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
   });
   test('Create new user with existing names and password but different email', () => {
-    const args0: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-    authRegisterV1(...args0);
-    const args1: h.Args = [h.email1, h.password0, h.firstName0, h.lastName0];
-    expect(authRegisterV1(...args1)).toStrictEqual(<AuthUserId>{ authUserId: expect.any(Number) });
+    const data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password0,
+      nameFirst: h.firstName0,
+      nameLast: h.lastName0,
+    });
+    expect(data).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
   });
   test('Create 100 users and get 100 unique ID\'s', () => {
     const numberOfUsers = 100;
     const userIdList = new Set();
     let email = '';
     for (let n = 0; n < numberOfUsers; n++) {
-      email = n.toString().concat(h.email0);
-      const args: h.Args = [email, h.password0, h.firstName0, h.lastName0];
-      const userId = authRegisterV1(...args);
-      userIdList.add(userId);
+      email = n.toString().concat(h.email2);
+      const data = h.postRequest(h.REGISTER_URL, {
+        email: email,
+        password: h.password0,
+        nameFirst: h.firstName0,
+        nameLast: h.lastName0,
+      });
+
+      userIdList.add(data);
     }
     expect(userIdList.size === numberOfUsers).toStrictEqual(true);
   });

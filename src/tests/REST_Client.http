@@ -1,0 +1,23 @@
+
+###
+// Register
+POST http://localhost:3200/auth/register/v2
+content-type: application/json
+
+{
+    "email": "Oss",
+    "password": "1233dfs4",
+    "nameFirst": "first name",
+    "nameLast": "last name"
+}
+
+###
+//Clear
+DELETE http://localhost:3200/clear/v1
+content-type: application/json
+
+
+###
+//debug - print all dataStore
+POST http://localhost:3200/debug/
+content-type: application/json

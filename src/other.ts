@@ -1,4 +1,6 @@
 
+/* import MD5 from 'crypto-md5'; */
+const MD5 = require('crypto-md5');
 import {
   setData,
   getData,
@@ -8,7 +10,24 @@ import {
   DataStore,
   ChannelStore,
   UserStore,
+  Token,
 } from './data.types';
+
+function getTimeInSecs() {
+  const time: number = Math.floor(Date.now() / 1000);
+  return time;
+}
+
+/**
+ * Set data back to initial state.
+ * @param {}
+ * @returns {}
+ */
+function generateToken(email: string) {
+  const time = getTimeInSecs().toString();
+  const token: Token = { token: MD5(time + email.toString().toString()) };
+  return token;
+}
 
 /**
  * Set data back to initial state.
@@ -20,6 +39,8 @@ function clearV1() {
   data = {
     users: [],
     channels: [],
+    activeTokens: [],
+    messageIds: [],
   };
   setData(data);
   return {};
@@ -80,22 +101,25 @@ function isAuthUserMember(authUserId: number, channelId: number) {
 
 function getUserStoreFromId(uId: number): UserStore {
   const data: DataStore = getData();
-
-  for (const user of data.users) {
-    if (user.uId === uId) {
-      return user;
-    }
-  }
+  const user: UserStore = data.users.find(a => a.uId === uId);
+  return user;
 }
 
 function getChannelStoreFromId(channelId: number):ChannelStore {
   const data: DataStore = getData();
-
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      return channel;
-    }
+  const channel: ChannelStore = data.channels.find(a => a.channelId === channelId);
+  return channel;
+}
+/**
+ * @param {number} - uId
+ * @returns {boolean} - is user a global owner
+ */
+function isGlobalOwner (authUserId: number) {
+  const user: UserStore = getUserStoreFromId(authUserId);
+  if (user.globalPermission === 'owner') {
+    return true;
   }
+  return false;
 }
 
 export {
@@ -105,4 +129,6 @@ export {
   isAuthUserMember,
   getUserStoreFromId,
   getChannelStoreFromId,
+  isGlobalOwner,
+  generateToken,
 };

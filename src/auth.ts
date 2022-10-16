@@ -1,13 +1,16 @@
 
 import validator from 'validator';
 import { setData, getData } from './dataStore';
+import { generateToken } from './other';
 import {
   DataStore,
   UserStore,
   GlobalPermision,
   GLOBAL_OWNER,
   AuthUserId,
-  Error
+  Token,
+  AuthLoginReturn,
+  AuthRegistorReturn
 } from './data.types';
 
 // ------------------Auth Helper functions------------------
@@ -107,37 +110,41 @@ function isPasswordCorrect(email: string, password: string) {
   }
 }
 
-// ------------------Auth Main functions------------------
+// ------------------authLoginV1------------------
 
 /**
  * Given a registered user's email and password, returns their authUserId value.
  *
  * @param {string, string} - users and password
- * @returns {number} - authUserId
+ * @returns {AuthLoginReturn} - authUserId
  */
-function authLoginV1(email: string, password: string): AuthUserId | Error {
-  if (isEmailUsed(email) === false) {
+function authLoginV1(email: string, password: string): AuthLoginReturn {
+  if (!isEmailUsed(email)) {
     return { error: 'Email does not belong to a user' };
   }
 
-  if (isPasswordCorrect(email, password) === false) {
+  if (!isPasswordCorrect(email, password)) {
     return { error: 'Password is incorrect' };
   }
 
   const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
-      const ret: AuthUserId = { authUserId: user.uId };
-      return ret;
+      const token: Token = generateToken(email);
+      user.activeTokens.push(token);
+      data.activeTokens.push(token);
+      return <AuthLoginReturn> { token: token.token, authUserId: user.uId };
     }
   }
 }
+
+// ------------------authRegisterV1------------------
 
 /**
  * Adds a new user to the dataStore.
  *
  * @param {string, string, string, string} - user information to store
- * @returns {number} - unique user id
+ * @returns {AuthRegistorReturn} - unique user id
  */
 
 function authRegisterV1(
@@ -145,7 +152,7 @@ function authRegisterV1(
   password: string,
   nameFirst: string,
   nameLast: string
-): AuthUserId | Error {
+): AuthRegistorReturn {
   if (!validator.isEmail(email)) {
     return { error: 'Invalid Email' };
   }
@@ -172,8 +179,8 @@ function authRegisterV1(
   if (authUserId.authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
-
-  const userDetails: UserStore = {
+  const token: Token = generateToken(email);
+  const userStore: UserStore = {
     uId: authUserId.authUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
@@ -181,13 +188,17 @@ function authRegisterV1(
     password: password,
     handleStr: handleStr,
     globalPermission: globalPermission,
+    activeTokens: [],
   };
 
   const data: DataStore = getData();
-  data.users.push(userDetails);
+
+  userStore.activeTokens.push(token);
+  data.activeTokens.push(token);
+  data.users.push(userStore);
   setData(data);
 
-  return authUserId;
+  return <AuthRegistorReturn> { token: token.token, authUserId: authUserId.authUserId };
 }
 
 export {

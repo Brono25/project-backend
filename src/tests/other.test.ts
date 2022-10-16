@@ -1,17 +1,31 @@
 
-import {
-  authRegisterV1,
-} from '../auth';
-
-import { clearV1 } from '../other';
-
-type Args = [string, string, string, string];
+import { AuthRegistorReturn } from '../data.types';
+import * as h from './test.helper';
 
 describe('clearV1()', () => {
-  test('Adding duplicate user after clearV1', () => {
-    const args: Args = ['test@gmail.com', '123456', 'firstName', 'lastName'];
-    expect(authRegisterV1(...args)).toStrictEqual({ authUserId: expect.any(Number) });
-    clearV1();
-    expect(authRegisterV1(...args)).toStrictEqual({ authUserId: expect.any(Number) });
+  test('Adding duplicate user after clearV1 should succeed if clear works', () => {
+    let data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
+
+    h.deleteRequest(h.CLEAR_URL, {});
+
+    data = h.postRequest(h.REGISTER_URL, {
+      email: h.email1,
+      password: h.password1,
+      nameFirst: h.firstName1,
+      nameLast: h.lastName1,
+    });
+    expect(data).toStrictEqual(<AuthRegistorReturn>{
+      authUserId: expect.any(Number),
+      token: expect.any(String),
+    });
   });
 });

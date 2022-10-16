@@ -6,14 +6,13 @@
  * Accessing only data needed for functions.
  */
 
-const GLOBAL_OWNER = 0;
+export const GLOBAL_OWNER = 0;
 
-type Error = { error: string };
-type UserId = { uId: number };
-type AuthUserId = { authUserId: number };
-type ChannelId = { channelId: number };
+type MessageId = { messageId: number };
+export type Error = { error: string };
+export type UserId = { uId: number };
 
-type User = {
+export type User = {
   uId: number;
   email: string;
   nameFirst: string;
@@ -21,25 +20,40 @@ type User = {
   handleStr: string;
 }
 
-type Channel = {
+export type Channel = {
   channelId: number;
   name: string;
 }
 
-type Message = {
+export type Message = {
   messageId: number;
   uId: number;
   message: string;
   timeSent: number;
 }
 
-type ChannelDetails = {
+export type ChannelDetails = {
   name: string;
   isPublic: boolean;
   ownerMembers: User[];
   allMembers: User[];
 }
+export type Token = {
+  token: string;
+}
 
+export type Dm = {
+  dmId: number;
+  name: string;
+}
+
+export type Uids = {
+  uIds: UserId[];
+}
+export type AuthUserId = { authUserId: number };
+export type ChannelId = { channelId: number };
+export type AuthLoginReturn = {token: string, authUserId: number} | Error;
+export type AuthRegistorReturn = {token: string, authUserId: number}| Error;
 /**********************************************************
  * -------------------Data Storage Types-------------------
  **********************************************************/
@@ -47,9 +61,9 @@ type ChannelDetails = {
  * Where all data is stored.
  */
 
-type GlobalPermision = 'owner' | 'member';
+export type GlobalPermision = 'owner' | 'member';
 
-type ChannelStore = {
+export type ChannelStore = {
   channelId: number;
   name: string;
   isPublic: boolean;
@@ -58,7 +72,7 @@ type ChannelStore = {
   messages: Message[];
 }
 
-type UserStore = {
+export type UserStore = {
   uId: number;
   nameFirst: string;
   nameLast: string;
@@ -66,25 +80,12 @@ type UserStore = {
   handleStr: string;
   globalPermission: GlobalPermision;
   password: string;
+  activeTokens: Token[];
 }
 
-type DataStore = {
+export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
+  activeTokens: Token[];
+  messageIds: MessageId[];
 }
-
-export {
-  Error,
-  UserId,
-  AuthUserId,
-  ChannelId,
-  User,
-  Channel,
-  Message,
-  ChannelDetails,
-  GlobalPermision,
-  ChannelStore,
-  UserStore,
-  DataStore,
-  GLOBAL_OWNER,
-};
