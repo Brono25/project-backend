@@ -65,7 +65,7 @@ export function channelsCreateReturnGaurd(channelId: ChannelId | Error): number 
   return null;
 }
 
-export const postRequest = (url: string, data: any): string => {
+export const postRequest = (url: string, data: any): any => {
   const res = request('POST', url, { json: data });
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;

@@ -1,41 +1,54 @@
 
-import {
-  authRegisterV1,
-  authLoginV1,
-} from '../auth';
-
-import { clearV1 } from '../other';
 import { AuthLoginReturn } from '../data.types';
 import * as h from './test.helper';
 
-// Setup
-let authUserId0: number;
-let authUserId2: number;
+// Setup: Create 3 users.
+let authUserId0: any;
+let authUserId2: any;
 beforeEach(() => {
-  // user 0
-  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-  authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
-  // user 1
-  args = [h.email1, h.password1, h.firstName1, h.lastName1];
-  authRegisterV1(...args);
-  // user 2
-  args = [h.email2, h.password2, h.firstName2, h.lastName2];
-  authUserId2 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  authUserId0 = h.postRequest(h.REGISTER_URL, {
+    email: h.email0,
+    password: h.password0,
+    nameFirst: h.firstName0,
+    nameLast: h.lastName0,
+  });
+  authUserId0 = parseInt(authUserId0.authUserId);
+  h.postRequest(h.REGISTER_URL, {
+    email: h.email1,
+    password: h.password1,
+    nameFirst: h.firstName1,
+    nameLast: h.lastName1,
+  });
+  authUserId2 = h.postRequest(h.REGISTER_URL, {
+    email: h.email2,
+    password: h.password2,
+    nameFirst: h.firstName2,
+    nameLast: h.lastName2,
+  });
+  authUserId2 = parseInt(authUserId2.authUserId);
 });
 
 // Tear down
 afterEach(() => {
-  clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
 });
 
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-  test('Incorrect  email', () => {
-    expect(authLoginV1(h.wrongEmail, h.password0)).toStrictEqual({ error: expect.any(String) });
+  test('Incorrect email', () => {
+    const data = h.postRequest(h.LOGIN_URL, {
+      email: h.wrongEmail,
+      password: h.password0,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Incorrect password', () => {
-    expect(authLoginV1(h.email0, h.wrongPassword)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.LOGIN_URL, {
+      email: h.email0,
+      password: h.wrongPassword,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 });
 
@@ -43,19 +56,31 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Authorise login for first user in database', () => {
-    expect(authLoginV1(h.email0, h.password0)).toStrictEqual(<AuthLoginReturn>{
+    const data = h.postRequest(h.LOGIN_URL, {
+      email: h.email0,
+      password: h.password0,
+    });
+    expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
       token: expect.any(String),
     });
   });
   test('Authorise login for last user in database', () => {
-    expect(authLoginV1(h.email2, h.password2)).toStrictEqual(<AuthLoginReturn>{
-      token: expect.any(String),
+    const data = h.postRequest(h.LOGIN_URL, {
+      email: h.email2,
+      password: h.password2,
+    });
+    expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId2,
+      token: expect.any(String),
     });
   });
   test('Authorise Login using upper case email matching lowercase', () => {
-    expect(authLoginV1(h.email0AltCase, h.password0)).toStrictEqual(<AuthLoginReturn>{
+    const data = h.postRequest(h.LOGIN_URL, {
+      email: h.email0AltCase,
+      password: h.password0,
+    });
+    expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
       token: expect.any(String),
     });
