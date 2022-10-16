@@ -51,33 +51,33 @@ export const channelName3 = 'Channel 3';
 export const isPublic = true;
 export const isNotPublic = false;
 
-export function authRegisterReturnGaurd(authUserId: AuthUserId | Error) {
+export function authRegisterReturnGaurd(authUserId: AuthUserId | Error): number {
   if ('authUserId' in authUserId) {
     return authUserId.authUserId;
   }
   return null;
 }
 
-export function channelsCreateReturnGaurd(channelId: ChannelId | Error) {
+export function channelsCreateReturnGaurd(channelId: ChannelId | Error): number {
   if ('channelId' in channelId) {
     return channelId.channelId;
   }
   return null;
 }
 
-export const postRequest = (url: string, data: any) => {
+export const postRequest = (url: string, data: any): string => {
   const res = request('POST', url, { json: data });
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const getRequest = (url: string, data: any) => {
+export const getRequest = (url: string, data: any): string => {
   const res = request('GET', url, { qs: data });
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const deleteRequest = (url: string, data: any) => {
+export const deleteRequest = (url: string, data: any): string => {
   const res = request('DELETE', url, {});
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
