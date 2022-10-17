@@ -5,10 +5,22 @@ POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "l=awme@gmail.com",
+    "email": "lswme@gmail.com",
     "password": "1233dfs4",
     "nameFirst": "first name",
     "nameLast": "last name"
+}
+
+
+###
+// Channel Create
+POST http://localhost:3200/channels/create/v2
+content-type: application/json
+
+{   
+    "token": "1QH7ePTacc",
+    "name": "Channel 1",
+    "isPublic": "true"
 }
 
 
