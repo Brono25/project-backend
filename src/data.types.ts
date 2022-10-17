@@ -60,6 +60,7 @@ export type ChannelMessagesReturn = {
   start: number;
   end: number;
 } | Error;
+export type MessageSendReturn = MessageId | Error;
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //
