@@ -57,7 +57,7 @@ describe('Function Testing', () => {
   test('Create channel', () => {
     const data = h.postRequest(h.CHAN_CREATE_URL, {
       token: token0,
-      name: h.invalidLongChannelName,
+      name: h.channelName0,
       isPublic: h.isPublic,
     });
     expect(data).toStrictEqual(<ChannelId>{ channelId: expect.any(Number) });
