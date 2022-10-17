@@ -5,7 +5,7 @@ POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "lswme@gmail.com",
+    "email": "swme@gmail.com",
     "password": "1233dfs4",
     "nameFirst": "first name",
     "nameLast": "last name"
@@ -18,7 +18,7 @@ POST http://localhost:3200/channels/create/v2
 content-type: application/json
 
 {   
-    "token": "1QH7ePTacc",
+    "token": "TzkyAxI6Sf",
     "name": "Channel 1",
     "isPublic": "true"
 }
@@ -32,6 +32,17 @@ content-type: application/json
 {
     "email": "lawme@gmail.com",
     "password": "123dfs4"
+}
+
+###
+// Message send
+POST http://localhost:3200/message/send/v1/
+content-type: application/json
+
+{   
+    "token": "1QH7ePTacc",
+    "channelId": 0,
+    "message": "message 1"
 }
 
 

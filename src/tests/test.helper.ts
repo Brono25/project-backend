@@ -78,6 +78,15 @@ export const channelName3 = 'Channel 3';
 export const isPublic = true;
 export const isNotPublic = false;
 
+export const message0 = 'This is the 0th message';
+export const message01 = 'This is the 1st message';
+export const message02 = 'This is the 2st message';
+
+export const invalidShortMessage = '';
+export const invalidLongMessage = 'x'.repeat(1001);
+
+export const invalidToken = 'not a valid token (probably)';
+
 export function authRegisterReturnGaurd(authUserId: AuthUserId | Error): number {
   if ('authUserId' in authUserId) {
     return authUserId.authUserId;
