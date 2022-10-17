@@ -7,6 +7,8 @@ import {
 import {
   isValidAuthUserId,
   isAuthUserMember,
+  isActiveToken,
+  findTokenOwner,
 } from './other';
 import {
   ChannelStore,
@@ -14,7 +16,8 @@ import {
   ChannelId,
   Channel,
   UserId,
-  Error
+  ChanCreateReturn,
+  Error,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -39,6 +42,38 @@ function channelsCreateV1(authUserId: number,
     return { error: 'Invalid User ID' };
   }
 
+  const userId: UserId = { uId: authUserId };
+  const channelId: ChannelId = generateChannelId();
+  const channel: ChannelStore = {
+    channelId: channelId.channelId,
+    name: name,
+    isPublic: isPublic,
+    ownerMembers: [userId],
+    allMembers: [userId],
+    messages: [],
+  };
+
+  const data: DataStore = getData();
+  data.channels.push(channel);
+  setData(data);
+
+  return channelId;
+}
+
+export function channelsCreateV2(
+  token: string,
+  name: string,
+  isPublic: boolean
+): ChanCreateReturn {
+  const maxChars = 20;
+  const minChars = 1;
+  if (name.length > maxChars || name.length < minChars) {
+    return { error: 'Channels name must be between 1-20 characters (inclusive)' };
+  }
+  if (!isActiveToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  const authUserId = findTokenOwner(token);
   const userId: UserId = { uId: authUserId };
   const channelId: ChannelId = generateChannelId();
   const channel: ChannelStore = {
