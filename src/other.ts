@@ -111,8 +111,8 @@ export function isValidChannelId(channelId: number) {
   }
   return false;
 }
-/**
- * @param {number, number} - authorised user's id and channel id
+/** Takes in a user ID or token
+ * @param {number|string, number} - authorised user's id and channel id
  * @returns {boolean} - is user already member of channel
  */
 export function isAuthUserMember(authUserId: number, channelId: number) {
@@ -123,6 +123,13 @@ export function isAuthUserMember(authUserId: number, channelId: number) {
         return true;
       }
     }
+  }
+  return false;
+}
+export function isTokenOwnerMember(token: string, channelId: number) {
+  const authUserId: number = findTokenOwner(token);
+  if (isAuthUserMember(authUserId, channelId)) {
+    return true;
   }
   return false;
 }
