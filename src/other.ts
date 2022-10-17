@@ -10,6 +10,8 @@ import {
   ChannelStore,
   UserStore,
   Token,
+  AuthUserId,
+  UserId,
 } from './data.types';
 
 /**
@@ -29,6 +31,10 @@ export function clearV1() {
   return {};
 }
 
+// ////////////////////////////////////////////////////// //
+//                       Token Function                   //
+// ////////////////////////////////////////////////////// //
+
 /**
  * Set data back to initial state.
  * @param {Token}
@@ -45,16 +51,6 @@ export function isActiveToken(token: Token) {
 /**
  * Set data back to initial state.
  * @param {}
- * @returns {number}
- */
-export function getTimeInSecs() {
-  const time: number = Math.floor(Date.now() / 1000);
-  return time;
-}
-
-/**
- * Set data back to initial state.
- * @param {}
  * @returns {Token}
  */
 export function generateToken(email: string) {
@@ -62,7 +58,24 @@ export function generateToken(email: string) {
   const token: Token = { token: MD5(time + email.toString()).slice(0, 10) };
   return token;
 }
+/**
+ * Get the uId of the token owner or return nothing.
+ * @param {Token}
+ * @returns {UserId|{}}
+ */
+export function findTokenOwner(token: Token): UserId | {} {
 
+  const data: DataStore = getData();
+  for (const user of data.users) {
+    if(user.activeTokens.includes(token)) {
+      return <UserId>{uId: user.uId};
+    }
+    return {};
+}
+
+// ////////////////////////////////////////////////////// //
+//                        ID Functions                    //
+// ////////////////////////////////////////////////////// //
 /**
  * @param {string} - users handle
  * @returns {boolean} - is handle unique
@@ -99,7 +112,6 @@ export function isValidChannelId(channelId: number) {
   }
   return false;
 }
-
 /**
  * @param {number, number} - authorised user's id and channel id
  * @returns {boolean} - is user already member of channel
@@ -127,6 +139,10 @@ export function getChannelStoreFromId(channelId: number):ChannelStore {
   const channel: ChannelStore = data.channels.find(a => a.channelId === channelId);
   return channel;
 }
+
+// ////////////////////////////////////////////////////// //
+//                        Permissions                     //
+// ////////////////////////////////////////////////////// //
 /**
  * @param {number} - uId
  * @returns {boolean} - is user a global owner
@@ -137,4 +153,17 @@ export function isGlobalOwner (authUserId: number) {
     return true;
   }
   return false;
+}
+
+// ////////////////////////////////////////////////////// //
+//                         Utilities                      //
+// ////////////////////////////////////////////////////// //
+/**
+ * Set data back to initial state.
+ * @param {}
+ * @returns {number}
+ */
+export function getTimeInSecs() {
+  const time: number = Math.floor(Date.now() / 1000);
+  return time;
 }
