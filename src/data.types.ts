@@ -5,7 +5,7 @@
 /*
  * Accessing only data needed for functions.
  */
-
+export const ID_ERROR = -1;
 export const GLOBAL_OWNER = 0;
 
 type MessageId = { messageId: number };
@@ -53,7 +53,8 @@ export type Uids = {
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
 export type AuthLoginReturn = {token: string, authUserId: number} | Error;
-export type AuthRegistorReturn = {token: string, authUserId: number}| Error;
+export type AuthRegistorReturn = {token: string, authUserId: number} | Error;
+export type ChanCreateReturn = ChannelId | Error;
 /**********************************************************
  * -------------------Data Storage Types-------------------
  **********************************************************/
