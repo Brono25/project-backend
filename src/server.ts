@@ -7,7 +7,7 @@ import {
   authLoginV1,
   authRegisterV1,
 } from './auth';
-import { channelsCreateV1 } from './channels';
+import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
 
@@ -48,7 +48,7 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
 
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
-  res.json(channelsCreateV1(token, name, isPublic));
+  res.json(channelsCreateV2(token, name, isPublic));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
