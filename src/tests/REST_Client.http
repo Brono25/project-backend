@@ -5,7 +5,7 @@ POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "lawme@gmail.com",
+    "email": "l=awme@gmail.com",
     "password": "1233dfs4",
     "nameFirst": "first name",
     "nameLast": "last name"
@@ -19,7 +19,7 @@ content-type: application/json
 
 {
     "email": "lawme@gmail.com",
-    "password": "1233dfs4"
+    "password": "123dfs4"
 }
 
 
