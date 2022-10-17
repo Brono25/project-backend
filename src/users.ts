@@ -3,6 +3,9 @@ import { DataStore, Error, User } from './data.types';
 import { isValidAuthUserId } from './other';
 import { getData } from './dataStore';
 
+// ////////////////////////////////////////////////////// //
+//                      userProfileV1                     //
+// ////////////////////////////////////////////////////// //
 /**
  * For a valid user, returns information about their user ID, email, first name, last name, and handle
  *

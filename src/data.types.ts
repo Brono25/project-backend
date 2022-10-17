@@ -1,7 +1,7 @@
 
-/**********************************************************
- * ------------------Input/Output Defines------------------
- **********************************************************/
+// ////////////////////////////////////////////////////// //
+//                         I/O types                      //
+// ////////////////////////////////////////////////////// //
 /*
  * Accessing only data needed for functions.
  */
@@ -55,9 +55,14 @@ export type ChannelId = { channelId: number };
 export type AuthLoginReturn = {token: string, authUserId: number} | Error;
 export type AuthRegistorReturn = {token: string, authUserId: number} | Error;
 export type ChanCreateReturn = ChannelId | Error;
-/**********************************************************
- * -------------------Data Storage Types-------------------
- **********************************************************/
+export type ChannelMessagesReturn = {
+  messages: Message[];
+  start: number;
+  end: number;
+} | Error;
+// ////////////////////////////////////////////////////// //
+//                       Data Storage                     //
+// ////////////////////////////////////////////////////// //
 /*
  * Where all data is stored.
  */
