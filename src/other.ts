@@ -10,8 +10,7 @@ import {
   ChannelStore,
   UserStore,
   Token,
-  AuthUserId,
-  UserId,
+  ID_ERROR,
 } from './data.types';
 
 /**
@@ -32,17 +31,17 @@ export function clearV1() {
 }
 
 // ////////////////////////////////////////////////////// //
-//                       Token Function                   //
+//                       Token Functions                  //
 // ////////////////////////////////////////////////////// //
 
 /**
  * Set data back to initial state.
- * @param {Token}
+ * @param {string}
  * @returns {boolean}
  */
-export function isActiveToken(token: Token) {
+export function isActiveToken(token: string) {
   const data: DataStore = getData();
-  if (data.activeTokens.includes(token)) {
+  if (data.activeTokens.find(a => a.token === token)) {
     return true;
   }
   return false;
@@ -60,17 +59,17 @@ export function generateToken(email: string) {
 }
 /**
  * Get the uId of the token owner or return nothing.
- * @param {Token}
- * @returns {UserId|{}}
+ * @param {string}
+ * @returns {UserId}
  */
-export function findTokenOwner(token: Token): UserId | {} {
-
+export function findTokenOwner(token: string): number {
   const data: DataStore = getData();
   for (const user of data.users) {
-    if(user.activeTokens.includes(token)) {
-      return <UserId>{uId: user.uId};
+    if (user.activeTokens.find(a => a.token === token)) {
+      return user.uId;
     }
-    return {};
+  }
+  return ID_ERROR;
 }
 
 // ////////////////////////////////////////////////////// //
