@@ -10,6 +10,7 @@ import {
 import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
+import { messageSendV1 } from './message';
 
 // Set up web app
 const app = express();
@@ -49,6 +50,11 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
   res.json(channelsCreateV2(token, name, isPublic));
+});
+
+app.post('message/send/v1', (req: Request, res: Response) => {
+  const { token, channelId, message } = req.body;
+  res.json(messageSendV1(token, channelId, message));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
