@@ -20,10 +20,13 @@ import {
   User,
   UserStore,
   Message,
+  ChannelMessagesReturn,
   Error
 } from './data.types';
 
-// ------------------channelDetailsV1------------------
+// ////////////////////////////////////////////////////// //
+//                      channelDetailsV1                  //
+// ////////////////////////////////////////////////////// //
 
 /**
  *Given a channel with ID channelId that the authorised user is
@@ -60,7 +63,9 @@ function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetail
   return channelDetails;
 }
 
-// ------------------channelJoinV1------------------
+// ////////////////////////////////////////////////////// //
+//                      channelJoinV1                     //
+// ////////////////////////////////////////////////////// //
 /**
  * Given a channelId of a channel that the authorised user can join, adds them to that channel.
  * @param {number, number} - user id and channel id
@@ -88,7 +93,9 @@ function channelJoinV1(authUserId: number, channelId: number) {
   return {};
 }
 
-// ------------------channelInviteV1------------------
+// ////////////////////////////////////////////////////// //
+//                     channelInviteV1                    //
+// ////////////////////////////////////////////////////// //
 /**
  *Invites a user with ID uId to join a channel with ID channelId.
  * @param {number, number, number} - authUserId, channelId and uId
@@ -122,13 +129,9 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   return {};
 }
 
-// ------------------channelMessagesV1------------------
-
-type ChannelMessagesReturn = {
-  messages: Message[];
-  start: number;
-  end: number;
-} | Error;
+// ////////////////////////////////////////////////////// //
+//                     channelMessagesV1                  //
+// ////////////////////////////////////////////////////// //
 
 /**
  * Given a channel with ID channelId that the authorised user

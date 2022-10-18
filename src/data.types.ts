@@ -1,14 +1,16 @@
 
-/**********************************************************
- * ------------------Input/Output Defines------------------
- **********************************************************/
+// ////////////////////////////////////////////////////// //
+//                         I/O types                      //
+// ////////////////////////////////////////////////////// //
 /*
  * Accessing only data needed for functions.
  */
-
+export const ID_ERROR = -1;
 export const GLOBAL_OWNER = 0;
+export const MAX_MSG_LEN = 1000;
+export const MIN_MSG_LEN = 1;
 
-type MessageId = { messageId: number };
+export type MessageId = { messageId: number };
 export type Error = { error: string };
 export type UserId = { uId: number };
 
@@ -53,10 +55,17 @@ export type Uids = {
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
 export type AuthLoginReturn = {token: string, authUserId: number} | Error;
-export type AuthRegistorReturn = {token: string, authUserId: number}| Error;
-/**********************************************************
- * -------------------Data Storage Types-------------------
- **********************************************************/
+export type AuthRegistorReturn = {token: string, authUserId: number} | Error;
+export type ChanCreateReturn = ChannelId | Error;
+export type ChannelMessagesReturn = {
+  messages: Message[];
+  start: number;
+  end: number;
+} | Error;
+export type MessageSendReturn = MessageId | Error;
+// ////////////////////////////////////////////////////// //
+//                       Data Storage                     //
+// ////////////////////////////////////////////////////// //
 /*
  * Where all data is stored.
  */

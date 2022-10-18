@@ -26,7 +26,10 @@ beforeEach(() => {
 });
 
 // Tear down
-afterEach(() => { clearV1(); });
+afterEach(() => {
+  clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
+});
 
 // ------------------Error Testing------------------//
 describe('Error Handling', () => {

@@ -1,3 +1,4 @@
+
 import request from 'sync-request';
 import config from '../config.json';
 import {
@@ -6,12 +7,38 @@ import {
   Error,
 } from '../data.types';
 
-export const OK = 200;
+const OK = 200;
 const port = config.port;
 const url = config.url;
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
 export const REGISTER_URL = `${url}:${port}/auth/register/v2`;
 export const LOGIN_URL = `${url}:${port}/auth/login/v2`;
+export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v2`;
+export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;
+export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v2`;
+export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v2`;
+export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v2`;
+export const CHAN_INV_URL = `${url}:${port}/channel/invite/v2`;
+export const CHAN_MSG_URL = `${url}:${port}/channel/messages/v2`;
+export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
+export const LOGOUT_URL = `${url}:${port}/auth/logout/v1`;
+export const CHAN_LEAVE_URL = `${url}:${port}/channel/leave/v1`;
+export const CHAN_ADD_OWNER_URL = `${url}:${port}/channel/addowner/v1`;
+export const CHAN_RMV_OWNER_URL = `${url}:${port}/channel/removeowner/v1`;
+export const MSG_SEND_URL = `${url}:${port}/message/send/v1`;
+export const MSG_EDIT_URL = `${url}:${port}/message/edit/v1`;
+export const MSG_RMV_URL = `${url}:${port}/message/remove/v1`;
+export const DM_CREATE_URL = `${url}:${port}/dm/create/v1`;
+export const DM_LIST_URL = `${url}:${port}/dm/list/v1`;
+export const DM_RMV_URL = `${url}:${port}/dm/remove/v1`;
+export const DM_DETAILS__URL = `${url}:${port}/dm/details/v1`;
+export const DM_LEAVE_URL = `${url}:${port}/dm/leave/v1`;
+export const DM_MSG_URL = `${url}:${port}/dm/messages/v1`;
+export const MSG_SEND_DM_URL = `${url}:${port}/message/senddm/v1`;
+export const USER_ALL_URL = `${url}:${port}/users/all/v1`;
+export const USER_PROF_SET_NAME_URL = `${url}:${port}/user/profile/setname/v1`;
+export const USER_PROF_SET_EMAIL_URL = `${url}:${port}/user/profile/setemail/v1`;
+export const USER_PROF_SET_HANDLE_URL = `${url}:${port}/user/profile/sethandle/v1`;
 
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
@@ -51,6 +78,15 @@ export const channelName3 = 'Channel 3';
 export const isPublic = true;
 export const isNotPublic = false;
 
+export const message0 = 'This is the 0th message';
+export const message01 = 'This is the 1st message';
+export const message02 = 'This is the 2st message';
+
+export const invalidShortMessage = '';
+export const invalidLongMessage = 'x'.repeat(1001);
+
+export const invalidToken = 'not a valid token (probably)';
+
 export function authRegisterReturnGaurd(authUserId: AuthUserId | Error): number {
   if ('authUserId' in authUserId) {
     return authUserId.authUserId;
@@ -65,20 +101,23 @@ export function channelsCreateReturnGaurd(channelId: ChannelId | Error): number 
   return null;
 }
 
-export const postRequest = (url: string, data: any): any => {
+export const postRequest = (url: string, data: any): object => {
   const res = request('POST', url, { json: data });
+  expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const getRequest = (url: string, data: any): string => {
+export const getRequest = (url: string, data: any): object => {
   const res = request('GET', url, { qs: data });
+  expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const deleteRequest = (url: string, data: any): string => {
+export const deleteRequest = (url: string, data: any): object => {
   const res = request('DELETE', url, {});
+  expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
