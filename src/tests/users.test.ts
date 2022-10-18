@@ -1,11 +1,13 @@
 
+import { StringMappingType } from 'typescript';
 import { UserProfileReturn } from '../data.types';
 import * as h from './test.helper';
 
-// Setup: Create 3 users.
+// Setup
 
 let authUserId0: any;
-let authUserId2: any;
+let authUserToken: string;
+
 beforeEach(() => {
   authUserId0 = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
@@ -13,20 +15,8 @@ beforeEach(() => {
     nameFirst: h.firstName0,
     nameLast: h.lastName0,
   });
+  authUserToken = authUserId0.token;
   authUserId0 = parseInt(authUserId0.authUserId);
-  h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  authUserId2 = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-  authUserId2 = parseInt(authUserId2.authUserId);
 });
 // Tear down
 afterEach(() => {
@@ -44,7 +34,7 @@ describe('Error Handling', () => {
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Invalid token', () => {
-    const data = h.postRequest(h.USER_PROF_URL, {
+    const data = h.getRequest(h.USER_PROF_URL, {
       token: 'invalidToken',
       uId: authUserId0.uId,
     });
@@ -57,13 +47,13 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Valid token and uId', () => {
     const data = h.getRequest(h.USER_PROF_URL, {
-      token: authUserId0.token,
-      uId: authUserId0.uId,
+      token: authUserToken,
+      uId: authUserId0,
     });
 
     expect(data).toStrictEqual(<UserProfileReturn>{
       user: {
-        uId: authUserId0.uId,
+        uId: authUserId0,
         email: h.email0,
         nameFirst: h.firstName0,
         nameLast: h.lastName0,
