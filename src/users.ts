@@ -1,6 +1,6 @@
 
 import { DataStore, Error, User } from './data.types';
-import { isValidAuthUserId } from './other';
+import { isActiveToken, isValidAuthUserId } from './other';
 import { getData } from './dataStore';
 
 // ////////////////////////////////////////////////////// //
@@ -13,10 +13,15 @@ import { getData } from './dataStore';
  * @returns {user} -Object containing uId, email, nameFirst, nameLast, handleStr
  */
 
-function userProfileV1(authUserId: number, uId: number): {user: User} | Error {
-  if (!isValidAuthUserId(authUserId)) {
+function userProfileV2(token: string, uId: number): {user: User} | Error {
+  if (!isValidAuthUserId(uId)) {
     return { error: 'authUserId is invalid!' };
   }
+
+  if (!isActiveToken(token)) {
+    return { error: 'token is invalid!' };
+  }
+
   const data: DataStore = getData();
 
   for (const user of data.users) {
@@ -36,5 +41,5 @@ function userProfileV1(authUserId: number, uId: number): {user: User} | Error {
 }
 
 export {
-  userProfileV1,
+  userProfileV2,
 };
