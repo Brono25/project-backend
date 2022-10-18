@@ -12,7 +12,7 @@ import { debug } from './debug';
 import { clearV1 } from './other';
 import { messageSendV1 } from './message';
 import { userProfileV2 } from './users';
-
+import { dmCreateV1 } from './dm';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -56,6 +56,10 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, channelId, message));
+});
+app.post('/dm/create/v1', (req: Request, res: Response) => {
+  const { token, uId } = req.body;
+  res.json(dmCreateV1(token, uId ));
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {

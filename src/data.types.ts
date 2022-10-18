@@ -49,14 +49,16 @@ export type Dm = {
   name: string;
 }
 
-export type Uids = {
-  uIds: UserId[];
-}
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
-export type AuthLoginReturn = {token: string, authUserId: number} | Error;
+export type AuthLoginReturn = {
+  token: string, 
+  authUserId: number
+} | Error;
 export type UserProfileReturn = { user: User} | Error;
-export type AuthRegistorReturn = {token: string, authUserId: number} | Error;
+export type AuthRegistorReturn = {token: string,
+  authUserId: number
+} | Error;
 export type ChanCreateReturn = ChannelId | Error;
 export type ChannelMessagesReturn = {
   messages: Message[];
@@ -64,6 +66,7 @@ export type ChannelMessagesReturn = {
   end: number;
 } | Error;
 export type MessageSendReturn = MessageId | Error;
+export type DmCreateReturn = {dmId: number} | Error;
 
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
@@ -92,11 +95,19 @@ export type UserStore = {
   globalPermission: GlobalPermision;
   password: string;
   activeTokens: Token[];
+  dms: Dm;
 }
-
+export type DmStore = {
+  dmId: number;
+  name: string;
+  owner: string;
+  messages: Message[];
+  allMembers: UserId[];
+}
 export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
   activeTokens: Token[];
   messageIds: MessageId[];
+  dms: DmStore[];
 }
