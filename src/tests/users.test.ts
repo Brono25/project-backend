@@ -44,7 +44,7 @@ describe('Error Handling', () => {
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
   test('Invalid token', () => {
-    const data = h.postRequest(h.LOGIN_URL, {
+    const data = h.postRequest(h.USER_PROF_URL, {
       token: 'invalidToken',
       uId: authUserId0.uId,
     });
@@ -56,13 +56,12 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Valid token and uId', () => {
-
     const data = h.getRequest(h.USER_PROF_URL, {
       token: authUserId0.token,
       uId: authUserId0.uId,
     });
 
-    expect(data).toStrictEqual(<UserProfileReturn>{ 
+    expect(data).toStrictEqual(<UserProfileReturn>{
       user: {
         uId: authUserId0.uId,
         email: h.email0,
