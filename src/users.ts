@@ -19,9 +19,9 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
   }
 
   if (!isActiveToken(token)) {
-    return { error: 'token is invalid!'}
+    return { error: 'token is invalid!' };
   }
-  
+
   const data: DataStore = getData();
 
   for (const user of data.users) {

@@ -1,5 +1,4 @@
 
-import { StringMappingType } from 'typescript';
 import { UserProfileReturn } from '../data.types';
 import * as h from './test.helper';
 
