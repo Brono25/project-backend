@@ -8,7 +8,7 @@ import {
   isValidAuthUserId,
   isAuthUserMember,
   isActiveToken,
-  findTokenOwner,
+  getTokenOwnersUid,
 } from './other';
 import {
   ChannelStore,
@@ -73,7 +73,7 @@ export function channelsCreateV2(
   if (!isActiveToken(token)) {
     return { error: 'Invalid Token' };
   }
-  const authUserId = findTokenOwner(token);
+  const authUserId = getTokenOwnersUid(token);
   const userId: UserId = { uId: authUserId };
   const channelId: ChannelId = generateChannelId();
   const channel: ChannelStore = {

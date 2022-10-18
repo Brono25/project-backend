@@ -1,9 +1,12 @@
 import * as h from './test.helper';
+import {
+  MessageId,
+} from '../data.types';
 
-const error0 = 'Invalid channel ID';
-const error1 = 'Invalid message length';
-const error2 = 'Only members can message on the channel';
-const error3 = 'Invalid token';
+const invChanId = 'Invalid channel ID';
+const invMessage = 'Invalid message length';
+const nonMember = 'Only members can message on the channel';
+const invToken = 'Invalid token';
 
 // Setup
 let token0: string;
@@ -52,7 +55,7 @@ describe('Error Handling', () => {
       channelId: invalidChannelId,
       message: h.message0
     });
-    expect(data).toStrictEqual({ error: error0 });
+    expect(data).toStrictEqual({ error: invChanId });
   });
   test('Message too short', () => {
     const data = h.postRequest(h.MSG_SEND_URL, {
@@ -60,7 +63,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       message: h.invalidShortMessage,
     });
-    expect(data).toStrictEqual({ error: error1 });
+    expect(data).toStrictEqual({ error: invMessage });
   });
   test('Message too long', () => {
     const data = h.postRequest(h.MSG_SEND_URL, {
@@ -68,7 +71,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       message: h.invalidLongMessage,
     });
-    expect(data).toStrictEqual({ error: error1 });
+    expect(data).toStrictEqual({ error: invMessage });
   });
   test('Valid channel, user exists but is not a member', () => {
     const data = h.postRequest(h.MSG_SEND_URL, {
@@ -76,7 +79,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       message: h.message0
     });
-    expect(data).toStrictEqual({ error: error2 });
+    expect(data).toStrictEqual({ error: nonMember });
   });
   test('Invalid Token', () => {
     const data = h.postRequest(h.MSG_SEND_URL, {
@@ -84,6 +87,19 @@ describe('Error Handling', () => {
       channelId: channelId0,
       message: h.message0
     });
-    expect(data).toStrictEqual({ error: error3 });
+    expect(data).toStrictEqual({ error: invToken });
+  });
+});
+
+// ------------------Function Testing------------------//
+
+describe('Function Testing', () => {
+  test('Sending a message', () => {
+    const data = h.postRequest(h.MSG_SEND_URL, {
+      token: token0,
+      channelId: channelId0,
+      message: h.message0
+    });
+    expect(data).toStrictEqual(<MessageId>{ messageId: expect.any(Number) });
   });
 });

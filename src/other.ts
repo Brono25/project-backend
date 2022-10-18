@@ -11,6 +11,7 @@ import {
   UserStore,
   Token,
   ID_ERROR,
+  MessageId,
 } from './data.types';
 
 /**
@@ -62,7 +63,7 @@ export function generateToken(email: string) {
  * @param {string}
  * @returns {UserId}
  */
-export function findTokenOwner(token: string): number {
+export function getTokenOwnersUid(token: string): number {
   const data: DataStore = getData();
   for (const user of data.users) {
     if (user.activeTokens.find(a => a.token === token)) {
@@ -127,7 +128,7 @@ export function isAuthUserMember(authUserId: number, channelId: number) {
   return false;
 }
 export function isTokenOwnerMember(token: string, channelId: number) {
-  const authUserId: number = findTokenOwner(token);
+  const authUserId: number = getTokenOwnersUid(token);
   if (isAuthUserMember(authUserId, channelId)) {
     return true;
   }
@@ -144,6 +145,16 @@ export function getChannelStoreFromId(channelId: number):ChannelStore {
   const data: DataStore = getData();
   const channel: ChannelStore = data.channels.find(a => a.channelId === channelId);
   return channel;
+}
+
+export function generateMessageId() {
+  const data: DataStore = getData();
+  const messageIds: MessageId[] = data.messageIds;
+  let newMessageId = Math.floor(Math.random() * Math.pow(2, 32));
+  while (messageIds.find(a => a.messageId === newMessageId)) {
+    newMessageId = Math.floor(Math.random() * Math.pow(2, 32));
+  }
+  return newMessageId;
 }
 
 // ////////////////////////////////////////////////////// //
