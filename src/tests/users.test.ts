@@ -1,44 +1,73 @@
-import { User } from '../data.types';
-import { authRegisterV1 } from '../auth';
-import { userProfileV1 } from '../users';
-import { clearV1 } from '../other';
+
+import { UserProfileReturn } from '../data.types';
 import * as h from './test.helper';
 
-// ------------------Auth Register Test------------------//
+// Setup: Create 3 users.
 
-// Setup
-let userId0: number;
-let invalidUserId: number;
+let authUserId0: any;
+let authUserId2: any;
 beforeEach(() => {
-  const args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-  userId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
-  invalidUserId = Math.abs(userId0) + 10;
+  authUserId0 = h.postRequest(h.REGISTER_URL, {
+    email: h.email0,
+    password: h.password0,
+    nameFirst: h.firstName0,
+    nameLast: h.lastName0,
+  });
+  authUserId0 = parseInt(authUserId0.authUserId);
+  h.postRequest(h.REGISTER_URL, {
+    email: h.email1,
+    password: h.password1,
+    nameFirst: h.firstName1,
+    nameLast: h.lastName1,
+  });
+  authUserId2 = h.postRequest(h.REGISTER_URL, {
+    email: h.email2,
+    password: h.password2,
+    nameFirst: h.firstName2,
+    nameLast: h.lastName2,
+  });
+  authUserId2 = parseInt(authUserId2.authUserId);
 });
 // Tear down
 afterEach(() => {
-  clearV1();
+  h.deleteRequest(h.CLEAR_URL, {});
 });
+
+// ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-  test('Invalid authUserId', () => {
-    expect(userProfileV1(invalidUserId, userId0)).toStrictEqual({ error: expect.any(String) });
+  test('Incorrect uId', () => {
+    const data = h.getRequest(h.USER_URL, {
+      token: authUserId0.token,
+      uId: Math.abs(authUserId0.uId) + 10,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
-  test('Invalid uId', () => {
-    expect(userProfileV1(userId0, invalidUserId)).toStrictEqual({ error: expect.any(String) });
+  test('Invalid token', () => {
+    const data = h.postRequest(h.LOGIN_URL, {
+      token: 'invalidToken',
+      uId: authUserId0.uId,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 });
 
-describe('Function Testing', () => {
-  test('Valid authUserId and uId', () => {
-    const args: h.Args = [h.email1, h.password1, h.firstName1, h.lastName1];
-    const userId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+// ------------------Function Testing------------------//
 
-    expect(userProfileV1(userId0, userId1)).toStrictEqual({
-      user: <User> {
-        uId: userId1,
-        email: h.email1,
-        nameFirst: h.firstName1,
-        nameLast: h.lastName1,
+describe('Function Testing', () => {
+  test('Valid topken and uId', () => {
+
+    const data = h.getRequest(h.USER_URL, {
+      token: authUserId0.token,
+      uId: authUserId0.uId,
+    });
+
+    expect(data).toStrictEqual(<UserProfileReturn>{ 
+      user: {
+        uId: authUserId0.uId,
+        email: h.email0,
+        nameFirst: h.firstName0,
+        nameLast: h.lastName0,
         handleStr: expect.any(String),
       }
     });
