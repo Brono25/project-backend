@@ -55,7 +55,7 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
-  test('Valid topken and uId', () => {
+  test('Valid token and uId', () => {
 
     const data = h.getRequest(h.USER_URL, {
       token: authUserId0.token,
