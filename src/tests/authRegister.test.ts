@@ -3,7 +3,6 @@ import { AuthRegistorReturn } from '../data.types';
 import * as h from './test.helper';
 
 // Setup
-
 beforeEach(() => {
   h.postRequest(h.REGISTER_URL, {
     email: h.email0,

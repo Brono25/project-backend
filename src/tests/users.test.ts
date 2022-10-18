@@ -37,7 +37,7 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Incorrect uId', () => {
-    const data = h.getRequest(h.USER_URL, {
+    const data = h.getRequest(h.USER_PROF_URL, {
       token: authUserId0.token,
       uId: Math.abs(authUserId0.uId) + 10,
     });
@@ -57,7 +57,7 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Valid token and uId', () => {
 
-    const data = h.getRequest(h.USER_URL, {
+    const data = h.getRequest(h.USER_PROF_URL, {
       token: authUserId0.token,
       uId: authUserId0.uId,
     });
