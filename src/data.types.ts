@@ -52,14 +52,10 @@ export type Dm = {
 export type Uids = {
   uIds: UserId[];
 }
-
-/**********************************************************
- * -------------------Data Storage Types-------------------
- **********************************************************/
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
 export type AuthLoginReturn = {token: string, authUserId: number} | Error;
-export type UserProfileReturn = { user: User } | Error;
+export type UserProfileReturn = { user: User} | Error;
 export type AuthRegistorReturn = {token: string, authUserId: number} | Error;
 export type ChanCreateReturn = ChannelId | Error;
 export type ChannelMessagesReturn = {
@@ -68,6 +64,7 @@ export type ChannelMessagesReturn = {
   end: number;
 } | Error;
 export type MessageSendReturn = MessageId | Error;
+
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //
