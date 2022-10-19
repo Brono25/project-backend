@@ -30,7 +30,7 @@ POST http://localhost:3200/auth/login/v2/
 content-type: application/json
 
 {
-    "email": "1eac@gmail.com",
+    "email": "b@gmail.com",
     "password": "1233dfs4"
 }
 ###

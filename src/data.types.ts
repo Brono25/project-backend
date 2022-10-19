@@ -67,6 +67,7 @@ export type ChannelMessagesReturn = {
 } | Error;
 export type MessageSendReturn = MessageId | Error;
 export type DmCreateReturn = {dmId: number} | Error;
+export type UsersAllReturn = { users: User[] } | Error;
 
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
