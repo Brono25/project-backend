@@ -12,7 +12,7 @@ import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
 import { messageSendV1 } from './message';
-import { userProfileV2 } from './users';
+import { userProfileV2, usersAllv1 } from './users';
 
 // Set up web app
 const app = express();
@@ -67,7 +67,12 @@ app.post('/message/send/v1', (req: Request, res: Response) => {
 app.get('/user/profile/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const uId = req.query.uId as string;
-  res.json(userProfileV2(token, +uId));
+  res.json(userProfileV2(token, parseInt(uId)));
+});
+
+app.get('/users/all/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  res.json(usersAllv1(token));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
