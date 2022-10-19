@@ -14,6 +14,8 @@ let token0: string;
 let token1 : string;
 let token2 : string;
 
+let invalidChannelId: any;
+
 beforeEach(() => {
   // Channels 0 and private
   channelId0 = h.postRequest(h.CHAN_CREATE_URL, {
@@ -54,11 +56,11 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = tmp2.token;
-});
+
 
 //error inputs
-let invalidChannelId: any = Math.abs(channelId0) + 10;
-
+invalidChannelId = Math.abs(channelId0) + 10;
+});
 
 // Tear down
 afterEach(() => {
