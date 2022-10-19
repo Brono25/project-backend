@@ -6,6 +6,7 @@ import cors from 'cors';
 import {
   authLoginV1,
   authRegisterV1,
+  AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
@@ -46,6 +47,11 @@ app.post('/auth/login/v2', (req: Request, res: Response) => {
 app.post('/auth/register/v2', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
   res.json(authRegisterV1(email, password, nameFirst, nameLast));
+});
+
+app.post('/auth/logout/v1', (req: Request, res: Response) => {
+  const { token } = req.body;
+  res.json(AuthLogoutV1(token));
 });
 
 app.post('/channels/create/v2', (req: Request, res: Response) => {

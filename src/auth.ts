@@ -1,7 +1,7 @@
 
 import validator from 'validator';
 import { setData, getData } from './dataStore';
-import { generateToken } from './other';
+import { generateToken, getTokenOwnersUid, getUserStoreFromId, isActiveToken } from './other';
 import {
   DataStore,
   UserStore,
@@ -108,6 +108,43 @@ function authRegisterV1(
   return <AuthRegistorReturn> { token: token.token, authUserId: authUserId.authUserId };
 }
 
+// ////////////////////////////////////////////////////// //
+//                     AuthLogoutv1                     //
+// ////////////////////////////////////////////////////// //
+
+/**
+ * Logouts a user by invalidating their token
+ *
+ * @param {string} - token
+ * @returns {}
+ */
+
+function AuthLogoutV1(token: string): any {
+  if (!isActiveToken(token)) {
+    return { error: 'token is invalid!' };
+  }
+
+  const data: DataStore = getData();
+  const tokensList: Token[] = data.activeTokens;
+  const newTokensList: Token[] = tokensList.filter(element => {
+    return element.token !== token;
+  });
+
+  data.activeTokens = newTokensList;
+
+  const uId: number = getTokenOwnersUid(token);
+  const user: UserStore = getUserStoreFromId(uId);
+  const index = data.users.indexOf(user);
+  const tokensList1: Token[] = user.activeTokens;
+  const newTokensList1: Token[] = tokensList1.filter(element => {
+    return element.token !== token;
+  });
+  user.activeTokens = newTokensList1;
+  data.users[index] = user;
+  setData(data);
+  return {};
+}
+
 // ------------------Auth Helper functions------------------
 
 /**
@@ -208,4 +245,5 @@ function isPasswordCorrect(email: string, password: string) {
 export {
   authLoginV1,
   authRegisterV1,
+  AuthLogoutV1
 };
