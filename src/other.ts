@@ -26,6 +26,7 @@ export function clearV1(): any {
     channels: [],
     activeTokens: [],
     messageIds: [],
+    dms: [],
   };
   setData(data);
   return {};

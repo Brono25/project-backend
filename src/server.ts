@@ -65,8 +65,8 @@ app.post('/message/send/v1', (req: Request, res: Response) => {
   res.json(messageSendV1(token, channelId, message));
 });
 app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const { token, uId } = req.body;
-  res.json(dmCreateV1(token, uId));
+  const { token, uIds } = req.body;
+  res.json(dmCreateV1(token, uIds));
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {

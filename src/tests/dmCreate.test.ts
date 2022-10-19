@@ -1,8 +1,4 @@
 import * as h from './test.helper';
-import {
-  UserId,
-} from '../data.types'
-import { token } from 'morgan';
 
 // Setup: Create 3 users.
 let uId0: number;
@@ -20,7 +16,7 @@ beforeEach(() => {
     nameLast: h.lastName0,
   });
   token0 = tmp.token;
-  uId0 = tmp.uId;
+  uId0 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
@@ -28,7 +24,7 @@ beforeEach(() => {
     nameLast: h.lastName1,
   });
   token1 = tmp.token;
-  uId1 = tmp.uId;
+  uId1 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email2,
     password: h.password2,
@@ -36,7 +32,7 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = tmp.token;
-  uId2 = tmp.uId;
+  uId2 = parseInt(tmp.authUserId);
   invalidUid = Math.abs(uId0) + Math.abs(uId1) + Math.abs(uId2) + 10;
 });
 
@@ -45,32 +41,29 @@ afterEach(() => {
   h.deleteRequest(h.CLEAR_URL, {});
 });
 
-
-
-
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
   test('Atleast one invalid Uid', () => {
     const data = h.postRequest(h.DM_CREATE_URL, {
       token: token0,
-      uIds: [uId1, uId2, invalidUid]
+      uIds: [uId1, uId2, invalidUid],
     });
     expect(data).toStrictEqual({ error: 'Invalid User ID' });
   });
   test('Duplicate User IDs in uIds', () => {
     const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token0,
+      token: token1,
       uIds: [uId1, uId2, uId1],
     });
     expect(data).toStrictEqual({ error: 'Duplicate uId' });
   });
-   test('Duplicate User IDs in uIds', () => {
+  test('Creator among uIds', () => {
     const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token0,
+      token: token2,
       uIds: [uId1, uId2, uId0],
     });
-    expect(data).toStrictEqual({ error: 'Cannot have creator in uIds' });
+    expect(data).toStrictEqual({ error: 'Dm creator can not include themselves' });
   });
   test('Invalid Token', () => {
     const data = h.postRequest(h.DM_CREATE_URL, {
