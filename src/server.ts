@@ -66,7 +66,7 @@ app.post('/message/send/v1', (req: Request, res: Response) => {
 });
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uId } = req.body;
-  res.json(dmCreateV1(token, uId ));
+  res.json(dmCreateV1(token, uId));
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {

@@ -52,7 +52,7 @@ export type Dm = {
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
 export type AuthLoginReturn = {
-  token: string, 
+  token: string,
   authUserId: number
 } | Error;
 export type UserProfileReturn = { user: User} | Error;
