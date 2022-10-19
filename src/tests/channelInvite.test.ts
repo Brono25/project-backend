@@ -1,28 +1,68 @@
 
-import { channelInviteV1 } from '../channel';
-import { authRegisterV1 } from '../auth';
-import { channelsCreateV1 } from '../channels';
 import { clearV1 } from '../other';
 import * as h from './test.helper';
 
 // Setup
-let authUserId0: number;
-let invalidAuthUserId: number;
-let channelId0: number;
-let invalidChannelId: number;
-let authUserId1: number;
+let token0: string;
+let token1: string;
+
+let channelId0: any;
+
+let uId0: any;
+let uId1: any;
+
+let invalidChannelId: any;
+let invalidUId: any;
+
+
 beforeEach(() => {
-  // Users 0,1
-  let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
-  authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
-  args = [h.email1, h.password1, h.firstName1, h.lastName1];
-  authUserId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  // tokens 0,1
+  const tmp0: any = h.postRequest(h.REGISTER_URL, {
+    email: h.email0,
+    password: h.password0,
+    nameFirst: h.firstName0,
+    nameLast: h.lastName0,
+  });
+  token0 = tmp0.token;
+
+  const tmp1: any = h.postRequest(h.REGISTER_URL, {
+    email: h.email1,
+    password: h.password1,
+    nameFirst: h.firstName1,
+    nameLast: h.lastName1,
+  });
+  token1 = tmp1.token;
+
   // Channel 0
-  args = [authUserId0, h.channelName0, h.isPublic];
-  channelId0 = h.channelsCreateReturnGaurd(channelsCreateV1(...args));
-  // Error types
-  invalidAuthUserId = Math.abs(authUserId0) + Math.abs(authUserId1) + 10;
+  channelId0 = h.postRequest(h.CHAN_CREATE_URL, {
+    token: token0,
+    name: h.channelName0,
+    isPublic: h.isPublic,
+  });
+  channelId0 = parseInt(channelId0.channelId);
+
+  // uIds 0 and 1
+  uId0 = h.postRequest(h.REGISTER_URL, {
+    email: h.email0,
+    password: h.password0,
+    nameFirst: h.firstName0,
+    nameLast: h.lastName0,
+  });
+  uId0 = parseInt(uId0.authUserId);
+  
+  uId1 = h.postRequest(h.REGISTER_URL, {
+    email: h.email1,
+    password: h.password1,
+    nameFirst: h.firstName1,
+    nameLast: h.lastName1,
+  });
+  uId1 = parseInt(uId1.authUserId);
+
+
+  //error inputs
   invalidChannelId = Math.abs(channelId0) + 10;
+  invalidUId = Math.abs(uId0) + 10;
+
 });
 
 // Tear down
@@ -33,31 +73,65 @@ afterEach(() => {
 
 // ------------------Error Testing------------------//
 describe('Error Handling', () => {
+
   test('Invalid channel Id', () => {
-    expect(channelInviteV1(authUserId0, invalidChannelId, authUserId1)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.CHAN_INV_URL,{
+      token: token0,
+      channelId: invalidChannelId,
+      uId: uId0,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
+  });
+
+
+  test('Invalid User Id', () => {
+    const data = h.postRequest(h.CHAN_INV_URL,{
+      token: token0,
+      channelId: channelId0,
+      uId: invalidUId,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 
   test('User already member of channel', () => {
-    expect(channelInviteV1(authUserId0, channelId0, authUserId0)).toStrictEqual({ error: expect.any(String) });
-  });
-
-  test('Invalid User Id', () => {
-    expect(channelInviteV1(invalidAuthUserId, channelId0, authUserId1)).toStrictEqual({ error: expect.any(String) });
-  });
-
-  test('Invalid User Id', () => {
-    expect(channelInviteV1(authUserId0, channelId0, invalidAuthUserId)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.CHAN_INV_URL,{
+      token: token0,
+      channelId: channelId0,
+      uId: uId0,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
 
   test('authUser not a member', () => {
-    expect(channelInviteV1(authUserId1, channelId0, authUserId1)).toStrictEqual({ error: expect.any(String) });
+    const data = h.postRequest(h.CHAN_INV_URL,{
+      token: token1,
+      channelId: channelId0,
+      uId: uId1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
   });
+
+  test('Invalid token', () => {
+    const data = h.postRequest(h.CHAN_INV_URL,{
+      token: 'invalid token Id',
+      channelId: channelId0,
+      uId: uId1,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
+  });
+
 });
 
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
   test('adds the user to the channel', () => {
-    expect(channelInviteV1(authUserId0, channelId0, authUserId1)).toStrictEqual({});
+    const data = h.postRequest(h.CHAN_INV_URL,{
+      token: token0,
+      channelId: channelId0,
+      uId: uId1,
+    });
+    expect(data).toStrictEqual({});
   });
 });
+
