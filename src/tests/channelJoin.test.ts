@@ -28,6 +28,7 @@ beforeEach(() => {
     name: h.channelName1,
     isPublic: h.isNotPublic,
   });
+  channelIdPriv = parseInt(channelIdPriv.channelId);
 
   //tokens 0,1 and 2
   const tmp0: any = h.postRequest(h.REGISTER_URL, {
@@ -56,7 +57,7 @@ beforeEach(() => {
 });
 
 //error inputs
-let invalidChannelId: any = Math.abs(channelId0.uId) + 10;
+let invalidChannelId: any = Math.abs(channelId0) + 10;
 
 
 // Tear down
