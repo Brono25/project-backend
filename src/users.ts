@@ -1,5 +1,5 @@
 
-import { DataStore, Error, User } from './data.types';
+import { DataStore, Error, User, UsersAllReturn } from './data.types';
 import { isActiveToken, isValidAuthUserId } from './other';
 import { getData } from './dataStore';
 
@@ -40,6 +40,28 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
   return { error: 'User to view is invalid!' };
 }
 
+function usersAllv1(token: string): UsersAllReturn {
+  if (!isActiveToken(token)) {
+    return { error: 'token is invalid!' };
+  }
+
+  const data: DataStore = getData();
+  let userDetails: User;
+  const usersList: User[] = [];
+  for (const user of data.users) {
+    userDetails = {
+      uId: user.uId,
+      email: user.email,
+      nameFirst: user.nameFirst,
+      nameLast: user.nameLast,
+      handleStr: user.handleStr,
+    };
+    usersList.push(userDetails);
+  }
+  return { users: usersList };
+}
+
 export {
   userProfileV2,
+  usersAllv1,
 };
