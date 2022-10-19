@@ -86,26 +86,26 @@ describe('Function Testing', () => {
     expect(data).toStrictEqual({
       users: [
         {
-            uId: authUser0.authUserId,
-            email: h.email0,
-            nameFirst: h.firstName0,
-            nameLast: h.lastName0,
-            handleStr: expect.any(String),
-          },
-          {
-            uId: authUser1.authUserId,
-            email: h.email1,
-            nameFirst: h.firstName1,
-            nameLast: h.lastName1,
-            handleStr: expect.any(String),
-          },
-          {
-            uId: authUser2.authUserId,
-            email: h.email2,
-            nameFirst: h.firstName2,
-            nameLast: h.lastName2,
-            handleStr: expect.any(String),
-          }
+          uId: authUser0.authUserId,
+          email: h.email0,
+          nameFirst: h.firstName0,
+          nameLast: h.lastName0,
+          handleStr: expect.any(String),
+        },
+        {
+          uId: authUser1.authUserId,
+          email: h.email1,
+          nameFirst: h.firstName1,
+          nameLast: h.lastName1,
+          handleStr: expect.any(String),
+        },
+        {
+          uId: authUser2.authUserId,
+          email: h.email2,
+          nameFirst: h.firstName2,
+          nameLast: h.lastName2,
+          handleStr: expect.any(String),
+        }
       ]
     });
   });
