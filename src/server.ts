@@ -13,6 +13,7 @@ import { debug } from './debug';
 import { clearV1 } from './other';
 import { messageSendV1 } from './message';
 import { userProfileV2 } from './users';
+import { channelJoinV2 } from './channel';
 
 // Set up web app
 const app = express();
@@ -68,6 +69,11 @@ app.get('/user/profile/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const uId = req.query.uId as string;
   res.json(userProfileV2(token, +uId));
+});
+
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId} = req.body;
+  res.json(channelJoinV2(token, channelId));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {

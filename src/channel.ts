@@ -11,6 +11,8 @@ import {
   getChannelStoreFromId,
   getUserStoreFromId,
   isGlobalOwner,
+  isActiveToken,
+  getTokenOwnersUid,
 } from './other';
 
 import {
@@ -21,8 +23,10 @@ import {
   UserStore,
   Message,
   ChannelMessagesReturn,
-  Error
+  Error,
+  ChannelJoinReturn,
 } from './data.types';
+import { channel } from 'diagnostics_channel';
 
 // ////////////////////////////////////////////////////// //
 //                      channelDetailsV1                  //
@@ -90,6 +94,35 @@ function channelJoinV1(authUserId: number, channelId: number) {
   channelStore.allMembers.push({ uId: authUserId });
   setData(data);
 
+  return {};
+}
+
+export function channelJoinV2(
+  token: string,
+  channelId: number,
+): ChannelJoinReturn {
+
+  const authUserId = getTokenOwnersUid(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+
+  } else if (isAuthUserMember(authUserId, channelId) === true) {
+    return { error: 'User is already a member of the channel' };
+  
+  } else if (isChannelPrivate(channelId) &&
+  !isAuthUserMember(authUserId, channelId) &&
+  !isGlobalOwner(authUserId)) {
+    return { error: 'Private channel' };
+
+  } else if (!isActiveToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+
+  const data: DataStore = getData();
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  channelStore.allMembers.push({ uId: authUserId });
+  setData(data);
   return {};
 }
 
