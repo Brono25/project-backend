@@ -5,10 +5,10 @@ POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "2eac@gmail.com",
+    "email": "bB@gmail.com",
     "password": "1233dfs4",
-    "nameFirst": "first name",
-    "nameLast": "last name"
+    "nameFirst": "bB",
+    "nameLast": "cB"
 }
 
 
@@ -28,8 +28,8 @@ POST http://localhost:3200/dm/create/v1
 content-type: application/json
 
 {   
-    "token": "5uE6Frd07d",
-    "uIds": [0]
+    "token": "kVhkm4ZTrs",
+    "uIds": [1,2]
 }
 
 
