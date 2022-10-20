@@ -13,6 +13,7 @@ export const MIN_MSG_LEN = 1;
 export type MessageId = { messageId: number };
 export type Error = { error: string };
 export type UserId = { uId: number };
+export type DmId = { dmId: number };
 
 export type User = {
   uId: number;
@@ -49,14 +50,16 @@ export type Dm = {
   name: string;
 }
 
-export type Uids = {
-  uIds: UserId[];
-}
 export type AuthUserId = { authUserId: number };
 export type ChannelId = { channelId: number };
-export type AuthLoginReturn = {token: string, authUserId: number} | Error;
+export type AuthLoginReturn = {
+  token: string,
+  authUserId: number
+} | Error;
 export type UserProfileReturn = { user: User} | Error;
-export type AuthRegistorReturn = {token: string, authUserId: number} | Error;
+export type AuthRegistorReturn = {token: string,
+  authUserId: number
+} | Error;
 export type ChanCreateReturn = ChannelId | Error;
 export type ChannelMessagesReturn = {
   messages: Message[];
@@ -64,6 +67,7 @@ export type ChannelMessagesReturn = {
   end: number;
 } | Error;
 export type MessageSendReturn = MessageId | Error;
+export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 
 // ////////////////////////////////////////////////////// //
@@ -93,11 +97,19 @@ export type UserStore = {
   globalPermission: GlobalPermision;
   password: string;
   activeTokens: Token[];
+  dmIdsIsMemberOf: number[];
 }
-
+export type DmStore = {
+  dmId: number;
+  name: string;
+  ownerId: number;
+  messages: Message[];
+  allMembersId: number[];
+}
 export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
   activeTokens: Token[];
   messageIds: MessageId[];
+  dms: DmStore[];
 }

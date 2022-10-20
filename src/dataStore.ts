@@ -7,6 +7,7 @@ let data: DataStore = {
   channels: [],
   activeTokens: [],
   messageIds: [],
+  dms: [],
 };
 
 // Use get() to access the data
