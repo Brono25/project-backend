@@ -176,3 +176,4 @@ dist/**/*
 
 # Extra added
 test_suite.sh
+DataStorage/*.JSON

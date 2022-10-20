@@ -42,6 +42,9 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
   return { error: 'User to view is invalid!' };
 }
 
+// ////////////////////////////////////////////////////// //
+//                      usersAllv1                        //
+// ////////////////////////////////////////////////////// //
 /**
  * For a valid token, returns a list of all users and their associated details.
  *
@@ -69,7 +72,9 @@ function usersAllv1(token: string): UsersAllReturn {
   }
   return { users: usersList };
 }
-
+// ////////////////////////////////////////////////////// //
+//                  userProfileSetNameV1                  //
+// ////////////////////////////////////////////////////// //
 /**
  * Update the authorised user's first and last name
  *
