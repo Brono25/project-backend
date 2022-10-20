@@ -11,6 +11,8 @@ import {
   getChannelStoreFromId,
   getUserStoreFromId,
   isGlobalOwner,
+  isActiveToken,
+  getTokenOwnersUid,
 } from './other';
 
 import {
@@ -129,6 +131,34 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   return {};
 }
 
+function channelInviteV2(token: string, channelId: number, uId: number) {
+  const authUserId: number = getTokenOwnersUid(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidAuthUserId(authUserId)) {
+    return { error: 'Invalid User Id' };
+  } else if (isAuthUserMember(uId, channelId)) {
+    return { error: 'User is already a member of the channel' };
+  } else if (!isAuthUserMember(authUserId, channelId)) {
+    const authUser = getUserStoreFromId(authUserId);
+    if (authUser.globalPermission !== 'owner') {
+      return { error: 'User is not a member of the channel' };
+    }
+  } else if (!isActiveToken(token)) {
+      return { error: 'token is invalid!' };
+  }
+
+  const data: DataStore = getData();
+  
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      channel.allMembers.push({ uId: uId });
+    }
+  }
+  setData(data);
+  return {};
+}
 // ////////////////////////////////////////////////////// //
 //                     channelMessagesV1                  //
 // ////////////////////////////////////////////////////// //
@@ -266,4 +296,5 @@ export {
   channelJoinV1,
   channelInviteV1,
   channelMessagesV1,
+  channelInviteV2,
 };
