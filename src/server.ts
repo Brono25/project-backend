@@ -12,7 +12,7 @@ import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
 import { messageSendV1 } from './message';
-import { userProfileSetNameV1, userProfileV2, usersAllv1 } from './users';
+import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
 
 // Set up web app
 const app = express();
@@ -79,6 +79,12 @@ app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   const { token, nameFirst, nameLast } = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
 });
+
+app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+  const { token, email } = req.body;
+  res.json(userProfileSetEmailV1(token, email));
+});
+
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());

@@ -2,6 +2,8 @@
 import { DataStore, Error, User, UsersAllReturn, UserStore } from './data.types';
 import { getTokenOwnersUid, getUserStoreFromId, isActiveToken, isValidAuthUserId } from './other';
 import { getData, setData } from './dataStore';
+import validator from 'validator';
+import { isEmailUsed } from './auth';
 
 // ////////////////////////////////////////////////////// //
 //                      userProfileV1                     //
@@ -99,8 +101,33 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
   return {};
 }
 
+function userProfileSetEmailV1(token: string, email: string): any {
+
+  if (!validator.isEmail(email)) {
+    return { error: 'Invalid Email' };
+  }
+
+  if (isEmailUsed(email)) {
+    return { error: 'Email is already taken' };
+  }
+
+  if (!isActiveToken(token)) {
+    return { error: 'token is invalid!' };
+  }
+
+  const data: DataStore = getData();
+  const uId: number = getTokenOwnersUid(token);
+  const userDetails: UserStore = getUserStoreFromId(uId);
+  const index = data.users.indexOf(userDetails);
+  userDetails.email = email;
+  data.users[index] = userDetails;
+  setData(data);
+  return {};
+}
+
 export {
   userProfileV2,
   usersAllv1,
   userProfileSetNameV1,
+  userProfileSetEmailV1,
 };
