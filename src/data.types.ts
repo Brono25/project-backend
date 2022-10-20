@@ -13,6 +13,7 @@ export const MIN_MSG_LEN = 1;
 export type MessageId = { messageId: number };
 export type Error = { error: string };
 export type UserId = { uId: number };
+export type DmId = { dmId: number };
 
 export type User = {
   uId: number;
