@@ -1,9 +1,14 @@
 
 import {
   DataStore,
-  DmCreateReturn, DmStore, UserStore,
+  DmCreateReturn,
+  DmStore,
+  UserStore,
 } from './data.types';
-import { getData, setData } from './dataStore';
+import { 
+  getData,
+  setData,
+} from './dataStore';
 
 import {
   isValidAuthUserId,
@@ -18,7 +23,7 @@ import {
 //                      dmCreateV1                        //
 // ////////////////////////////////////////////////////// //
 /**
- *
+ * Creat
  * @param {string, number[]}
  * @returns {number}
  */
