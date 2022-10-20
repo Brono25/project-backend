@@ -5,7 +5,7 @@ import {
   DmStore,
   UserStore,
 } from './data.types';
-import { 
+import {
   getData,
   setData,
 } from './dataStore';
