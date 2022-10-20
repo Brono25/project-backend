@@ -101,9 +101,9 @@ export type UserStore = {
 export type DmStore = {
   dmId: number;
   name: string;
-  owner: string;
+  ownerId: number;
   messages: Message[];
-  allMembers: UserId[];
+  allMembersId: number[];
 }
 export type DataStore = {
   users: UserStore[];

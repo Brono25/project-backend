@@ -12,6 +12,7 @@ import {
   Token,
   ID_ERROR,
   MessageId,
+  DmStore,
 } from './data.types';
 
 /**
@@ -156,6 +157,41 @@ export function generateMessageId() {
     newMessageId = Math.floor(Math.random() * Math.pow(2, 32));
   }
   return newMessageId;
+}
+
+export function generateDmId() {
+  const data: DataStore = getData();
+  const dmIdStores: DmStore[] = data.dms;
+  let newDmId = Math.floor(Math.random() * Math.pow(2, 32));
+  while (dmIdStores.find(a => a.dmId === newDmId)) {
+    newDmId = Math.floor(Math.random() * Math.pow(2, 32));
+  }
+  return newDmId;
+}
+
+/**
+ * @param {number} - User ID
+ * @returns {string} - HandleStr
+ */
+export function getHandleStrfromUid(uId: number): string {
+  const userStore: UserStore = getUserStoreFromId(uId);
+  return userStore.handleStr;
+}
+
+/**
+ * @param {number[]}
+ * @returns {string}
+ */
+export function generateDmName(uIds: number[]) {
+  const handleStrList: string[] = [];
+  for (const uId of uIds) {
+    const handleStr = getHandleStrfromUid(uId);
+    handleStrList.push(handleStr);
+  }
+  const name = handleStrList.sort(
+    (a, b) => a.toLowerCase().localeCompare(b.toLowerCase())
+  ).join(', ');
+  return name;
 }
 
 // ////////////////////////////////////////////////////// //

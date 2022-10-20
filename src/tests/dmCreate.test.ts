@@ -99,7 +99,6 @@ describe('Function Testing', () => {
         token: token0,
         uIds: [uId1, uId2],
       });
-
       dmIdList.add(data);
     }
     expect(dmIdList.size === numberOfDms).toStrictEqual(true);

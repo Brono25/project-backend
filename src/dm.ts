@@ -1,13 +1,17 @@
 
 import {
-  DmCreateReturn,
+  DataStore,
+  DmCreateReturn, DmStore, UserStore,
 } from './data.types';
+import { getData, setData } from './dataStore';
 
 import {
   isValidAuthUserId,
   getTokenOwnersUid,
   isActiveToken,
-  getHandleStrfromUid,
+  generateDmId,
+  generateDmName,
+  getUserStoreFromId,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -26,31 +30,31 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   if (numUniqueIds !== uIds.length) {
     return { error: 'Duplicate uId' };
   }
-  const creatorId = getTokenOwnersUid(token);
-  if (uIds.includes(creatorId)) {
+  const ownerId = getTokenOwnersUid(token);
+  if (uIds.includes(ownerId)) {
     return { error: 'Dm creator can not include themselves' };
   }
   if (!isActiveToken(token)) {
     return { error: 'Invalid Token' };
   }
-  uIds.unshift(creatorId);
-  generateDmName(uIds);
+  uIds.unshift(ownerId);
 
-  return { dmId: -1 };
-}
+  const dmId: number = generateDmId();
+  const dmStore: DmStore = {
+    dmId: dmId,
+    name: generateDmName(uIds),
+    ownerId: ownerId,
+    messages: [],
+    allMembersId: uIds,
+  };
 
-/**
- * @param {number[]}
- * @returns {string}
- */
-function generateDmName(uIds: number[]) {
-  const handleStrList: string[] = [];
+  const data: DataStore = getData();
+  data.dms.push(dmStore);
+  setData(data);
+
   for (const uId of uIds) {
-    const handleStr = getHandleStrfromUid(uId);
-    handleStrList.push(handleStr);
+    const userStore: UserStore = getUserStoreFromId(uId);
+    userStore.dmIdsIsMemberOf.push(dmId);
   }
-  const name = handleStrList.sort(
-    (a, b) => a.toLowerCase().localeCompare(b.toLowerCase())
-  ).join(', ');
-  return name;
+  return { dmId: dmId };
 }
