@@ -23,7 +23,8 @@ import {
   UserStore,
   Message,
   ChannelMessagesReturn,
-  Error
+  Error,
+  channelInviteReturn,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -131,7 +132,7 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   return {};
 }
 
-function channelInviteV2(token: string, channelId: number, uId: number) {
+function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
   const authUserId: number = getTokenOwnersUid(token);
 
   if (!isValidChannelId(channelId)) {

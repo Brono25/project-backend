@@ -61,6 +61,7 @@ export type AuthRegistorReturn = {token: string,
   authUserId: number
 } | Error;
 export type ChanCreateReturn = ChannelId | Error;
+export type channelInviteReturn = {} | Error;
 export type ChannelMessagesReturn = {
   messages: Message[];
   start: number;
