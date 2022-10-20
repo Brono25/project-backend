@@ -73,7 +73,7 @@ app.get('/user/profile/v2', (req: Request, res: Response) => {
 
 app.post('/channel/join/v2', (req: Request, res: Response) => {
   const { token, channelId} = req.body;
-  res.json(channelJoinV2(token, channelId));
+  res.json(channelJoinV2(token, parseInt(channelId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
