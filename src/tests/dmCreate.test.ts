@@ -73,3 +73,35 @@ describe('Error Handling', () => {
     expect(data).toStrictEqual({ error: 'Invalid Token' });
   });
 });
+
+// ------------------Function Testing------------------//
+
+describe('Function Testing', () => {
+  test('Create DM with two other users', () => {
+    const data = h.postRequest(h.DM_CREATE_URL, {
+      token: token0,
+      uIds: [uId1, uId2],
+    });
+    expect(data).toStrictEqual({ dmId: expect.any(Number) });
+  });
+  test('Create DM with only creator', () => {
+    const data = h.postRequest(h.DM_CREATE_URL, {
+      token: token0,
+      uIds: [],
+    });
+    expect(data).toStrictEqual({ dmId: expect.any(Number) });
+  });
+  test('Create 100 dms and get 100 unique ID\'s', () => {
+    const numberOfDms = 100;
+    const dmIdList = new Set();
+    for (let n = 0; n < numberOfDms; n++) {
+      const data = h.postRequest(h.DM_CREATE_URL, {
+        token: token0,
+        uIds: [uId1, uId2],
+      });
+
+      dmIdList.add(data);
+    }
+    expect(dmIdList.size === numberOfDms).toStrictEqual(true);
+  });
+});
