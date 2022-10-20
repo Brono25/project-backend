@@ -11,6 +11,7 @@ import {
   getChannelStoreFromId,
   getUserStoreFromId,
   isGlobalOwner,
+  isActiveToken,
 } from './other';
 
 import {
@@ -159,7 +160,7 @@ function channelMessagesV1(
   } else if (isAuthUserMember(authUserId, channelId) === false) {
     return { error: 'User is not a member of the channel' };
   }
-
+  
   const MAX_MSG_RETURN = 50;
   const NO_MORE_MSGS = -1;
   let end = 0;
@@ -191,6 +192,32 @@ function channelMessagesV1(
       end,
     };
   }
+};
+
+// ////////////////////////////////////////////////////// //
+//                     channeladdOwnerV1                  //
+// ////////////////////////////////////////////////////// //
+
+/**
+ * Make user with user id uId an owner of the channel.
+ * 
+ * @param {string, number, number} - token, channelId, uId
+ * @returns {}
+ */
+function channeladdOwnerV1(token: string, channelId: number, uId: number): any {
+  const authUser = getUserStoreFromId(uId);
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidAuthUserId(uId)) {
+    return { error: 'Invalid User Id' };
+  }  else if (!isAuthUserMember(uId, channelId)) {
+      return { error: 'User is not a member of the channel' };
+  } else if (authUser.globalPermission === 'member') {
+    return { error: 'User does not have owner permissions' };
+  } else if (isActiveToken(token) === false) {
+    return { error: 'Invalid token'};
+  };
+
 }
 
 // ------------------ Channel Helper functions------------------
