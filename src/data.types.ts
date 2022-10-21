@@ -70,6 +70,7 @@ export type MessageSendReturn = MessageId | Error;
 export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
+export type userProfSetHandleReturn = {} | Error;
 
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //

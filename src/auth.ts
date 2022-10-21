@@ -156,7 +156,7 @@ function AuthLogoutV1(token: string): any {
  * @param {string} - users handle
  * @returns {boolean} - is handle unique
  */
-function isHandleStrUnique(handleStr: string) {
+export function isHandleStrUnique(handleStr: string) {
   const data: DataStore = getData();
 
   if (!data.users.length) {

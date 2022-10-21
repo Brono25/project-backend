@@ -23,7 +23,8 @@ import {
 import {
   userProfileSetNameV1,
   userProfileV2,
-  usersAllv1
+  usersAllv1,
+  userProfileSetHandleV1,
 } from './users';
 
 // Set up web app
@@ -106,6 +107,12 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   const { token, nameFirst, nameLast } = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const handleStr = req.query.handleStr as string;
+  res.json(userProfileSetHandleV1(token, handleStr));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
