@@ -2,7 +2,10 @@
 import {
   DataStore,
   DmCreateReturn,
+  dmDetailsReturn,
   DmStore,
+  User,
+  UserStore,
 } from './data.types';
 import {
   getData,
@@ -15,6 +18,10 @@ import {
   isValidToken,
   generateDmId,
   generateDmName,
+  isValidDmId,
+  isTokenMemberOfDm,
+  getDmStore,
+  getUserStoreFromId,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -55,4 +62,44 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   data.dms.push(dmStore);
   setData(data);
   return { dmId: dmId };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmDetails                        //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {string, number[]}
+ * @returns {number}
+ */
+export function dmDetailsv1(token: string, dmId: number): dmDetailsReturn {
+  if (!isValidDmId(dmId)) {
+    return { error: 'Invalid dmId' };
+  }
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  if (!isTokenMemberOfDm(token, dmId)) {
+    return { error: 'Token owner is not a member of the dm' };
+  }
+
+  const dmDetails: DmStore = getDmStore(dmId);
+  const userList: User[] = [];
+  let userDetails: UserStore;
+  let user: User;
+  for (const uId of dmDetails.allMembersId) {
+    userDetails = getUserStoreFromId(uId);
+    user = {
+      uId: uId,
+      email: userDetails.email,
+      nameFirst: userDetails.nameFirst,
+      nameLast: userDetails.nameLast,
+      handleStr: userDetails.handleStr,
+    };
+    userList.push(user);
+  }
+  return {
+    name: dmDetails.name,
+    members: userList,
+  };
 }

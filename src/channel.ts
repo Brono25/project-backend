@@ -192,7 +192,6 @@ function channelMessagesV1(
     };
   }
 }
-
 // ------------------ Channel Helper functions------------------
 /**
  * Return a list containing owners and their details
