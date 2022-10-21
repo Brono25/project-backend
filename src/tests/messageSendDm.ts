@@ -97,3 +97,24 @@ describe('Error Handling', () => {
     expect(data).toStrictEqual({ error: 'Invalid Token' });
   });
 });
+
+// ------------------Function Testing------------------//
+
+describe('Function Testing', () => {
+  test('Owner Send  DM message', () => {
+    const data = h.postRequest(h.MSG_SEND_DM_URL, {
+      token: token0,
+      dmId: dmId,
+      message: h.message0,
+    });
+    expect(data).toStrictEqual({ messageId: expect.any(Number)});
+  });
+  test('Member Send DM message', () => {
+    const data = h.postRequest(h.MSG_SEND_DM_URL, {
+      token: token1,
+      dmId: dmId,
+      message: h.message0,
+    });
+    expect(data).toStrictEqual({ messageId: expect.any(Number)});
+  });
+});
