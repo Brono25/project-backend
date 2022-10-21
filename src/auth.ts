@@ -96,7 +96,6 @@ function authRegisterV1(
     handleStr: handleStr,
     globalPermission: globalPermission,
     activeTokens: [],
-    dmIdsIsMemberOf: [],
   };
 
   const data: DataStore = getData();
