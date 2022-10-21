@@ -28,8 +28,19 @@ POST http://localhost:3200/dm/create/v1
 content-type: application/json
 
 {   
-    "token": "fLRn92WpTY",
-    "uIds": [1]
+    "token": "29pRlDyKOV",
+    "uIds": []
+}
+
+###
+// Dm send message
+POST http://localhost:3200/message/senddm/v1
+content-type: application/json
+
+{   
+    "token": "rgbprd/1Hq",
+    "dmId": 3419783552,
+    "message": "Here is a message"
 }
 
 

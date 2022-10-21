@@ -3,15 +3,9 @@ import * as h from './test.helper';
 import {
   dmCreateV1,
 } from '../dm';
-import {
-  messageSendDmV1,
-} from '../message'
 
 // Setup: Create 3 users.
-let uId0: number;
 let uId1: number;
-let uId2: number;
-let invalidUid: number;
 let token0: string;
 let token1: string;
 let token2: string;
@@ -25,7 +19,6 @@ beforeEach(() => {
     nameLast: h.lastName0,
   });
   token0 = tmp.token;
-  uId0 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
@@ -41,8 +34,6 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = tmp.token;
-  uId2 = parseInt(tmp.authUserId);
-  invalidUid = Math.abs(uId0) + Math.abs(uId1) + Math.abs(uId2) + 10;
   tmp = dmCreateV1(token0, [uId1]);
   dmId = tmp.dmId;
   invalidDmId = dmId + 10;
@@ -56,7 +47,7 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-  test('Atleast one invalid Uid', () => {
+  test('Invalid DmId', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
       token: token0,
       dmId: invalidDmId,
@@ -70,7 +61,7 @@ describe('Error Handling', () => {
       dmId: dmId,
       message: h.invalidShortMessage,
     });
-    expect(data).toStrictEqual({ error: 'Message must be atleast 1 character' });
+    expect(data).toStrictEqual({ error: 'Invalid message length' });
   });
   test('Message more than length 1000', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
@@ -78,7 +69,7 @@ describe('Error Handling', () => {
       dmId: dmId,
       message: h.invalidLongMessage,
     });
-    expect(data).toStrictEqual({ error: 'Message must be less than 1000 characters' });
+    expect(data).toStrictEqual({ error: 'Invalid message length' });
   });
   test('User is not a member', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
@@ -88,13 +79,13 @@ describe('Error Handling', () => {
     });
     expect(data).toStrictEqual({ error: 'Invalid Member' });
   });
-  test('User is not a member', () => {
+  test('Invalid token', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
       token: h.invalidToken,
       dmId: dmId,
       message: h.message0,
     });
-    expect(data).toStrictEqual({ error: 'Invalid Token' });
+    expect(data).toStrictEqual({ error: 'Invalid token' });
   });
 });
 
@@ -107,7 +98,7 @@ describe('Function Testing', () => {
       dmId: dmId,
       message: h.message0,
     });
-    expect(data).toStrictEqual({ messageId: expect.any(Number)});
+    expect(data).toStrictEqual({ messageId: expect.any(Number) });
   });
   test('Member Send DM message', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
@@ -115,6 +106,6 @@ describe('Function Testing', () => {
       dmId: dmId,
       message: h.message0,
     });
-    expect(data).toStrictEqual({ messageId: expect.any(Number)});
+    expect(data).toStrictEqual({ messageId: expect.any(Number) });
   });
 });

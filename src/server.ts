@@ -13,7 +13,7 @@ import { debug } from './debug';
 import { clearV1 } from './other';
 import {
   messageSendV1,
-  sendDmV1,
+  messageSendDmV1,
 } from './message';
 
 import { dmCreateV1 } from './dm';
@@ -80,7 +80,7 @@ app.post('/dm/create/v1', (req: Request, res: Response) => {
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
   const { token, dmId, message } = req.body;
-  res.json(sendDmV1(token, parseInt(dmId), message));
+  res.json(messageSendDmV1(token, parseInt(dmId), message));
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {

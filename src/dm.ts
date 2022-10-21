@@ -11,8 +11,8 @@ import {
 
 import {
   isValidAuthUserId,
-  getTokenOwnersUid,
-  isActiveToken,
+  getUIdFromToken,
+  isValidToken,
   generateDmId,
   generateDmName,
 } from './other';
@@ -33,11 +33,11 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   if (numUniqueIds !== uIds.length) {
     return { error: 'Duplicate uId' };
   }
-  const ownerId = getTokenOwnersUid(token);
+  const ownerId = getUIdFromToken(token);
   if (uIds.includes(ownerId)) {
     return { error: 'Dm creator can not include themselves' };
   }
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
   uIds.unshift(ownerId);
