@@ -1,7 +1,21 @@
 
-import { DataStore, Error, User, UsersAllReturn, UserStore } from './data.types';
-import { getTokenOwnersUid, getUserStoreFromId, isActiveToken, isValidAuthUserId } from './other';
-import { getData, setData } from './dataStore';
+import {
+  DataStore,
+  Error,
+  User,
+  UsersAllReturn,
+  UserStore
+} from './data.types';
+import {
+  getUIdFromToken,
+  getUserStoreFromId,
+  isValidToken,
+  isValidAuthUserId
+} from './other';
+import {
+  getData,
+  setData
+} from './dataStore';
 
 // ////////////////////////////////////////////////////// //
 //                      userProfileV1                     //
@@ -18,7 +32,7 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
     return { error: 'authUserId is invalid!' };
   }
 
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
 
@@ -51,7 +65,7 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
  */
 
 function usersAllv1(token: string): UsersAllReturn {
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
 
@@ -81,7 +95,7 @@ function usersAllv1(token: string): UsersAllReturn {
  */
 
 function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string): any {
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
   const maxNameLength = 50;
@@ -94,7 +108,7 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
   }
 
   const data: DataStore = getData();
-  const uId: number = getTokenOwnersUid(token);
+  const uId: number = getUIdFromToken(token);
   const userDetails: UserStore = getUserStoreFromId(uId);
   const index = data.users.indexOf(userDetails);
   userDetails.nameFirst = nameFirst;

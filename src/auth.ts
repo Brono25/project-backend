@@ -1,7 +1,12 @@
 
 import validator from 'validator';
 import { setData, getData } from './dataStore';
-import { generateToken, getTokenOwnersUid, getUserStoreFromId, isActiveToken } from './other';
+import {
+  generateToken,
+  getUIdFromToken,
+  getUserStoreFromId,
+  isValidToken,
+} from './other';
 import {
   DataStore,
   UserStore,
@@ -120,7 +125,7 @@ function authRegisterV1(
  */
 
 function AuthLogoutV1(token: string): any {
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
 
@@ -132,7 +137,7 @@ function AuthLogoutV1(token: string): any {
 
   data.activeTokens = newTokensList;
 
-  const uId: number = getTokenOwnersUid(token);
+  const uId: number = getUIdFromToken(token);
   const user: UserStore = getUserStoreFromId(uId);
   const index = data.users.indexOf(user);
   const tokensList1: Token[] = user.activeTokens;
