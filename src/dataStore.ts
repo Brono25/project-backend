@@ -21,7 +21,7 @@ if (fs.existsSync(DATA_PATH)) {
     messageIds: [],
     dms: [],
   };
-  const jsonstr = JSON.stringify(data);
+  const jsonstr = JSON.stringify(data, null, 2);
   fs.writeFileSync(DATA_PATH, jsonstr);
 }
 
@@ -33,7 +33,7 @@ function getData(): DataStore {
 // Use set(newData) to pass in the entire data object, with modifications made
 function setData(newData: DataStore) {
   data = newData;
-  const jsonstr = JSON.stringify(newData);
+  const jsonstr = JSON.stringify(newData, null, 2);
   fs.writeFileSync(DATA_PATH, jsonstr);
 }
 
