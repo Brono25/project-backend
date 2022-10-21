@@ -3,7 +3,6 @@ import {
   DataStore,
   DmCreateReturn,
   DmStore,
-  UserStore,
 } from './data.types';
 import {
   getData,
@@ -12,11 +11,10 @@ import {
 
 import {
   isValidAuthUserId,
-  getTokenOwnersUid,
-  isActiveToken,
+  getUIdFromToken,
+  isValidToken,
   generateDmId,
   generateDmName,
-  getUserStoreFromId,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -35,11 +33,11 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   if (numUniqueIds !== uIds.length) {
     return { error: 'Duplicate uId' };
   }
-  const ownerId = getTokenOwnersUid(token);
+  const ownerId = getUIdFromToken(token);
   if (uIds.includes(ownerId)) {
     return { error: 'Dm creator can not include themselves' };
   }
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
   uIds.unshift(ownerId);
@@ -56,10 +54,5 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   const data: DataStore = getData();
   data.dms.push(dmStore);
   setData(data);
-
-  for (const uId of uIds) {
-    const userStore: UserStore = getUserStoreFromId(uId);
-    userStore.dmIdsIsMemberOf.push(dmId);
-  }
   return { dmId: dmId };
 }

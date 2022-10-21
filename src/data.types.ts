@@ -97,7 +97,6 @@ export type UserStore = {
   globalPermission: GlobalPermision;
   password: string;
   activeTokens: Token[];
-  dmIdsIsMemberOf: number[];
 }
 export type DmStore = {
   dmId: number;
