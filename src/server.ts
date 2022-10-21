@@ -11,15 +11,17 @@ import {
 import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { 
+import {
   messageSendV1,
   sendDmV1,
 } from './message';
 
 import { dmCreateV1 } from './dm';
-import { userProfileSetNameV1,
+import {
+  userProfileSetNameV1,
   userProfileV2,
-  usersAllv1} from './users';
+  usersAllv1
+} from './users';
 
 // Set up web app
 const app = express();

@@ -55,3 +55,11 @@ export function messageSendV1(
 
   return messageId;
 }
+
+// ////////////////////////////////////////////////////// //
+//                        sendDmV1                        //
+// ////////////////////////////////////////////////////// //
+
+export function messageSendDmV1(token: string, dmId: number, message: string): MessageId | Error {
+  return { messageId: -1 };
+}

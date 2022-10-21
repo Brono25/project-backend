@@ -3,7 +3,6 @@ import {
   DataStore,
   DmCreateReturn,
   DmStore,
-  UserStore,
 } from './data.types';
 import {
   getData,
@@ -16,7 +15,6 @@ import {
   isActiveToken,
   generateDmId,
   generateDmName,
-  getUserStoreFromId,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -56,10 +54,5 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   const data: DataStore = getData();
   data.dms.push(dmStore);
   setData(data);
-
-  for (const uId of uIds) {
-    const userStore: UserStore = getUserStoreFromId(uId);
-    userStore.dmIdsIsMemberOf.push(dmId);
-  }
   return { dmId: dmId };
 }

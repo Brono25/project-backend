@@ -5,7 +5,7 @@ POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "cs@gmail.com",
+    "email": "ds@gmail.com",
     "password": "1233dfs4",
     "nameFirst": "bB",
     "nameLast": "cB"
@@ -18,7 +18,7 @@ POST http://localhost:3200/channels/create/v2
 content-type: application/json
 
 {   
-    "token": "la/Lvs4MkQ",
+    "token": "fLRn92WpTY",
     "name": "Channel 2",
     "isPublic": "true"
 }
@@ -28,8 +28,8 @@ POST http://localhost:3200/dm/create/v1
 content-type: application/json
 
 {   
-    "token": "la/Lvs4MkQ",
-    "uIds": []
+    "token": "fLRn92WpTY",
+    "uIds": [1]
 }
 
 
