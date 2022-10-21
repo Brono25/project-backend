@@ -12,17 +12,20 @@ import {
 // SETUP
 let userId0: number;
 let userId1: number;
+let userId2: number;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;
 let invalidUserId: number;
 let invalidChannelId: number;
 beforeEach(() => {
-  // Users 0, 1
+  // Users 0, 1, 2
   let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
   userId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   args = [h.email1, h.password1, h.firstName1, h.lastName1];
   userId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  args = [h.email2, h.password2, h.firstName2, h.lastName2];
+  userId2 = h.authRegisterReturnGaurd(authRegisterV1(...args));
   // Channels 0,1,2
   channelId0 = h.channelsCreateReturnGaurd(channelsCreateV1(userId0, h.channelName0, h.isPublic));
   channelId1 = h.channelsCreateReturnGaurd(channelsCreateV1(userId0, h.channelName1, h.isPublic));
@@ -50,8 +53,15 @@ describe('Error Handling', () => {
     expect(channelDetailsV1(userId0, invalidChannelId)).toStrictEqual({ error: expect.any(String) });
   });
 
+  test('Error Test: User not a member of any channel', () => {
+    expect(channelDetailsV1(userId2, channelId0)).toStrictEqual({ error: expect.any(String) });
+    expect(channelDetailsV1(userId2, channelId1)).toStrictEqual({ error: expect.any(String) });
+    expect(channelDetailsV1(userId2, channelId2)).toStrictEqual({ error: expect.any(String) });
+  });
+
   test('Error Test: User not a member of channel', () => {
     expect(channelDetailsV1(userId1, channelId0)).toStrictEqual({ error: expect.any(String) });
+    expect(channelDetailsV1(userId1, channelId2)).toStrictEqual({ error: expect.any(String) });
   });
 });
 
