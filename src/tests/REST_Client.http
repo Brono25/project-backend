@@ -1,0 +1,106 @@
+
+###
+// Register
+POST http://localhost:3200/auth/register/v2/
+content-type: application/json
+
+{
+    "email": "ds@gmail.com",
+    "password": "1233dfs4",
+    "nameFirst": "bB",
+    "nameLast": "cB"
+}
+
+
+###
+// Channel Create
+POST http://localhost:3200/channels/create/v2
+content-type: application/json
+
+{   
+    "token": "fLRn92WpTY",
+    "name": "Channel 2",
+    "isPublic": "true"
+}
+###
+// Dm Create
+POST http://localhost:3200/dm/create/v1
+content-type: application/json
+
+{   
+    "token": "29pRlDyKOV",
+    "uIds": []
+}
+
+###
+// Dm send message
+POST http://localhost:3200/message/senddm/v1
+content-type: application/json
+
+{   
+    "token": "rgbprd/1Hq",
+    "dmId": 3419783552,
+    "message": "Here is a message"
+}
+
+
+###
+// Login
+POST http://localhost:3200/auth/login/v2/
+content-type: application/json
+
+{
+    "email": "cs@gmail.com",
+    "password": "1233dfs4"
+}
+###
+// Logout
+POST http://localhost:3200/auth/logout/v1/
+content-type: application/json
+
+{   
+    "token": "bJZtmUkjIW"
+}
+###
+// Message send
+POST http://localhost:3200/message/send/v1/
+content-type: application/json
+
+{   
+    "token": "zDvvMIx87E",
+    "channelId": 1,
+    "message": "message 4"
+}
+
+
+###
+// User profile
+GET http://localhost:3200/user/profile/v2
+    ?uId=0
+    &token=DP3CQxjO7r
+    
+###
+// User All
+GET http://localhost:3200/users/all/v1
+    ?token=tN8jOle2b9
+    
+### Setname User
+PUT http://localhost:3200/user/profile/setname/v1
+content-type: application/json
+
+{   
+    "token": "tN8jOle2b9",
+    "nameFirst": "xx",
+    "nameLast": "yy"
+}
+
+###
+//Clear
+DELETE http://localhost:3200/clear/v1/
+content-type: application/json
+
+
+###
+//debug - print all dataStore
+POST http://localhost:3200/debug/
+content-type: application/json

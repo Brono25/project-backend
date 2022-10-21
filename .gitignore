@@ -172,3 +172,10 @@ src/._*
 
 # Ignore built ts files
 dist/**/*
+
+
+# Extra added
+test_suite.sh
+DataStorage/*.JSON
+*\ 2.*
+*\ 2
