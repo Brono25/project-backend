@@ -16,7 +16,10 @@ import {
   messageSendDmV1,
 } from './message';
 
-import { dmCreateV1 } from './dm';
+import {
+  dmCreateV1,
+  dmDetailsv1,
+} from './dm';
 import {
   userProfileSetNameV1,
   userProfileV2,
@@ -76,6 +79,12 @@ app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
   const uIdsInt: number[] = uIds.map((a: string) => parseInt(a));
   res.json(dmCreateV1(token, uIdsInt));
+});
+
+app.get('/dm/details/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  res.json(dmDetailsv1(token, parseInt(dmId)));
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {

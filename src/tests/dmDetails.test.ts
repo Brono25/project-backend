@@ -9,12 +9,10 @@ let authUserId1: number;
 let authUserId2: number;
 let authUserToken0: string;
 let authUserToken1: string;
-let authUserToken2: string;
 let dm1: any;
 let dm2: any;
 let dmId1: number;
 let dmId2: number;
-let invalidDmId: number;
 beforeEach(() => {
   authUser0 = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
@@ -38,7 +36,6 @@ beforeEach(() => {
     nameFirst: h.firstName2,
     nameLast: h.lastName2,
   });
-  authUserToken2 = authUser2.token;
   authUserId2 = parseInt(authUser2.authUserId);
   // create a dm (members: user0, user1, user2)
   dm1 = h.postRequest(h.DM_CREATE_URL, {
@@ -53,8 +50,6 @@ beforeEach(() => {
     uIds: [],
   });
   dmId2 = parseInt(dm2.dmId);
-
-  invalidDmId = Math.abs(dmId1) + Math.abs(dmId2) + 10;
 });
 
 // Tear down
@@ -66,25 +61,25 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid dmId', () => {
-    let data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS__URL, {
       token: authUserToken0,
-      dmId: invalidDmId,
+      dmId: 0,
     });
     expect(data).toStrictEqual({ error: 'Invalid dmId' });
   });
   test('Token owner is not a member of the dm', () => {
-    let data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS__URL, {
       token: authUserToken1,
       dmId: dmId2,
     });
     expect(data).toStrictEqual({ error: 'Token owner is not a member of the dm' });
   });
   test('Invalid Token', () => {
-    let data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS__URL, {
       token: h.invalidToken,
       dmId: dmId2,
     });
-    expect(data).toStrictEqual({ error: 'Invalid Token' });
+    expect(data).toStrictEqual({ error: 'Invalid token' });
   });
 });
 
@@ -92,13 +87,35 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Details of dm1', () => {
-    let data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS__URL, {
       token: authUserToken0,
       dmId: dmId1,
     });
     expect(data).toStrictEqual({
       name: expect.any(String),
-      members: [authUserId0, authUserId1, authUserId2],
+      members: [
+        {
+          uId: authUserId0,
+          email: h.email0,
+          nameFirst: h.firstName0,
+          nameLast: h.lastName0,
+          handleStr: expect.any(String),
+        },
+        {
+          uId: authUserId1,
+          email: h.email1,
+          nameFirst: h.firstName1,
+          nameLast: h.lastName1,
+          handleStr: expect.any(String),
+        },
+        {
+          uId: authUserId2,
+          email: h.email2,
+          nameFirst: h.firstName2,
+          nameLast: h.lastName2,
+          handleStr: expect.any(String),
+        },
+      ],
     });
   });
 });
