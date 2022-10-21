@@ -11,9 +11,15 @@ import {
 import { channelsCreateV2 } from './channels';
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { messageSendV1 } from './message';
+import { 
+  messageSendV1,
+  sendDmV1,
+} from './message';
+
 import { dmCreateV1 } from './dm';
-import { userProfileSetNameV1, userProfileV2, usersAllv1 } from './users';
+import { userProfileSetNameV1,
+  userProfileV2,
+  usersAllv1} from './users';
 
 // Set up web app
 const app = express();
@@ -57,16 +63,22 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
-  res.json(channelsCreateV2(token, name, isPublic));
+  res.json(channelsCreateV2(token, name, <boolean>isPublic));
 });
 
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
-  res.json(messageSendV1(token, channelId, message));
+  res.json(messageSendV1(token, parseInt(channelId), message));
 });
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
-  res.json(dmCreateV1(token, uIds));
+  const uIdsInt: number[] = uIds.map((a: string) => parseInt(a));
+  res.json(dmCreateV1(token, uIdsInt));
+});
+
+app.post('/message/senddm/v1', (req: Request, res: Response) => {
+  const { token, dmId, message } = req.body;
+  res.json(sendDmV1(token, parseInt(dmId), message));
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {
