@@ -95,7 +95,13 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Sending a message', () => {
-    const data = h.postRequest(h.MSG_SEND_URL, {
+    let data = h.postRequest(h.MSG_SEND_URL, {
+      token: token0,
+      channelId: channelId0,
+      message: h.message0
+    });
+    expect(data).toStrictEqual(<MessageId>{ messageId: expect.any(Number) });
+    data = h.postRequest(h.MSG_SEND_URL, {
       token: token0,
       channelId: channelId0,
       message: h.message0

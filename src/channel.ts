@@ -87,8 +87,8 @@ function channelJoinV1(authUserId: number, channelId: number) {
   }
 
   const data: DataStore = getData();
-  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
-  channelStore.allMembers.push({ uId: authUserId });
+  const index = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[index].allMembers.push({ uId: authUserId });
   setData(data);
 
   return {};
