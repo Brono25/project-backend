@@ -11,6 +11,8 @@ import {
   getChannelStoreFromId,
   getUserStoreFromId,
   isGlobalOwner,
+  isValidToken,
+  isTokenMemberOfChannel,
 } from './other';
 
 import {
@@ -20,9 +22,12 @@ import {
   User,
   UserStore,
   Message,
-  ChannelMessagesReturn,
+  ChannelMessages,
   Error
 } from './data.types';
+
+const PAGE_SIZE = 50;
+const NO_MORE_PAGES = -1;
 
 // ////////////////////////////////////////////////////// //
 //                      channelDetailsV1                  //
@@ -137,60 +142,45 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
  * Given a channel with ID channelId that the authorised user
  * is a member of, returns up to 50 messages between index "start" and "start + 50".
  * @param {number, number, number} - authUserId, channelId, start
- * @returns {ChannelMessagesReturn} - { messages, start, end }
+ * @returns {ChannelMessages | Error} - { messages, start, end }
  */
 
 function channelMessagesV1(
-  authUserId: number,
+  token: string,
   channelId: number,
   start: number
-): ChannelMessagesReturn {
-  if (isValidChannelId(channelId) === false) {
+): ChannelMessages | Error {
+  if (!isValidChannelId(channelId)) {
     return { error: 'Invalid channel Id' };
   }
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const messages: Message[] = channelStore.messages;
   const numMessages = messages.length;
 
-  if (start >= numMessages) {
+  if (start > numMessages) {
     return { error: 'Messages start too high' };
-  } else if (isValidAuthUserId(authUserId) === false) {
-    return { error: 'Invalid User Id' };
-  } else if (isAuthUserMember(authUserId, channelId) === false) {
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  } else if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'User is not a member of the channel' };
-  }
-
-  const MAX_MSG_RETURN = 50;
-  const NO_MORE_MSGS = -1;
-  let end = 0;
-  if (start + MAX_MSG_RETURN <= numMessages) {
-    end = start + MAX_MSG_RETURN;
-  } else {
-    end = NO_MORE_MSGS;
-  }
-
-  const lastFiftyorLessMessages: Message[] = [];
-
-  if (end !== NO_MORE_MSGS) {
-    const loopEnd = start + 50;
-    for (let i = start; i < loopEnd; i++) {
-      lastFiftyorLessMessages.push(messages[i]);
-    }
-    return <ChannelMessagesReturn>{
-      messages,
-      start,
-      end,
-    };
-  } else {
-    for (let i = start; i < numMessages; i++) {
-      lastFiftyorLessMessages.push(messages[i]);
-    }
-    return <ChannelMessagesReturn>{
-      messages,
-      start,
-      end,
+  } else if (start === numMessages) {
+    return <ChannelMessages>{
+      messages: [],
+      start: start,
+      end: NO_MORE_PAGES,
     };
   }
+
+  let end = start + PAGE_SIZE;
+  const page: Message[] = messages.slice(start, end);
+  if (page.length < PAGE_SIZE) {
+    end = NO_MORE_PAGES;
+  }
+  return <ChannelMessages>{
+    messages: page,
+    start: start,
+    end: end,
+  };
 }
 // ------------------ Channel Helper functions------------------
 /**

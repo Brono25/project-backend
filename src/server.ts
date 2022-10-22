@@ -9,6 +9,7 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
+import { channelMessagesV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
 import {
@@ -85,6 +86,13 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const dmId = req.query.dmId as string;
   res.json(dmDetailsv1(token, parseInt(dmId)));
+});
+
+app.get('/channel/messages/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const channelId = req.query.channelId as string;
+  const start = req.query.start as string;
+  res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {

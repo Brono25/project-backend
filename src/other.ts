@@ -115,7 +115,7 @@ export function isAuthUserMember(authUserId: number, channelId: number): boolean
   }
   return false;
 }
-export function isTokenOwnerMember(token: string, channelId: number): boolean {
+export function isTokenMemberOfChannel(token: string, channelId: number): boolean {
   const authUserId: number = getUIdFromToken(token);
   if (isAuthUserMember(authUserId, channelId)) {
     return true;

@@ -11,7 +11,7 @@ import {
 import {
   isValidChannelId,
   isValidToken,
-  isTokenOwnerMember,
+  isTokenMemberOfChannel,
   generateMessageId,
   getUIdFromToken,
   getTimeInSecs,
@@ -39,7 +39,7 @@ export function messageSendV1(
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
   }
-  if (!isTokenOwnerMember(token, channelId)) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'Only members can message on the channel' };
   }
 
@@ -52,8 +52,8 @@ export function messageSendV1(
   };
   const data: DataStore = getData();
   const index = data.channels.findIndex(a => a.channelId === channelId);
-  data.channels[index].messages.push(messageDetails);
-  data.messageIds.push(messageId);
+  data.channels[index].messages.unshift(messageDetails);
+  data.messageIds.unshift(messageId);
   setData(data);
   return messageId;
 }
@@ -85,8 +85,8 @@ export function messageSendDmV1(token: string, dmId: number, message: string): M
   };
   const data: DataStore = getData();
   const index = data.dms.findIndex(a => a.dmId === dmId);
-  data.dms[index].messages.push(messageDetails);
-  data.messageIds.push(messageId);
+  data.dms[index].messages.unshift(messageDetails);
+  data.messageIds.unshift(messageId);
   setData(data);
   return messageId;
 }
