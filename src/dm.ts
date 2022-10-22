@@ -29,12 +29,11 @@ import {
   getUIdFromToken
 } from './other';
 
-
 // ////////////////////////////////////////////////////// //
 //                      dmCreateV1                        //
 // ////////////////////////////////////////////////////// //
 /**
- * 
+ *
  * @param {string, number[]}
  * @returns {number}
  */
@@ -74,7 +73,7 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
 //                      dmDetails                         //
 // ////////////////////////////////////////////////////// //
 /**
- *
+ * User with active token can get details of a DM they are a member of.
  * @param {string, number[]}
  * @returns {number}
  */

@@ -28,7 +28,6 @@ import {
   NO_MORE_PAGES
 } from './data.types';
 
-
 // ////////////////////////////////////////////////////// //
 //                      channelDetailsV1                  //
 // ////////////////////////////////////////////////////// //
@@ -72,7 +71,8 @@ function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetail
 //                      channelJoinV1                     //
 // ////////////////////////////////////////////////////// //
 /**
- * Given a channelId of a channel that the authorised user can join, adds them to that channel.
+ * Given a channelId of a channel that the authorised user can
+ * join, adds them to that channel.
  * @param {number, number} - user id and channel id
  * @returns {}
  */
@@ -140,7 +140,8 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
 
 /**
  * Given a channel with ID channelId that the authorised user
- * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ * is a member of, returns up to 50 messages between index "start"
+ * and "start + 50".
  * @param {number, number, number} - authUserId, channelId, start
  * @returns {ChannelMessages | Error} - { messages, start, end }
  */
