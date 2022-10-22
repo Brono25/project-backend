@@ -22,7 +22,7 @@ import {
   User,
   UserStore,
   Message,
-  ChannelMessages,
+  PageMessages,
   Error
 } from './data.types';
 
@@ -149,7 +149,7 @@ function channelMessagesV1(
   token: string,
   channelId: number,
   start: number
-): ChannelMessages | Error {
+): PageMessages | Error {
   if (!isValidChannelId(channelId)) {
     return { error: 'Invalid channel Id' };
   }
@@ -164,7 +164,7 @@ function channelMessagesV1(
   } else if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'User is not a member of the channel' };
   } else if (start === numMessages) {
-    return <ChannelMessages>{
+    return <PageMessages>{
       messages: [],
       start: start,
       end: NO_MORE_PAGES,
@@ -176,7 +176,7 @@ function channelMessagesV1(
   if (page.length < PAGE_SIZE) {
     end = NO_MORE_PAGES;
   }
-  return <ChannelMessages>{
+  return <PageMessages>{
     messages: page,
     start: start,
     end: end,

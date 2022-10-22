@@ -61,7 +61,7 @@ export type AuthRegistorReturn = {token: string,
   authUserId: number
 } | Error;
 export type ChanCreateReturn = ChannelId | Error;
-export type ChannelMessages = {
+export type PageMessages = {
   messages: Message[];
   start: number;
   end: number;
