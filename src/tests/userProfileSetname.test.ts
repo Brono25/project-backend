@@ -37,25 +37,49 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Incorrect token', () => {
-    const data = h.postRequest(h.LOGOUT_URL, {
+    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
       token: 'invalidToken',
+      nameFirst: h.firstName0,
+      nameLast: h.lastName0,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
+  });
+  test('Invalid first name', () => {
+    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
+      token: authUserToken0,
+      nameFirst: h.invalidLongFirstName,
+      nameLast: h.lastName0,
+    });
+    expect(data).toStrictEqual({ error: expect.any(String) });
+  });
+
+  test('Invalid last name', () => {
+    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
+      token: authUserToken0,
+      nameFirst: h.firstName0,
+      nameLast: h.invalidLongLastName,
     });
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
 });
+
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
-  test('Authorise logout for first user in database', () => {
-    const data = h.postRequest(h.LOGOUT_URL, {
+  test('Change name for user0', () => {
+    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
       token: authUserToken0,
+      nameFirst: 'New First Name 0',
+      nameLast: 'New Last Name 0',
     });
     expect(data).toStrictEqual({});
   });
 
-  test('Authorise logout for last user in database', () => {
-    const data = h.postRequest(h.LOGOUT_URL, {
+  test('Change name for user2', () => {
+    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
       token: authUserToken2,
+      nameFirst: 'New First Name 2',
+      nameLast: 'New Last Name 2',
     });
     expect(data).toStrictEqual({});
   });

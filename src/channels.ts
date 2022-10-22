@@ -7,8 +7,8 @@ import {
 import {
   isValidAuthUserId,
   isAuthUserMember,
-  isActiveToken,
-  getTokenOwnersUid,
+  getUIdFromToken,
+  isValidToken,
 } from './other';
 import {
   ChannelStore,
@@ -70,10 +70,10 @@ export function channelsCreateV2(
   if (name.length > maxChars || name.length < minChars) {
     return { error: 'Channels name must be between 1-20 characters (inclusive)' };
   }
-  if (!isActiveToken(token)) {
+  if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
-  const authUserId = getTokenOwnersUid(token);
+  const authUserId = getUIdFromToken(token);
   const userId: UserId = { uId: authUserId };
   const channelId: ChannelId = generateChannelId();
   const channel: ChannelStore = {

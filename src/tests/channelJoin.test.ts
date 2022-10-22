@@ -17,21 +17,6 @@ let token2 : string;
 let invalidChannelId: any;
 
 beforeEach(() => {
-  // Channels 0 and private
-  channelId0 = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
-  channelId0 = parseInt(channelId0.channelId);
-
-  channelIdPriv = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token1,
-    name: h.channelName1,
-    isPublic: h.isNotPublic,
-  });
-  channelIdPriv = parseInt(channelIdPriv.channelId);
-
   //tokens 0,1 and 2
   const tmp0: any = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
@@ -61,6 +46,21 @@ beforeEach(() => {
 //error inputs
 invalidChannelId = Math.abs(channelId0) + 10;
 });
+
+// Channels 0 and private
+channelId0 = h.postRequest(h.CHAN_CREATE_URL, {
+  token: token0,
+  name: h.channelName0,
+  isPublic: h.isPublic,
+});
+channelId0 = parseInt(channelId0.channelId);
+
+channelIdPriv = h.postRequest(h.CHAN_CREATE_URL, {
+  token: token1,
+  name: h.channelName1,
+  isPublic: h.isNotPublic,
+});
+channelIdPriv = parseInt(channelIdPriv.channelId);
 
 // Tear down
 afterEach(() => {
