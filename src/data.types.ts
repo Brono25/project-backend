@@ -61,11 +61,11 @@ export type AuthRegistorReturn = {token: string,
   authUserId: number
 } | Error;
 export type ChanCreateReturn = ChannelId | Error;
-export type ChannelMessagesReturn = {
+export type ChannelMessages = {
   messages: Message[];
   start: number;
   end: number;
-} | Error;
+};
 export type MessageSendReturn = MessageId | Error;
 export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
