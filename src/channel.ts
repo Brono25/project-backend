@@ -22,12 +22,11 @@ import {
   User,
   UserStore,
   Message,
-  ChannelMessages,
-  Error
+  PageMessages,
+  Error,
+  PAGE_SIZE,
+  NO_MORE_PAGES
 } from './data.types';
-
-const PAGE_SIZE = 50;
-const NO_MORE_PAGES = -1;
 
 // ////////////////////////////////////////////////////// //
 //                      channelDetailsV1                  //
@@ -72,7 +71,8 @@ function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetail
 //                      channelJoinV1                     //
 // ////////////////////////////////////////////////////// //
 /**
- * Given a channelId of a channel that the authorised user can join, adds them to that channel.
+ * Given a channelId of a channel that the authorised user can
+ * join, adds them to that channel.
  * @param {number, number} - user id and channel id
  * @returns {}
  */
@@ -140,7 +140,8 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
 
 /**
  * Given a channel with ID channelId that the authorised user
- * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ * is a member of, returns up to 50 messages between index "start"
+ * and "start + 50".
  * @param {number, number, number} - authUserId, channelId, start
  * @returns {ChannelMessages | Error} - { messages, start, end }
  */
@@ -149,7 +150,7 @@ function channelMessagesV1(
   token: string,
   channelId: number,
   start: number
-): ChannelMessages | Error {
+): PageMessages | Error {
   if (!isValidChannelId(channelId)) {
     return { error: 'Invalid channel Id' };
   }
@@ -164,7 +165,7 @@ function channelMessagesV1(
   } else if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'User is not a member of the channel' };
   } else if (start === numMessages) {
-    return <ChannelMessages>{
+    return <PageMessages>{
       messages: [],
       start: start,
       end: NO_MORE_PAGES,
@@ -176,7 +177,7 @@ function channelMessagesV1(
   if (page.length < PAGE_SIZE) {
     end = NO_MORE_PAGES;
   }
-  return <ChannelMessages>{
+  return <PageMessages>{
     messages: page,
     start: start,
     end: end,

@@ -24,7 +24,11 @@ import { getData, setData } from './dataStore';
 // ////////////////////////////////////////////////////// //
 //                     messageSendV1                      //
 // ////////////////////////////////////////////////////// //
-
+/**
+ * User as part of a channel can send a message.
+ * @param {string, number, string}
+ * @returns { MessageId | Error}
+ */
 export function messageSendV1(
   token: string,
   channelId: number,
@@ -61,8 +65,14 @@ export function messageSendV1(
 // ////////////////////////////////////////////////////// //
 //                    messageSendDmV1                     //
 // ////////////////////////////////////////////////////// //
-
-export function messageSendDmV1(token: string, dmId: number, message: string): MessageId | Error {
+/**
+ * User as part of a DM can send a message.
+ * @param {string, number, string}
+ * @returns { MessageId | Error}
+ */
+export function messageSendDmV1(
+  token: string, dmId: number, message: string
+): MessageId | Error {
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
   }

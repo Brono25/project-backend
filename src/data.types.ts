@@ -5,6 +5,8 @@
 /*
  * Accessing only data needed for functions.
  */
+export const PAGE_SIZE = 50;
+export const NO_MORE_PAGES = -1;
 export const ID_ERROR = -1;
 export const GLOBAL_OWNER = 0;
 export const MAX_MSG_LEN = 1000;
@@ -61,7 +63,7 @@ export type AuthRegistorReturn = {token: string,
   authUserId: number
 } | Error;
 export type ChanCreateReturn = ChannelId | Error;
-export type ChannelMessages = {
+export type PageMessages = {
   messages: Message[];
   start: number;
   end: number;

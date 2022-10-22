@@ -21,7 +21,6 @@ import {
 // ////////////////////////////////////////////////////// //
 //                        AuthLoginV1                     //
 // ////////////////////////////////////////////////////// //
-
 /**
  * Given a registered user's email and password, returns their authUserId value.
  *
@@ -51,7 +50,6 @@ function authLoginV1(email: string, password: string): AuthLoginReturn {
 // ////////////////////////////////////////////////////// //
 //                     AuthRegisterV1                     //
 // ////////////////////////////////////////////////////// //
-
 /**
  * Adds a new user to the dataStore.
  *
@@ -116,7 +114,6 @@ function authRegisterV1(
 // ////////////////////////////////////////////////////// //
 //                     AuthLogoutv1                     //
 // ////////////////////////////////////////////////////// //
-
 /**
  * Logouts a user by invalidating their token
  *

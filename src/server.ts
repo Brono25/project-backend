@@ -20,6 +20,7 @@ import {
 import {
   dmCreateV1,
   dmDetailsv1,
+  dmMessagesV1,
 } from './dm';
 import {
   userProfileSetNameV1,
@@ -93,6 +94,12 @@ app.get('/channel/messages/v2', (req: Request, res: Response) => {
   const channelId = req.query.channelId as string;
   const start = req.query.start as string;
   res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
+});
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  const start = req.query.start as string;
+  res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
