@@ -70,7 +70,7 @@ describe('Error Handling', () => {
       dmId: invalidDmId,
       start: start,
     });
-    expect(data).toStrictEqual({ error: 'Invalid channel Id' });
+    expect(data).toStrictEqual({ error: 'Invalid dmId' });
   });
   test('Valid dmId, token not a member', () => {
     const data = h.getRequest(h.DM_MSG_URL, {
@@ -78,7 +78,7 @@ describe('Error Handling', () => {
       dmId: dmId0,
       start: start,
     });
-    expect(data).toStrictEqual({ error: 'User is not a member of the channel' });
+    expect(data).toStrictEqual({ error: 'User is not a member of the dm' });
   });
 
   test('start greater than num messages', () => {
@@ -96,7 +96,7 @@ describe('Function Testing', () => {
   test('Return list of 4 messages', () => {
     const NUM_MSG = 3;
     for (let i = 0; i < NUM_MSG; i++) {
-      h.postRequest(h.MSG_SEND_URL, {
+      h.postRequest(h.MSG_SEND_DM_URL, {
         token: token0,
         dmId: dmId0,
         message: `${MSG} ${i}`
@@ -143,7 +143,7 @@ describe('Function Testing', () => {
     const NUM_MSG = 55;
     start = 3;
     for (let i = 0; i < NUM_MSG; i++) {
-      h.postRequest(h.MSG_SEND_URL, {
+      h.postRequest(h.MSG_SEND_DM_URL, {
         token: token0,
         dmId: dmId0,
         message: `${MSG} ${i}`
@@ -167,7 +167,7 @@ describe('Function Testing', () => {
     const NUM_MSG = 5;
     start = NUM_MSG + 1;
     for (let i = 0; i < NUM_MSG; i++) {
-      h.postRequest(h.MSG_SEND_URL, {
+      h.postRequest(h.MSG_SEND_DM_URL, {
         token: token0,
         dmId: dmId0,
         message: `${MSG} ${i}`

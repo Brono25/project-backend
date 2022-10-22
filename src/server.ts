@@ -97,7 +97,7 @@ app.get('/channel/messages/v2', (req: Request, res: Response) => {
 });
 app.get('/dm/messages/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
-  const dmId = req.query.channelId as string;
+  const dmId = req.query.dmId as string;
   const start = req.query.start as string;
   res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
 });

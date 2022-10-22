@@ -23,11 +23,11 @@ import {
   UserStore,
   Message,
   PageMessages,
-  Error
+  Error,
+  PAGE_SIZE,
+  NO_MORE_PAGES
 } from './data.types';
 
-const PAGE_SIZE = 50;
-const NO_MORE_PAGES = -1;
 
 // ////////////////////////////////////////////////////// //
 //                      channelDetailsV1                  //

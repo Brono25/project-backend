@@ -92,6 +92,14 @@ GET http://localhost:3200/channel/messages/v2
     &start=57
     &channelId=0
      
+###
+// Get DM messages
+GET http://localhost:3200/dm/messages/v1
+    ?token=token0
+    &start=0
+    &dmId=0
+     
+
 ### Setname User
 PUT http://localhost:3200/user/profile/setname/v1
 content-type: application/json
