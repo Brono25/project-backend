@@ -125,8 +125,7 @@ app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
 });
 
 app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  const handleStr = req.query.handleStr as string;
+  const { token, handleStr } = req.body;
   res.json(userProfileSetHandleV1(token, handleStr));
 });
 

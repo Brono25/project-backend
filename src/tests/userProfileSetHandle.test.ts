@@ -1,32 +1,31 @@
 import * as h from './test.helper';
 
-// Setup: Create 3 users.
-let authUser0: any;
-let authUser2: any;
+// Setup
 let token0: string;
 let token2: string;
 let handleStr0: string;
 let handleStr2: string;
+let temp: any;
 
 beforeEach(() => {
-    authUser0 = h.postRequest(h.REGISTER_URL, {
+    temp = h.postRequest(h.REGISTER_URL, {
         email: h.email0,
         password: h.password0,
         nameFirst: h.firstName0,
         nameLast: h.lastName0,
     });
+    token0 = temp.token;
+    handleStr0 = temp.handleStr;
 
-    authUser2 = h.postRequest(h.REGISTER_URL, {
+    temp = h.postRequest(h.REGISTER_URL, {
         email: h.email2,
         password: h.password2,
         nameFirst: h.firstName2,
         nameLast: h.lastName2,
       });
     
-    token0 = authUser0.token;
-    token2 = authUser2.token;
-    handleStr0 = authUser0.handleStr;
-    handleStr2 = authUser0.handleStr;
+    token2 = temp.token;
+    handleStr2 = temp.handleStr;
 });
 // Tear down
 afterEach(() => {

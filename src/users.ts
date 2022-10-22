@@ -124,7 +124,7 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
 }
 
 // ////////////////////////////////////////////////////// //
-//                  userProfileSetHandleV1                  //
+//                  userProfileSetHandleV1                //
 // ////////////////////////////////////////////////////// //
 /**
  * Update the authorised user's handle
