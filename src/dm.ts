@@ -6,6 +6,7 @@ import {
   DmStore,
   User,
   UserStore,
+  PageMessages,
 } from './data.types';
 import {
   getData,
@@ -65,7 +66,7 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
 }
 
 // ////////////////////////////////////////////////////// //
-//                      dmDetails                        //
+//                      dmDetails                         //
 // ////////////////////////////////////////////////////// //
 /**
  *
@@ -102,4 +103,13 @@ export function dmDetailsv1(token: string, dmId: number): dmDetailsReturn {
     name: dmDetails.name,
     members: userList,
   };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmMessages                        //
+// ////////////////////////////////////////////////////// //
+export function dmMessagesV1(
+  token: string, dmId: number, start: number
+): PageMessages | Error {
+  return <PageMessages> {};
 }
