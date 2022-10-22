@@ -2,45 +2,42 @@
 //import {ChannelJoinReturn} from '../data.types';
 import * as h from './test.helper';
 
-import { clearV1 } from '../other';
-clearV1();
-
 // Setup
-
-let channelId0: any;
-let channelIdPriv: any;
-
 let token0: string;
 let token1 : string;
 let token2 : string;
 
-let invalidChannelId: any;
+let channelId0: number;
+let channelIdPriv: number;
+let invalidChannelId: number;
+
+let tmp: any;
 
 beforeEach(() => {
   //tokens 0,1 and 2
-  const tmp0: any = h.postRequest(h.REGISTER_URL, {
+  tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
     password: h.password0,
     nameFirst: h.firstName0,
     nameLast: h.lastName0,
   });
-  token0 = tmp0.token;
+  token0 = tmp.token;
 
-  const tmp1: any = h.postRequest(h.REGISTER_URL, {
+  tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
     nameFirst: h.firstName1,
     nameLast: h.lastName1,
   });
-  token1 = tmp1.token;
+  token1 = tmp.token;
 
-  const tmp2: any = h.postRequest(h.REGISTER_URL, {
+  tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email2,
     password: h.password2,
     nameFirst: h.firstName2,
     nameLast: h.lastName2,
   });
-  token2 = tmp2.token;
+  token2 = tmp.token;
 
 
 //error inputs
@@ -48,19 +45,19 @@ invalidChannelId = Math.abs(channelId0) + 10;
 });
 
 // Channels 0 and private
-channelId0 = h.postRequest(h.CHAN_CREATE_URL, {
+tmp = h.postRequest(h.CHAN_CREATE_URL, {
   token: token0,
   name: h.channelName0,
   isPublic: h.isPublic,
 });
-channelId0 = parseInt(channelId0.channelId);
+channelId0 = parseInt(tmp.channelId);
 
-channelIdPriv = h.postRequest(h.CHAN_CREATE_URL, {
+tmp = h.postRequest(h.CHAN_CREATE_URL, {
   token: token1,
   name: h.channelName1,
   isPublic: h.isNotPublic,
 });
-channelIdPriv = parseInt(channelIdPriv.channelId);
+channelIdPriv = parseInt(tmp.channelId);
 
 // Tear down
 afterEach(() => {
