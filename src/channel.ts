@@ -11,6 +11,7 @@ import {
   getChannelStoreFromId,
   getUserStoreFromId,
   isGlobalOwner,
+  getUIdFromToken,
   isValidToken,
   isTokenMemberOfChannel,
 } from './other';
@@ -22,8 +23,9 @@ import {
   User,
   UserStore,
   Message,
-  PageMessages,
   Error,
+  ChannelJoinReturn,
+  PageMessages,
   PAGE_SIZE,
   NO_MORE_PAGES
 } from './data.types';
@@ -95,6 +97,40 @@ function channelJoinV1(authUserId: number, channelId: number) {
   data.channels[index].allMembers.push({ uId: authUserId });
   setData(data);
 
+  return {};
+}
+
+// ////////////////////////////////////////////////////// //
+//                      channelJoinV2                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channelId of a channel that the authorised user can
+ * join, adds them to that channel.
+ * @param {string, number} - token and channel id
+ * @returns {}
+ */
+export function channelJoinV2(
+  token: string,
+  channelId: number
+): ChannelJoinReturn {
+  const authUserId = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (isAuthUserMember(authUserId, channelId)) {
+    return { error: 'User is already a member of the channel' };
+  } else if (isChannelPrivate(channelId) &&
+  !isAuthUserMember(authUserId, channelId) &&
+  !isGlobalOwner(authUserId)) {
+    return { error: 'Private channel' };
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+
+  const data: DataStore = getData();
+  const index = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[index].allMembers.push({ uId: authUserId });
+  setData(data);
   return {};
 }
 
