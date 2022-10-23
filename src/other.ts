@@ -115,7 +115,7 @@ export function isAuthUserMember(authUserId: number, channelId: number): boolean
   }
   return false;
 }
-export function isTokenOwnerMember(token: string, channelId: number): boolean {
+export function isTokenMemberOfChannel(token: string, channelId: number): boolean {
   const authUserId: number = getUIdFromToken(token);
   if (isAuthUserMember(authUserId, channelId)) {
     return true;
@@ -209,6 +209,7 @@ export function isGlobalOwner (authUserId: number): boolean {
 // ////////////////////////////////////////////////////// //
 
 /**
+ * Generate DM name from user handles
  * @param {number[]}
  * @returns {string}
  */
@@ -223,7 +224,11 @@ export function generateDmName(uIds: number[]) {
   ).join(', ');
   return name;
 }
-
+/**
+ * Generate unique random integer for DM ID
+ * @param {}
+ * @returns {number}
+ */
 export function generateDmId() {
   const data: DataStore = getData();
   const dmIdStores: DmStore[] = data.dms;
@@ -233,7 +238,11 @@ export function generateDmId() {
   }
   return newDmId;
 }
-
+/**
+ * Generate unique random integer for Message ID
+ * @param {}
+ * @returns {number}
+ */
 export function generateMessageId() {
   const data: DataStore = getData();
   const messageIds: MessageId[] = data.messageIds;
@@ -245,8 +254,9 @@ export function generateMessageId() {
 }
 
 /**
- * Set data back to initial state.
- * @param {}
+ * Generate a unique token by hashing users email and
+ * the current time to ensure uniqueness
+ * @param {string}
  * @returns {Token}
  */
 export function generateToken(email: string): Token {
