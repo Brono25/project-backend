@@ -125,7 +125,7 @@ app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
 });
 
 app.post('/channel/join/v2', (req: Request, res: Response) => {
-  const { token, channelId} = req.body;
+  const { token, channelId } = req.body;
   res.json(channelJoinV2(token, parseInt(channelId)));
 });
 
