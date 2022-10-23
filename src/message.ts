@@ -11,7 +11,7 @@ import {
 import {
   isValidChannelId,
   isValidToken,
-  isTokenOwnerMember,
+  isTokenMemberOfChannel,
   generateMessageId,
   getUIdFromToken,
   getTimeInSecs,
@@ -24,7 +24,11 @@ import { getData, setData } from './dataStore';
 // ////////////////////////////////////////////////////// //
 //                     messageSendV1                      //
 // ////////////////////////////////////////////////////// //
-
+/**
+ * User as part of a channel can send a message.
+ * @param {string, number, string}
+ * @returns { MessageId | Error}
+ */
 export function messageSendV1(
   token: string,
   channelId: number,
@@ -39,7 +43,7 @@ export function messageSendV1(
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
   }
-  if (!isTokenOwnerMember(token, channelId)) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'Only members can message on the channel' };
   }
 
@@ -52,8 +56,8 @@ export function messageSendV1(
   };
   const data: DataStore = getData();
   const index = data.channels.findIndex(a => a.channelId === channelId);
-  data.channels[index].messages.push(messageDetails);
-  data.messageIds.push(messageId);
+  data.channels[index].messages.unshift(messageDetails);
+  data.messageIds.unshift(messageId);
   setData(data);
   return messageId;
 }
@@ -61,8 +65,14 @@ export function messageSendV1(
 // ////////////////////////////////////////////////////// //
 //                    messageSendDmV1                     //
 // ////////////////////////////////////////////////////// //
-
-export function messageSendDmV1(token: string, dmId: number, message: string): MessageId | Error {
+/**
+ * User as part of a DM can send a message.
+ * @param {string, number, string}
+ * @returns { MessageId | Error}
+ */
+export function messageSendDmV1(
+  token: string, dmId: number, message: string
+): MessageId | Error {
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
   }
@@ -85,8 +95,8 @@ export function messageSendDmV1(token: string, dmId: number, message: string): M
   };
   const data: DataStore = getData();
   const index = data.dms.findIndex(a => a.dmId === dmId);
-  data.dms[index].messages.push(messageDetails);
-  data.messageIds.push(messageId);
+  data.dms[index].messages.unshift(messageDetails);
+  data.messageIds.unshift(messageId);
   setData(data);
   return messageId;
 }
