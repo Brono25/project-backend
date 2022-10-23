@@ -11,7 +11,10 @@ import * as h from './test.helper';
 
 let authUserId0: number;
 let authUserId1: number;
+let token0: string;
+let token1: string;
 let invalidAuthUserId: number;
+let invalidToken: string;
 let publicChannelId0: number;
 let publicChannelId1: number;
 let privateChannelId0: number;
@@ -20,8 +23,10 @@ let privateChannelId1: number;
 beforeEach(() => {
   let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
   authUserId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  token0 = authRegisterV1(...args).token;
   args = [h.email1, h.password1, h.firstName1, h.lastName1];
   authUserId1 = h.authRegisterReturnGaurd(authRegisterV1(...args));
+  token1 = authRegisterV1(...args).token;
 
   // User 1's owner of channels
   args = [authUserId0, h.channelName0, h.isPublic];
@@ -38,6 +43,7 @@ beforeEach(() => {
   channelInviteV1(authUserId0, publicChannelId0, authUserId1);
 
   invalidAuthUserId = Math.abs(authUserId0) + Math.abs(authUserId1) + 10;
+  invalidToken = h.invalidToken;
 });
 // Tear down
 afterEach(() => {
@@ -48,6 +54,10 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
+  test('Invalid Token', () => {
+    expect(channelsListV1(invalidToken)).toStrictEqual({ error: expect.any(String) });
+  });
+
   test('Invalid user ID', () => {
     expect(channelsListV1(invalidAuthUserId)).toStrictEqual({ error: expect.any(String) });
   });
@@ -57,7 +67,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('List users channels with mix of public and private channels', () => {
-    expect(channelsListV1(authUserId0)).toStrictEqual({
+    expect(channelsListV1(token0)).toStrictEqual({
       channels: <Channel[]>[
         {
           channelId: publicChannelId0,
@@ -79,7 +89,7 @@ describe('Function Testing', () => {
     });
   });
   test('List channels when user has only private channels', () => {
-    expect(channelsListV1(authUserId1)).toStrictEqual({
+    expect(channelsListV1(token1)).toStrictEqual({
       channels: <Channel[]>[
         {
           channelId: publicChannelId0,
