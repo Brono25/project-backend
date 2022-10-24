@@ -22,8 +22,7 @@ beforeEach(() => {
         password: h.password2,
         nameFirst: h.firstName2,
         nameLast: h.lastName2,
-      });
-    
+      });    
     token2 = temp.token;
     handleStr2 = temp.handleStr;
 });
@@ -36,21 +35,21 @@ afterEach(() => {
 
 describe('Error Handling', () => {
     test('long handleStr', () => {
-        const data = h.postRequest(h.USER_PROF_SET_HANDLE_URL, {
+        const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
           token: token0,
           handleStr: "longhandleStr123456789",
         });
         expect(data).toStrictEqual({ error: expect.any(String) });
       });
       test('not alphanumeric handleStr', () => {
-        const data = h.postRequest(h.USER_PROF_SET_HANDLE_URL, {
+        const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
             token: token0,
             handleStr: "h@ndleStr",
         });
         expect(data).toStrictEqual({ error: expect.any(String) });
       });
       test('handleStr already being used', () => {
-        const data = h.postRequest(h.USER_PROF_SET_HANDLE_URL, {
+        const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
           token: token0,
           handleStr: handleStr2,
         });
@@ -59,7 +58,7 @@ describe('Error Handling', () => {
     
 
   test('Invalid token', () => {
-    const data = h.postRequest(h.USER_PROF_SET_HANDLE_URL, {
+    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: h.invalidToken,
       handleStr: 'firstnameLastname',
     });
@@ -71,7 +70,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('change handle', () => {
-    const data = h.postRequest(h.USER_PROF_SET_HANDLE_URL, {
+    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: token0,
       handleStr: 'firstnameLastname',
     });

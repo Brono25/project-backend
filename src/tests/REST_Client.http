@@ -5,7 +5,7 @@ POST http://localhost:3200/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "ds@gmail.com",
+    "email": "dddss@gmail.com",
     "password": "1233dfs4",
     "nameFirst": "bB",
     "nameLast": "cB"
@@ -18,7 +18,7 @@ POST http://localhost:3200/channels/create/v2
 content-type: application/json
 
 {   
-    "token": "fLRn92WpTY",
+    "token": "0tQ16zSRVb",
     "name": "Channel 2",
     "isPublic": "true"
 }
@@ -109,6 +109,18 @@ content-type: application/json
     "nameFirst": "xx",
     "nameLast": "yy"
 }
+
+
+###
+// Channel Join
+POST http://localhost:3200/channel/join/v2
+content-type: application/json
+
+{   
+    "token": "5kulR7Mzar",
+    "channelId": 0
+}
+
 
 ###
 //Clear

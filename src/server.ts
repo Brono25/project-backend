@@ -12,6 +12,7 @@ import { channelsCreateV2 } from './channels';
 import { channelMessagesV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
+import { channelJoinV2 } from './channel';
 import {
   messageSendV1,
   messageSendDmV1,
@@ -127,6 +128,11 @@ app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
 app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   res.json(userProfileSetHandleV1(token, handleStr));
+});
+ 
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelJoinV2(token, parseInt(channelId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
