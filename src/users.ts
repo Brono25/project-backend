@@ -97,7 +97,7 @@ function usersAllv1(token: string): UsersAllReturn {
  * @returns {}
  */
 
-function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string): any {
+function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string): object {
   if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
@@ -113,7 +113,7 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
   const data: DataStore = getData();
   const uId: number = getUIdFromToken(token);
   const userDetails: UserStore = getUserStoreFromId(uId);
-  const index = data.users.indexOf(userDetails);
+  const index = data.users.findIndex(a => a.uId === uId);
   userDetails.nameFirst = nameFirst;
   userDetails.nameLast = nameLast;
   data.users[index] = userDetails;
@@ -146,7 +146,7 @@ function userProfileSetEmailV1(token: string, email: string): any {
   const data: DataStore = getData();
   const uId: number = getUIdFromToken(token);
   const userDetails: UserStore = getUserStoreFromId(uId);
-  const index = data.users.indexOf(userDetails);
+  const index = data.users.findIndex(a => a.uId === uId);
   userDetails.email = email;
   data.users[index] = userDetails;
   setData(data);
