@@ -82,7 +82,7 @@ GET http://localhost:3200/user/profile/v2
 ###
 // User All
 GET http://localhost:3200/users/all/v1
-    ?token=tN8jOle2b9
+    ?token=token1
     
 
 ###
