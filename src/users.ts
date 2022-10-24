@@ -121,8 +121,16 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
   return {};
 }
 
+// ////////////////////////////////////////////////////// //
+//                  userProfileSetEmailV1                 //
+// ////////////////////////////////////////////////////// //
+/**
+ * Update the authorised user's first and last name
+ *
+ * @param {string, string} - token and email to update for a user
+ * @returns {}
+ */
 function userProfileSetEmailV1(token: string, email: string): any {
-
   if (!validator.isEmail(email)) {
     return { error: 'Invalid Email' };
   }
