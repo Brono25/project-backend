@@ -9,11 +9,22 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
+import { channelMessagesV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { messageSendV1 } from './message';
 import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
-import { dmCreateV1 } from './dm';
+import { channelJoinV2 } from './channel';
+import {
+  messageSendV1,
+  messageSendDmV1,
+} from './message';
+
+import {
+  dmCreateV1,
+  dmDetailsv1,
+  dmMessagesV1,
+} from './dm';
+
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -56,16 +67,41 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
-  res.json(channelsCreateV2(token, name, isPublic));
+  res.json(channelsCreateV2(token, name, <boolean>isPublic));
 });
 
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
-  res.json(messageSendV1(token, channelId, message));
+  res.json(messageSendV1(token, parseInt(channelId), message));
 });
 app.post('/dm/create/v1', (req: Request, res: Response) => {
   const { token, uIds } = req.body;
-  res.json(dmCreateV1(token, uIds));
+  const uIdsInt: number[] = uIds.map((a: string) => parseInt(a));
+  res.json(dmCreateV1(token, uIdsInt));
+});
+
+app.get('/dm/details/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  res.json(dmDetailsv1(token, parseInt(dmId)));
+});
+
+app.get('/channel/messages/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const channelId = req.query.channelId as string;
+  const start = req.query.start as string;
+  res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
+});
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  const start = req.query.start as string;
+  res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
+});
+
+app.post('/message/senddm/v1', (req: Request, res: Response) => {
+  const { token, dmId, message } = req.body;
+  res.json(messageSendDmV1(token, parseInt(dmId), message));
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {
@@ -89,6 +125,11 @@ app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
   res.json(userProfileSetEmailV1(token, email));
 });
 
+
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelJoinV2(token, parseInt(channelId)));
+});
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
