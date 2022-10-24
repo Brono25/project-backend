@@ -12,6 +12,8 @@ import { channelsCreateV2 } from './channels';
 import { channelMessagesV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
+import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
+import { channelJoinV2 } from './channel';
 import {
   messageSendV1,
   messageSendDmV1,
@@ -22,11 +24,6 @@ import {
   dmDetailsv1,
   dmMessagesV1,
 } from './dm';
-import {
-  userProfileSetNameV1,
-  userProfileV2,
-  usersAllv1
-} from './users';
 
 // Set up web app
 const app = express();
@@ -121,6 +118,16 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   const { token, nameFirst, nameLast } = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+  const { token, email } = req.body;
+  res.json(userProfileSetEmailV1(token, email));
+});
+
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelJoinV2(token, parseInt(channelId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
