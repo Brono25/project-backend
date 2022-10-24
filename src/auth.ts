@@ -213,7 +213,7 @@ function generateAuthUserId(): AuthUserId {
  * @param {string} - users email
  * @returns {boolean} - is email already claimed by another user
  */
-function isEmailUsed(email: string) {
+export function isEmailUsed(email: string) {
   const data: DataStore = getData();
 
   if (!data.users.length) {

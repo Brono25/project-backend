@@ -1,4 +1,6 @@
 
+import validator from 'validator';
+import { isEmailUsed } from './auth';
 import {
   DataStore,
   Error,
@@ -119,8 +121,41 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
   return {};
 }
 
+// ////////////////////////////////////////////////////// //
+//                  userProfileSetEmailV1                 //
+// ////////////////////////////////////////////////////// //
+/**
+ * Update the authorised user's first and last name
+ *
+ * @param {string, string} - token and email to update for a user
+ * @returns {}
+ */
+function userProfileSetEmailV1(token: string, email: string): any {
+  if (!validator.isEmail(email)) {
+    return { error: 'Invalid Email' };
+  }
+
+  if (isEmailUsed(email)) {
+    return { error: 'Email is already taken' };
+  }
+
+  if (!isValidToken(token)) {
+    return { error: 'token is invalid!' };
+  }
+
+  const data: DataStore = getData();
+  const uId: number = getUIdFromToken(token);
+  const userDetails: UserStore = getUserStoreFromId(uId);
+  const index = data.users.indexOf(userDetails);
+  userDetails.email = email;
+  data.users[index] = userDetails;
+  setData(data);
+  return {};
+}
+
 export {
   userProfileV2,
   usersAllv1,
   userProfileSetNameV1,
+  userProfileSetEmailV1,
 };
