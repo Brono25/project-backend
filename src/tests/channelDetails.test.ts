@@ -26,6 +26,7 @@ beforeEach(() => {
   // Channels 0,1,2
   channelId0 = h.channelsCreateReturnGaurd(channelsCreateV1(userId0, h.channelName0, h.isPublic));
   channelId1 = h.channelsCreateReturnGaurd(channelsCreateV1(userId0, h.channelName1, h.isPublic));
+
   channelJoinV1(userId1, channelId1);
   channelId2 = h.channelsCreateReturnGaurd(channelsCreateV1(userId0, h.channelName2, h.isNotPublic));
   // Error cases
