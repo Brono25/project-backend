@@ -91,7 +91,7 @@ describe('Error Handling', () => {
       token: invalidToken,
       channelId: channelId0,
     });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String)});
+    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
   });
 
   test('Error Test: Invalid Channel Id', () => {
@@ -99,7 +99,7 @@ describe('Error Handling', () => {
       token: token0,
       channelId: invalidChannelId,
     });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String)});
+    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
   });
 
   test('Error Test: User not a member of any channel', () => {
