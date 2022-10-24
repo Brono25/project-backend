@@ -69,6 +69,7 @@ export type PageMessages = {
   end: number;
 };
 export type MessageSendReturn = MessageId | Error;
+export type ChannelJoinReturn = object | Error;
 export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
