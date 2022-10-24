@@ -9,11 +9,10 @@ import { clearV1 } from '../other';
 import { channelInviteV1 } from '../channel';
 import * as h from './test.helper';
 
-let authUserId0: number;
-let authUserId1: number;
+let uId0: number;
+let uId1: number;
 let token0: string;
 let token1: string;
-let invalidAuthUserId: number;
 let invalidToken: string;
 let publicChannelId0: number;
 let publicChannelId1: number;
