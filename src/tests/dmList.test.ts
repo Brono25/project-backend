@@ -1,5 +1,5 @@
 import * as h from './test.helper';
-import { dmDetailsV1 } from './dm.ts';
+import { dmCreateV1 } from './dm.ts';
 
 // SETUP
 beforeEach(() => {
@@ -85,7 +85,7 @@ describe('Error Handling', () => {
   // ------------------Function Testing------------------//
   
 describe('Function Testing', () => {
-    test('For a user for multiple DMs', () => {
+    test('For an owner or member of multiple DMs', () => {
         input = h.getRequest(h.DM_LIST_URL, {
             token: token0,
         });
