@@ -9,6 +9,7 @@ import {
   NO_MORE_PAGES,
   DmStore,
   DmCreateReturn,
+  dmListReturn,
   dmDetailsReturn,
 } from './data.types';
 
@@ -68,6 +69,67 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   setData(data);
   return { dmId: dmId };
 }
+
+// ////////////////////////////////////////////////////// //
+//                      dmListV1                         //
+// ////////////////////////////////////////////////////// //
+/**
+ * Shows a list of all the dms that the user is a member of (if the given token is valid).
+ * @param {string} - token
+ * @returns {array} - dms[{dmId: , name: }] 
+ */
+export function dmListV1(token: string): dmListReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token'};
+  }
+  const uId: number = getUIdFromToken(token);
+  const data: DataStore = getData();
+  let dm: Dm = {dmId: null, name: null};
+  let dms: any = [];
+  const dmMember: DmStore[] = data.dms.filter(dmNum => dmNum.allMembersId.includes(uId) === true);
+  const dmOwner: DmStore[] = data.dms.filter(dmNum => dmNum.ownerId === uId);
+  if (dmMember !== null) {
+    for (const element of dmMember) {
+      dm = {
+        dmId: element.dmId,
+        name: element.name,
+      };
+      dms.push(dm);
+    }
+  }
+  if (dmOwner !== null) {
+    for (const element of dmOwner) {
+      dm = {
+        dmId: element.dmId,
+        name: element.name,
+      };
+      dms.push(dm);
+    }
+  }
+  /*
+  for (let dmNum of dmStore) {
+    if (dmNum.ownerId === uId) {
+      dm = {
+        dmId: dmNum.dmId,
+        name: dmNum.name,
+      }
+      dmList.push(dm);
+    }
+  for (let dmNum of dmStore) {
+    for (let member of dmNum.allMembersId) {
+      if (member === uId) {
+        dm = {
+          dmId: dmNum.dmId,
+          name: dmNum.name,
+        };
+        dmList.push(dm);
+      }
+    }
+  }
+  */
+  return { dms };
+} 
+
 
 // ////////////////////////////////////////////////////// //
 //                      dmDetails                         //
