@@ -33,7 +33,7 @@ beforeEach(() => {
     nameLast: h.lastName0,
   });
   token0 = user0.token;
-  uId0 = user0.authUserId;
+  uId0 = parseInt(user0.authUserId);
   const user1: any = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
@@ -41,7 +41,7 @@ beforeEach(() => {
     nameLast: h.lastName1,
   });
   token1 = user1.token;
-  uId1 = user1.authUserId;
+  uId1 = parseInt(user1.authUserId);
   const user2: any = h.postRequest(h.REGISTER_URL, {
     email: h.email2,
     password: h.password2,
@@ -49,7 +49,7 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = user2.token;
-  uId2 = user2.authUserId;
+  uId2 = parseInt(user2.authUserId);
   // Create channels 0,1,2
   const channel0: any = h.postRequest(h.CHAN_CREATE_URL, {
     token: token0,
