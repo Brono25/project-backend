@@ -123,6 +123,23 @@ export function isTokenMemberOfChannel(token: string, channelId: number): boolea
   return false;
 }
 /**
+ * @param {number|string, number} - authorised user's token and channel id
+ * @returns {boolean} - is user an owner of channel
+ */
+export function isTokenOwnerOfChannel(token:string, channelId: number): boolean {
+  const authUserId: number = getUIdFromToken(token);
+  const data: DataStore = getData();
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      if (channel.ownerMembers.find(a => a.uId === authUserId)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/**
  * @param {number} - Dm id
  * @returns {boolean} - does DM exist
  */

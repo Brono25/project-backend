@@ -67,10 +67,14 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('change email', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
+    let data: any = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
       token: token0,
       email: 'email_new_@gmail.com',
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.USER_ALL_URL, {
+      token: token0,
+    });
+    expect(data.users[0].email).toStrictEqual('email_new_@gmail.com');
   });
 });

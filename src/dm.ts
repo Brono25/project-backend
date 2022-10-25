@@ -11,6 +11,7 @@ import {
   DmCreateReturn,
   dmListReturn,
   dmDetailsReturn,
+  dmLeaveReturn,
 } from './data.types';
 
 import {
@@ -169,6 +170,40 @@ export function dmDetailsv1(token: string, dmId: number): dmDetailsReturn {
     name: dmDetails.name,
     members: userList,
   };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmLeave                           //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {string, number[]}
+ * @returns {number}
+ */
+export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
+  if (!isValidDmId(dmId)) {
+    return { error: 'Invalid dmId' };
+  }
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  if (!isTokenMemberOfDm(token, dmId)) {
+    return { error: 'Token owner is not a member of the dm' };
+  }
+
+  const uId: number = getUIdFromToken(token);
+
+  // fix the following lines of code
+  const dmDetails: DmStore = getDmStore(dmId);
+  let membersArr: number[] = dmDetails.allMembersId;
+  membersArr = membersArr.filter((element) => {
+    return element !== uId;
+  });
+  dmDetails.allMembersId = membersArr;
+  const data: DataStore = getData();
+  data.dms.push(dmDetails);
+  setData(data);
+  return {};
 }
 
 // ////////////////////////////////////////////////////// //

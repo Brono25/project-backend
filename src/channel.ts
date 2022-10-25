@@ -14,6 +14,7 @@ import {
   getUIdFromToken,
   isValidToken,
   isTokenMemberOfChannel,
+  isTokenOwnerOfChannel,
 } from './other';
 
 import {
@@ -24,10 +25,12 @@ import {
   UserStore,
   Message,
   Error,
+  channelInviteReturn,
   ChannelJoinReturn,
   PageMessages,
   PAGE_SIZE,
-  NO_MORE_PAGES
+  NO_MORE_PAGES,
+  ChannelLeaveReturn,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -133,6 +136,45 @@ export function channelJoinV2(
   setData(data);
   return {};
 }
+// ////////////////////////////////////////////////////// //
+//                      channelLeaveV1                    //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channelId of a channel that the authorised user can
+ * leave, removes them from that channel.
+ * @param {string, number} - token and channel id
+ * @returns {}
+ */
+export function channelLeaveV1(
+  token: string,
+  channelId: number
+): ChannelLeaveReturn {
+  const authUserId = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  } else if (!isAuthUserMember(authUserId, channelId)) {
+    return { error: 'User is not a member of the channel' };
+  }
+
+  const data: DataStore = getData();
+  const channelDetails: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  // step 1: remove member's uId from allMembers array
+  // step 2: if owner, remove uId from owners array
+  const indexOfMember = channelDetails.allMembers.findIndex(a => a.uId === authUserId);
+  channelDetails.allMembers.splice(indexOfMember, 1);
+
+  if (isTokenOwnerOfChannel(token, channelId) === true) {
+    const indexOfOwner = channelDetails.ownerMembers.findIndex(a => a.uId === authUserId);
+    channelDetails.ownerMembers.splice(indexOfOwner, 1);
+  }
+  data.channels[indexOfChannel] = channelDetails;
+  setData(data);
+  return {};
+}
 
 // ////////////////////////////////////////////////////// //
 //                     channelInviteV1                    //
@@ -170,6 +212,33 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   return {};
 }
 
+function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Token is invalid!' };
+  }
+
+  const authUserId: number = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidAuthUserId(uId)) {
+    return { error: 'Invalid uId' };
+  } else if (isAuthUserMember(uId, channelId)) {
+    return { error: 'User is already a member of the channel' };
+  } else if (!isAuthUserMember(authUserId, channelId) && !isGlobalOwner(authUserId)) {
+    return { error: 'User is not a member of the channel' };
+  }
+
+  const data: DataStore = getData();
+
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      channel.allMembers.push({ uId: uId });
+    }
+  }
+  setData(data);
+  return {};
+}
 // ////////////////////////////////////////////////////// //
 //                     channelMessagesV1                  //
 // ////////////////////////////////////////////////////// //
@@ -292,4 +361,5 @@ export {
   channelJoinV1,
   channelInviteV1,
   channelMessagesV1,
+  channelInviteV2,
 };
