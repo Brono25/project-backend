@@ -33,9 +33,8 @@ function getData(): DataStore {
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
-function setData(newData: DataStore) {
-  data = newData;
-  const jsonstr = JSON.stringify(newData, null, 2);
+function setData(data: DataStore) {
+  const jsonstr = JSON.stringify(data, null, 2);
   fs.writeFileSync(DATA_PATH, jsonstr);
 }
 
