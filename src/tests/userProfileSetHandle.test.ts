@@ -3,7 +3,6 @@ import * as h from './test.helper';
 // Setup
 let token0: string;
 let token2: string;
-let authUserId2: number;
 let handleStr2: string;
 let temp: any;
 
@@ -23,12 +22,10 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = temp.token;
-  authUserId2 = temp.authUserId;
-  temp = h.getRequest(h.USER_PROF_URL, {
+  temp = h.getRequest(h.USER_ALL_URL, {
     token: token2,
-    uId: authUserId2,
   });
-  handleStr2 = temp.user.handleStr;
+  handleStr2 = temp.users[1].handleStr;
 });
 // Tear down
 afterEach(() => {
