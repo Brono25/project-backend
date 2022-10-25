@@ -1,40 +1,56 @@
 import * as h from './test.helper';
 
-// Setup: Create 3 users and register them to a channel (using channel join)
-let authUser0: any;
-let authUser2: any;
-let authUser1: any;
-let authUserId0: number;
-let authUserId1: number;
-let authUserId2: number;
-let authUserToken0: string;
-let authUserToken1: string;
-let authUserToken2: string;
+// Setup
+let token0: string;
+let token1 : string;
+let token2 : string;
+
+let channelId0: number;
+let invalidChannelId: number;
+
+let tmp: any;
+
 beforeEach(() => {
-  authUser0 = h.postRequest(h.REGISTER_URL, {
+  // tokens 0,1 and 2
+  tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
     password: h.password0,
     nameFirst: h.firstName0,
     nameLast: h.lastName0,
   });
-  authUserId0 = authUser0.authUserId;
-  authUserToken0 = authUser0.token;
-  authUser1 = h.postRequest(h.REGISTER_URL, {
+  token0 = tmp.token;
+
+  tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
     nameFirst: h.firstName1,
     nameLast: h.lastName1,
   });
-  authUserId1 = authUser1.authUserId;
-  authUserToken1 = authUser1.token;
-  authUser2 = h.postRequest(h.REGISTER_URL, {
+  token1 = tmp.token;
+
+  tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email2,
     password: h.password2,
     nameFirst: h.firstName2,
     nameLast: h.lastName2,
   });
-  authUserId2 = authUser2.authUserId;
-  authUserToken2 = authUser2.token;
+  token2 = tmp.token;
+
+  // error inputs
+  invalidChannelId = Math.abs(channelId0) + 10;
+  // Channels 0 and private
+  tmp = h.postRequest(h.CHAN_CREATE_URL, {
+    token: token0,
+    name: h.channelName0,
+    isPublic: h.isPublic,
+  });
+  channelId0 = parseInt(tmp.channelId);
+
+  // add user1
+  tmp = h.postRequest(h.CHAN_JOIN_URL, {
+    token: token1,
+    channelId: channelId0,
+  });
 });
 
 // Tear down
@@ -43,32 +59,62 @@ afterEach(() => {
 });
 
 // ------------------Error Testing------------------//
-
 describe('Error Handling', () => {
-    test('Incorrect token', () => {
-      const data = h.postRequest(h.LOGOUT_URL, {
-        token: 'invalidToken',
-        channelId: 'change this later',
-      });
-      expect(data).toStrictEqual({ error: expect.any(String) });
+  test('Invalid Channel ID', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token0,
+      channelId: invalidChannelId,
     });
+    expect(data).toStrictEqual({ error: 'Invalid channel Id' });
+  });
 
-    test('Invalid channelId', () => {
-        const data = h.postRequest(h.LOGOUT_URL, {
-          token: 'invalidToken',
-        });
-        expect(data).toStrictEqual({ error: expect.any(String) });
+  test('User is not a member of channel', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token2,
+      channelId: channelId0,
     });
+    expect(data).toStrictEqual({ error: 'User is not a member of the channel' });
+  });
 
-    test('User is not a member of channel', () => {
-        const data = h.postRequest(h.LOGOUT_URL, {
-          token: 'invalidToken',
-        });
-        expect(data).toStrictEqual({ error: expect.any(String) });
-      });
-  
+  test('Invalid token', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: 'invalidToken',
+      channelId: channelId0,
+    });
+    expect(data).toStrictEqual({ error: 'Invalid Token' });
+  });
 });
 
-// test when only one channel member, test when more than one channel member
+// ------------------Function Testing------------------//
+// test with channelDetails when it is completed
 
-// NOTE: if user is an owner also remove from owner list. Create helper function to check if user is an owner of the channel.
+describe('Function Testing', () => {
+  test('channel owner leaves the channel', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+
+    expect(data).toStrictEqual({});
+  });
+
+  test('channel member leaves the channel', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+    expect(data).toStrictEqual({});
+  });
+
+  test('all members leaves the channel', () => {
+    let data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+    data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token1,
+      channelId: channelId0,
+    });
+    expect(data).toStrictEqual({});
+  });
+});
