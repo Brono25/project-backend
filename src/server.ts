@@ -9,9 +9,10 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
-import { channelMessagesV1 } from './channel';
+import { channelLeaveV1, channelMessagesV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
+import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { channelJoinV2 } from './channel';
 import {
   messageSendV1,
@@ -23,12 +24,6 @@ import {
   dmDetailsv1,
   dmMessagesV1,
 } from './dm';
-import {
-  userProfileSetNameV1,
-  userProfileV2,
-  usersAllv1,
-  userProfileSetHandleV1,
-} from './users';
 
 // Set up web app
 const app = express();
@@ -130,9 +125,19 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   res.json(userProfileSetHandleV1(token, handleStr));
 });
 
+app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+  const { token, email } = req.body;
+  res.json(userProfileSetEmailV1(token, email));
+});
+
 app.post('/channel/join/v2', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
   res.json(channelJoinV2(token, parseInt(channelId)));
+});
+
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelLeaveV1(token, parseInt(channelId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {

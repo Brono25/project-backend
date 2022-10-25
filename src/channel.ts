@@ -14,6 +14,7 @@ import {
   getUIdFromToken,
   isValidToken,
   isTokenMemberOfChannel,
+  isTokenOwnerOfChannel,
 } from './other';
 
 import {
@@ -27,7 +28,8 @@ import {
   ChannelJoinReturn,
   PageMessages,
   PAGE_SIZE,
-  NO_MORE_PAGES
+  NO_MORE_PAGES,
+  ChannelLeaveReturn,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -130,6 +132,45 @@ export function channelJoinV2(
   const data: DataStore = getData();
   const index = data.channels.findIndex(a => a.channelId === channelId);
   data.channels[index].allMembers.push({ uId: authUserId });
+  setData(data);
+  return {};
+}
+// ////////////////////////////////////////////////////// //
+//                      channelLeaveV1                    //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channelId of a channel that the authorised user can
+ * leave, removes them from that channel.
+ * @param {string, number} - token and channel id
+ * @returns {}
+ */
+export function channelLeaveV1(
+  token: string,
+  channelId: number
+): ChannelLeaveReturn {
+  const authUserId = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  } else if (!isAuthUserMember(authUserId, channelId)) {
+    return { error: 'User is not a member of the channel' };
+  }
+
+  const data: DataStore = getData();
+  const channelDetails: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  // step 1: remove member's uId from allMembers array
+  // step 2: if owner, remove uId from owners array
+  const indexOfMember = channelDetails.allMembers.findIndex(a => a.uId === authUserId);
+  channelDetails.allMembers.splice(indexOfMember, 1);
+
+  if (isTokenOwnerOfChannel(token, channelId) === true) {
+    const indexOfOwner = channelDetails.ownerMembers.findIndex(a => a.uId === authUserId);
+    channelDetails.ownerMembers.splice(indexOfOwner, 1);
+  }
+  data.channels[indexOfChannel] = channelDetails;
   setData(data);
   return {};
 }
