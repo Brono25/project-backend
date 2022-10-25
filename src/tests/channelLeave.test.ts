@@ -1,5 +1,3 @@
-
-// import {ChannelJoinReturn} from '../data.types';
 import * as h from './test.helper';
 
 // Setup
@@ -8,7 +6,6 @@ let token1 : string;
 let token2 : string;
 
 let channelId0: number;
-let channelIdPriv: number;
 let invalidChannelId: number;
 
 let tmp: any;
@@ -49,12 +46,11 @@ beforeEach(() => {
   });
   channelId0 = parseInt(tmp.channelId);
 
-  tmp = h.postRequest(h.CHAN_CREATE_URL, {
+  // add user1
+  tmp = h.postRequest(h.CHAN_JOIN_URL, {
     token: token1,
-    name: h.channelName1,
-    isPublic: h.isNotPublic,
+    channelId: channelId0,
   });
-  channelIdPriv = parseInt(tmp.channelId);
 });
 
 // Tear down
@@ -65,31 +61,23 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 describe('Error Handling', () => {
   test('Invalid Channel ID', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
       token: token0,
       channelId: invalidChannelId,
     });
     expect(data).toStrictEqual({ error: 'Invalid channel Id' });
   });
 
-  test('User already member of channel', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
-      token: token0,
+  test('User is not a member of channel', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token2,
       channelId: channelId0,
     });
-    expect(data).toStrictEqual({ error: 'User is already a member of the channel' });
-  });
-
-  test('Private channelId', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
-      token: token2,
-      channelId: channelIdPriv,
-    });
-    expect(data).toStrictEqual({ error: 'Private channel' });
+    expect(data).toStrictEqual({ error: 'User is not a member of the channel' });
   });
 
   test('Invalid token', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
       token: 'invalidToken',
       channelId: channelId0,
     });
@@ -98,22 +86,35 @@ describe('Error Handling', () => {
 });
 
 // ------------------Function Testing------------------//
+// test with channelDetails when it is completed
+
 describe('Function Testing', () => {
-  test('adds a global member to the channel', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
-      token: token2,
+  test('channel owner leaves the channel', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+
+    expect(data).toStrictEqual({});
+  });
+
+  test('channel member leaves the channel', () => {
+    const data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token0,
       channelId: channelId0,
     });
     expect(data).toStrictEqual({});
   });
 
-  test('adds a global owner to the channel', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
+  test('all members leaves the channel', () => {
+    let data = h.postRequest(h.CHAN_LEAVE_URL, {
       token: token0,
-      channelId: channelIdPriv,
+      channelId: channelId0,
+    });
+    data = h.postRequest(h.CHAN_LEAVE_URL, {
+      token: token1,
+      channelId: channelId0,
     });
     expect(data).toStrictEqual({});
   });
-
-  // Todo: test with channel details
 });

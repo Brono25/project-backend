@@ -4,7 +4,6 @@ import * as h from './test.helper';
 let authUser0: any;
 let authUser1: any;
 let authUser2: any;
-let authUserId0: number;
 let authUserId1: number;
 let authUserId2: number;
 let authUserToken0: string;
@@ -20,7 +19,6 @@ beforeEach(() => {
     nameFirst: h.firstName0,
     nameLast: h.lastName0,
   });
-  authUserId0 = parseInt(authUser0.authUserId);
   authUserToken0 = authUser0.token;
   authUser1 = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
@@ -61,21 +59,21 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid dmId', () => {
-    const data = h.getRequest(h.DM_LEAVE_URL, {
+    const data = h.postRequest(h.DM_LEAVE_URL, {
       token: authUserToken0,
       dmId: 0,
     });
     expect(data).toStrictEqual({ error: 'Invalid dmId' });
   });
   test('Token owner is not a member of the dm', () => {
-    const data = h.getRequest(h.DM_LEAVE_URL, {
+    const data = h.postRequest(h.DM_LEAVE_URL, {
       token: authUserToken1,
       dmId: dmId2,
     });
     expect(data).toStrictEqual({ error: 'Token owner is not a member of the dm' });
   });
   test('Invalid Token', () => {
-    const data = h.getRequest(h.DM_LEAVE_URL, {
+    const data = h.postRequest(h.DM_LEAVE_URL, {
       token: h.invalidToken,
       dmId: dmId2,
     });
@@ -87,11 +85,10 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('the user is removed as a member of this DM.', () => {
-    const data = h.getRequest(h.DM_LEAVE_URL, {
+    const data = h.postRequest(h.DM_LEAVE_URL, {
       token: authUserToken0,
       dmId: dmId1,
     });
     expect(data).toStrictEqual({});
   });
 });
-

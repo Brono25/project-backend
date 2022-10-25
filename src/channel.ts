@@ -11,6 +11,10 @@ import {
   getChannelStoreFromId,
   getUserStoreFromId,
   isGlobalOwner,
+  getUIdFromToken,
+  isValidToken,
+  isTokenMemberOfChannel,
+  isTokenOwnerOfChannel,
 } from './other';
 
 import {
@@ -20,8 +24,12 @@ import {
   User,
   UserStore,
   Message,
-  ChannelMessagesReturn,
-  Error
+  Error,
+  ChannelJoinReturn,
+  PageMessages,
+  PAGE_SIZE,
+  NO_MORE_PAGES,
+  ChannelLeaveReturn,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -67,7 +75,8 @@ function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetail
 //                      channelJoinV1                     //
 // ////////////////////////////////////////////////////// //
 /**
- * Given a channelId of a channel that the authorised user can join, adds them to that channel.
+ * Given a channelId of a channel that the authorised user can
+ * join, adds them to that channel.
  * @param {number, number} - user id and channel id
  * @returns {}
  */
@@ -90,6 +99,79 @@ function channelJoinV1(authUserId: number, channelId: number) {
   data.channels[index].allMembers.push({ uId: authUserId });
   setData(data);
 
+  return {};
+}
+
+// ////////////////////////////////////////////////////// //
+//                      channelJoinV2                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channelId of a channel that the authorised user can
+ * join, adds them to that channel.
+ * @param {string, number} - token and channel id
+ * @returns {}
+ */
+export function channelJoinV2(
+  token: string,
+  channelId: number
+): ChannelJoinReturn {
+  const authUserId = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (isAuthUserMember(authUserId, channelId)) {
+    return { error: 'User is already a member of the channel' };
+  } else if (isChannelPrivate(channelId) &&
+  !isAuthUserMember(authUserId, channelId) &&
+  !isGlobalOwner(authUserId)) {
+    return { error: 'Private channel' };
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+
+  const data: DataStore = getData();
+  const index = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[index].allMembers.push({ uId: authUserId });
+  setData(data);
+  return {};
+}
+// ////////////////////////////////////////////////////// //
+//                      channelLeaveV1                    //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channelId of a channel that the authorised user can
+ * leave, removes them from that channel.
+ * @param {string, number} - token and channel id
+ * @returns {}
+ */
+export function channelLeaveV1(
+  token: string,
+  channelId: number
+): ChannelLeaveReturn {
+  const authUserId = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  } else if (!isAuthUserMember(authUserId, channelId)) {
+    return { error: 'User is not a member of the channel' };
+  }
+
+  const data: DataStore = getData();
+  const channelDetails: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  // step 1: remove member's uId from allMembers array
+  // step 2: if owner, remove uId from owners array
+  const indexOfMember = channelDetails.allMembers.findIndex(a => a.uId === authUserId);
+  channelDetails.allMembers.splice(indexOfMember, 1);
+
+  if (isTokenOwnerOfChannel(token, channelId) === true) {
+    const indexOfOwner = channelDetails.ownerMembers.findIndex(a => a.uId === authUserId);
+    channelDetails.ownerMembers.splice(indexOfOwner, 1);
+  }
+  data.channels[indexOfChannel] = channelDetails;
+  setData(data);
   return {};
 }
 
@@ -135,62 +217,48 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
 
 /**
  * Given a channel with ID channelId that the authorised user
- * is a member of, returns up to 50 messages between index "start" and "start + 50".
+ * is a member of, returns up to 50 messages between index "start"
+ * and "start + 50".
  * @param {number, number, number} - authUserId, channelId, start
- * @returns {ChannelMessagesReturn} - { messages, start, end }
+ * @returns {ChannelMessages | Error} - { messages, start, end }
  */
 
 function channelMessagesV1(
-  authUserId: number,
+  token: string,
   channelId: number,
   start: number
-): ChannelMessagesReturn {
-  if (isValidChannelId(channelId) === false) {
+): PageMessages | Error {
+  if (!isValidChannelId(channelId)) {
     return { error: 'Invalid channel Id' };
   }
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const messages: Message[] = channelStore.messages;
   const numMessages = messages.length;
 
-  if (start >= numMessages) {
+  if (start > numMessages) {
     return { error: 'Messages start too high' };
-  } else if (isValidAuthUserId(authUserId) === false) {
-    return { error: 'Invalid User Id' };
-  } else if (isAuthUserMember(authUserId, channelId) === false) {
+  } else if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  } else if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'User is not a member of the channel' };
-  }
-
-  const MAX_MSG_RETURN = 50;
-  const NO_MORE_MSGS = -1;
-  let end = 0;
-  if (start + MAX_MSG_RETURN <= numMessages) {
-    end = start + MAX_MSG_RETURN;
-  } else {
-    end = NO_MORE_MSGS;
-  }
-
-  const lastFiftyorLessMessages: Message[] = [];
-
-  if (end !== NO_MORE_MSGS) {
-    const loopEnd = start + 50;
-    for (let i = start; i < loopEnd; i++) {
-      lastFiftyorLessMessages.push(messages[i]);
-    }
-    return <ChannelMessagesReturn>{
-      messages,
-      start,
-      end,
-    };
-  } else {
-    for (let i = start; i < numMessages; i++) {
-      lastFiftyorLessMessages.push(messages[i]);
-    }
-    return <ChannelMessagesReturn>{
-      messages,
-      start,
-      end,
+  } else if (start === numMessages) {
+    return <PageMessages>{
+      messages: [],
+      start: start,
+      end: NO_MORE_PAGES,
     };
   }
+
+  let end = start + PAGE_SIZE;
+  const page: Message[] = messages.slice(start, end);
+  if (page.length < PAGE_SIZE) {
+    end = NO_MORE_PAGES;
+  }
+  return <PageMessages>{
+    messages: page,
+    start: start,
+    end: end,
+  };
 }
 // ------------------ Channel Helper functions------------------
 /**

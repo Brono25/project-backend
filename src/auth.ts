@@ -21,7 +21,6 @@ import {
 // ////////////////////////////////////////////////////// //
 //                        AuthLoginV1                     //
 // ////////////////////////////////////////////////////// //
-
 /**
  * Given a registered user's email and password, returns their authUserId value.
  *
@@ -51,7 +50,6 @@ function authLoginV1(email: string, password: string): AuthLoginReturn {
 // ////////////////////////////////////////////////////// //
 //                     AuthRegisterV1                     //
 // ////////////////////////////////////////////////////// //
-
 /**
  * Adds a new user to the dataStore.
  *
@@ -116,7 +114,6 @@ function authRegisterV1(
 // ////////////////////////////////////////////////////// //
 //                     AuthLogoutv1                     //
 // ////////////////////////////////////////////////////// //
-
 /**
  * Logouts a user by invalidating their token
  *
@@ -139,7 +136,7 @@ function AuthLogoutV1(token: string): any {
 
   const uId: number = getUIdFromToken(token);
   const user: UserStore = getUserStoreFromId(uId);
-  const index = data.users.indexOf(user);
+  const index = data.users.findIndex(a => a.uId === uId);
   const tokensList1: Token[] = user.activeTokens;
   const newTokensList1: Token[] = tokensList1.filter(element => {
     return element.token !== token;
@@ -216,7 +213,7 @@ function generateAuthUserId(): AuthUserId {
  * @param {string} - users email
  * @returns {boolean} - is email already claimed by another user
  */
-function isEmailUsed(email: string) {
+export function isEmailUsed(email: string) {
   const data: DataStore = getData();
 
   if (!data.users.length) {

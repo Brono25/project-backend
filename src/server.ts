@@ -9,8 +9,11 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
+import { channelLeaveV1, channelMessagesV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
+import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
+import { channelJoinV2 } from './channel';
 import {
   messageSendV1,
   messageSendDmV1,
@@ -19,12 +22,9 @@ import {
 import {
   dmCreateV1,
   dmDetailsv1,
+  dmLeavev1,
+  dmMessagesV1,
 } from './dm';
-import {
-  userProfileSetNameV1,
-  userProfileV2,
-  usersAllv1
-} from './users';
 
 // Set up web app
 const app = express();
@@ -87,6 +87,24 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
   res.json(dmDetailsv1(token, parseInt(dmId)));
 });
 
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmLeavev1(token, parseInt(dmId)));
+});
+
+app.get('/channel/messages/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const channelId = req.query.channelId as string;
+  const start = req.query.start as string;
+  res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
+});
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  const start = req.query.start as string;
+  res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
+});
+
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
   const { token, dmId, message } = req.body;
   res.json(messageSendDmV1(token, parseInt(dmId), message));
@@ -106,6 +124,21 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   const { token, nameFirst, nameLast } = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+  const { token, email } = req.body;
+  res.json(userProfileSetEmailV1(token, email));
+});
+
+app.post('/channel/join/v2', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelJoinV2(token, parseInt(channelId)));
+});
+
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelLeaveV1(token, parseInt(channelId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
