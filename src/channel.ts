@@ -25,6 +25,7 @@ import {
   UserStore,
   Message,
   Error,
+  channelInviteReturn,
   ChannelJoinReturn,
   PageMessages,
   PAGE_SIZE,
@@ -211,6 +212,33 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
   return {};
 }
 
+function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Token is invalid!' };
+  }
+
+  const authUserId: number = getUIdFromToken(token);
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  } else if (!isValidAuthUserId(uId)) {
+    return { error: 'Invalid uId' };
+  } else if (isAuthUserMember(uId, channelId)) {
+    return { error: 'User is already a member of the channel' };
+  } else if (!isAuthUserMember(authUserId, channelId) && !isGlobalOwner(authUserId)) {
+    return { error: 'User is not a member of the channel' };
+  }
+
+  const data: DataStore = getData();
+
+  for (const channel of data.channels) {
+    if (channel.channelId === channelId) {
+      channel.allMembers.push({ uId: uId });
+    }
+  }
+  setData(data);
+  return {};
+}
 // ////////////////////////////////////////////////////// //
 //                     channelMessagesV1                  //
 // ////////////////////////////////////////////////////// //
@@ -333,4 +361,5 @@ export {
   channelJoinV1,
   channelInviteV1,
   channelMessagesV1,
+  channelInviteV2,
 };

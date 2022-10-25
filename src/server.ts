@@ -9,7 +9,7 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
-import { channelLeaveV1, channelMessagesV1 } from './channel';
+import { channelLeaveV1, channelMessagesV1, channelInviteV2 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
 import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
@@ -68,6 +68,11 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
 app.post('/channels/create/v2', (req: Request, res: Response) => {
   const { token, name, isPublic } = req.body;
   res.json(channelsCreateV2(token, name, <boolean>isPublic));
+});
+
+app.post('/channel/invite/v2', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelInviteV2(token, parseInt(channelId), parseInt(uId)));
 });
 
 app.post('/message/send/v1', (req: Request, res: Response) => {
