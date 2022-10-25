@@ -22,6 +22,7 @@ import {
 import {
   dmCreateV1,
   dmDetailsv1,
+  dmLeavev1,
   dmMessagesV1,
 } from './dm';
 
@@ -89,6 +90,11 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const dmId = req.query.dmId as string;
   res.json(dmDetailsv1(token, parseInt(dmId)));
+});
+
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmLeavev1(token, parseInt(dmId)));
 });
 
 app.get('/channel/messages/v2', (req: Request, res: Response) => {

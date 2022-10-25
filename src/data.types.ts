@@ -75,7 +75,7 @@ export type ChannelLeaveReturn = object | Error;
 export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
-
+export type dmLeaveReturn = object | Error;
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //
