@@ -11,20 +11,20 @@ import {
 
 clearV1();
 // SETUP
-let token0: string;
-let token1: string;
-let token2: string;
-let uId0: number;
-let uId1: number;
-let uId2: number;
-let channelId0: number;
-let channelId1: number;
-let channelId2: number;
-let invalidToken: string;
-let invalidChannelId: number;
-let invalidInput: any;
-let input: any;
 beforeEach(() => {
+  let token0: string;
+  let token1: string;
+  let token2: string;
+  let uId0: number;
+  let uId1: number;
+  let uId2: number;
+  let channelId0: number;
+  let channelId1: number;
+  let channelId2: number;
+  let invalidToken: string;
+  let invalidChannelId: number;
+  let invalidInput: any;
+  let input: any;
   // Create users 0, 1, 2
   const user0: any = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
