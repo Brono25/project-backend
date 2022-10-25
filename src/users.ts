@@ -133,8 +133,7 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
  * @returns {}
  */
 
- function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHandleReturn {
-
+function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHandleReturn {
   if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
@@ -146,12 +145,12 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
     return { error: 'Handle must be between 3-20 characters long (inclusive)' };
   }
 
-  if (!handleStr.match(/^[0-9a-zA-z]+$/)){
-    return {error: 'handleStr contains characters that are not alphanumeric'};
+  if (!handleStr.match(/^[0-9a-zA-z]+$/)) {
+    return { error: 'handleStr contains characters that are not alphanumeric' };
   }
 
   if (!isHandleStrUnique(handleStr)) {
-    return {error: 'Handle is already used by another user'};
+    return { error: 'Handle is already used by another user' };
   }
 
   const data: DataStore = getData();

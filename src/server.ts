@@ -129,7 +129,7 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const { token, handleStr } = req.body;
   res.json(userProfileSetHandleV1(token, handleStr));
 });
- 
+
 app.post('/channel/join/v2', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
   res.json(channelJoinV2(token, parseInt(channelId)));
