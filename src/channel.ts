@@ -213,6 +213,10 @@ function channelInviteV1(authUserId: number, channelId: number, uId: number) {
 }
 
 function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Token is invalid!' };
+  }
+
   const authUserId: number = getUIdFromToken(token);
 
   if (!isValidChannelId(channelId)) {
@@ -221,13 +225,8 @@ function channelInviteV2(token: string, channelId: number, uId: number): channel
     return { error: 'Invalid uId' };
   } else if (isAuthUserMember(uId, channelId)) {
     return { error: 'User is already a member of the channel' };
-  } else if (!isAuthUserMember(authUserId, channelId)) {
-    const authUser = getUserStoreFromId(authUserId);
-    if (authUser.globalPermission !== 'owner') {
-      return { error: 'User is not a member of the channel' };
-    }
-  } else if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
+  } else if (!isAuthUserMember(authUserId, channelId) && !isGlobalOwner(authUserId)) {
+    return { error: 'User is not a member of the channel' };
   }
 
   const data: DataStore = getData();

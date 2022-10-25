@@ -15,15 +15,6 @@ let channelId0: number;
 let invalidChannelId: number;
 
 beforeEach(() => {
-  const tmp1: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  token1 = tmp1.token;
-
-
   // uIds and tokens 0 and 1
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
@@ -54,8 +45,6 @@ beforeEach(() => {
   // error inputs
   invalidChannelId = Math.abs(channelId0) + 10;
   invalidUId = Math.abs(uId0) + 10;
-
-
 });
 
 // Tear down
@@ -104,7 +93,7 @@ describe('Error Handling', () => {
 
   test('Invalid token', () => {
     const data = h.postRequest(h.CHAN_INV_URL, {
-      token: 'invalid token Id',
+      token: 'invalidToken',
       channelId: channelId0,
       uId: uId1,
     });
