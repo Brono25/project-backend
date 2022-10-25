@@ -2,23 +2,20 @@ import * as h from './test.helper';
 import { dmDetailsV1 } from './dm.ts';
 
 // SETUP
-let uId0: number;
-let uId1: number;
-let uId2: number;
-let token0: string;
-let token1: string;
-let token2: string;
-let invalidToken: string;
-let dm0: any;
-let dm1: any;
-let dm2: any;
-let input: any;
-let invalidInput: any;
-let dms: any;
 beforeEach(() => {
-    input = null;
-    invalidInput = null;
-    dms = [];
+    let uId0: number = null;
+    let uId1: number = null;
+    let uId2: number = null;
+    let token0: string = null;
+    let token1: string = null;
+    let token2: string = null;
+    let invalidToken: string = null;
+    let dm0: any = null;
+    let dm1: any = null;
+    let dm2: any = null;
+    let input: any = {};
+    let invalidInput: any = {};
+    let dms: any = [];
     // Create users 0, 1, 2
     let user0: any = h.postRequest(h.REGISTER_URL, {
         email: h.email0,
