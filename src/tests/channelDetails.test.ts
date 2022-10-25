@@ -5,10 +5,11 @@ import { clearV1 } from '../other';
 import { ChannelDetails } from '../data.types';
 import * as h from './test.helper';
 import {
-  channelDetailsV1,
+  channelDetailsV2,
   channelJoinV1,
 } from '../channel';
 
+clearV1();
 // SETUP
 let token0: string;
 let token1: string;
