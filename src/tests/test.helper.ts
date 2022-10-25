@@ -108,6 +108,13 @@ export const postRequest = (url: string, data: any): object => {
   return bodyObj;
 };
 
+export const putRequest = (url: string, data: any): object => {
+  const res = request('PUT', url, { json: data });
+  expect(res.statusCode).toBe(OK);
+  const bodyObj = JSON.parse(res.getBody() as string);
+  return bodyObj;
+};
+
 export const getRequest = (url: string, data: any): object => {
   const res = request('GET', url, { qs: data });
   expect(res.statusCode).toBe(OK);

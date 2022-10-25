@@ -42,22 +42,21 @@ describe('Error Handling', () => {
     });
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
+});
+// ------------------Function Testing------------------//
 
-  // ------------------Function Testing------------------//
-
-  describe('Function Testing', () => {
-    test('Authorise logout for first user in database', () => {
-      const data = h.postRequest(h.LOGOUT_URL, {
-        token: authUserToken0,
-      });
-      expect(data).toStrictEqual({});
+describe('Function Testing', () => {
+  test('Authorise logout for first user in database', () => {
+    const data = h.postRequest(h.LOGOUT_URL, {
+      token: authUserToken0,
     });
+    expect(data).toStrictEqual({});
+  });
 
-    test('Authorise logout for last user in database', () => {
-      const data = h.postRequest(h.LOGOUT_URL, {
-        token: authUserToken2,
-      });
-      expect(data).toStrictEqual({});
+  test('Authorise logout for last user in database', () => {
+    const data = h.postRequest(h.LOGOUT_URL, {
+      token: authUserToken2,
     });
+    expect(data).toStrictEqual({});
   });
 });
