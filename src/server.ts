@@ -70,6 +70,11 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
   res.json(channelsCreateV2(token, name, <boolean>isPublic));
 });
 
+app.get('/channels/list/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  res.json(channelsListV2(token));
+});
+
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, parseInt(channelId), message));
