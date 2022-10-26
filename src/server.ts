@@ -74,6 +74,7 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
 app.get('/channels/list/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   res.json(channelsListV2(token));
+});
 
 app.post('/channel/invite/v2', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
