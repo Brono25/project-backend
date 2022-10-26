@@ -1,7 +1,7 @@
 
 import {
   channelsCreateV1,
-  channelsListV1,
+  channelsListV2,
 } from '../channels';
 import { Channel } from '../data.types';
 import { authRegisterV1 } from '../auth';
@@ -19,6 +19,7 @@ let uId2: number;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;
+let channelId3: number;
 let channel: any;
 let invalidToken: string;
 let invalidChannelId: number;
@@ -33,7 +34,7 @@ beforeEach(() => {
   });
   token0 = user.token;
   uId0 = parseInt(user.authUserId);
-  user1 = h.postRequest(h.REGISTER_URL, {
+  user = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
     nameFirst: h.firstName1,
@@ -55,29 +56,29 @@ beforeEach(() => {
     name: h.channelName0,
     isPublic: h.isPublic,
   });
-  channelId0 = channel.channelId;
+  channelId0 = parseInt(channel.channelId);
   channel = h.postRequest(h.CHAN_CREATE_URL, {
     token: token0,
     name: h.channelName1,
     isPublic: h.isNotPublic,
   });
-  channelId1 = channel.channelId;
+  channelId1 = parseInt(channel.channelId);
   channel = h.postRequest(h.CHAN_CREATE_URL, {
     token: token0,
     name: h.channelName2,
     isPublic: h.isPublic,
   });
-  channelId2 = channel.channelId;
+  channelId2 = parseInt(channel.channelId);
   channel = h.postRequest(h.CHAN_CREATE_URL, {
     token: token1,
     name: h.channelName3,
     isPublic: h.isNotPublic,
   });
-  channelId3 = channel.channelId;
+  channelId3 = parseInt(channel.channelId);
   // User 1 joins Channel 0 and Channel 1
   h.postRequest(h.CHAN_JOIN_URL, {
-  token: token1,
-  channelId: channelId0,
+    token: token1,
+    channelId: channelId0,
   });
   h.postRequest(h.CHAN_JOIN_URL, {
     token: token1,

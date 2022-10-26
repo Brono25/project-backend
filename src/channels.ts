@@ -17,6 +17,7 @@ import {
   Channel,
   UserId,
   ChanCreateReturn,
+  ChanListReturn,
   Error,
 } from './data.types';
 
@@ -160,7 +161,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
  * @returns {Array} - list of channels
  */
 
- export function channelsListV2(token: string): ChannelsListReturn {
+ export function channelsListV2(token: string): ChanListReturn {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
