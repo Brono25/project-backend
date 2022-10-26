@@ -12,7 +12,7 @@ import { channelsCreateV2 } from './channels';
 import { channelLeaveV1, channelMessagesV1, channelInviteV2 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
+import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { channelJoinV2 } from './channel';
 import {
   messageSendV1,
@@ -129,6 +129,11 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
 app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   const { token, nameFirst, nameLast } = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
+});
+
+app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
+  const { token, handleStr } = req.body;
+  res.json(userProfileSetHandleV1(token, handleStr));
 });
 
 app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
