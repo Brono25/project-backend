@@ -9,11 +9,24 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
-import { channelLeaveV1, channelMessagesV1, channelInviteV2 } from './channel';
+import {
+  channelLeaveV1,
+  channelMessagesV1,
+  channelInviteV2
+} from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
-import { channelJoinV2 } from './channel';
+import {
+  userProfileSetNameV1,
+  userProfileV2,
+  usersAllv1,
+  userProfileSetEmailV1,
+  userProfileSetHandleV1,
+} from './users';
+import {
+  channelJoinV2,
+  channelRemoveOwnerV1,
+} from './channel';
 import {
   messageSendV1,
   messageSendDmV1,
@@ -149,6 +162,11 @@ app.post('/channel/join/v2', (req: Request, res: Response) => {
 app.post('/channel/leave/v1', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
   res.json(channelLeaveV1(token, parseInt(channelId)));
+});
+
+app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {

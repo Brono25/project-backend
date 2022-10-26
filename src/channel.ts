@@ -288,6 +288,19 @@ function channelMessagesV1(
     end: end,
   };
 }
+
+// ////////////////////////////////////////////////////// //
+//                     channelRemoveOwner                 //
+// ////////////////////////////////////////////////////// //
+
+/**
+ * @param {string, number, number}
+ * @returns {}
+ */
+function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
+  return {};
+}
+
 // ------------------ Channel Helper functions------------------
 /**
  * Return a list containing owners and their details
@@ -362,4 +375,5 @@ export {
   channelInviteV1,
   channelMessagesV1,
   channelInviteV2,
+  channelRemoveOwnerV1,
 };
