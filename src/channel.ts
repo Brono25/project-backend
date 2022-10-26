@@ -27,6 +27,7 @@ import {
   Error,
   channelInviteReturn,
   ChannelJoinReturn,
+  ChannelAddOwnerReturn,
   PageMessages,
   PAGE_SIZE,
   NO_MORE_PAGES,
@@ -321,7 +322,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   // Success case
   let data: DataStore = getData();
   const index = data.channels.findIndex(x => x.channelId === channelId);
-  channel[index].ownerMembers.push({ uId: uId });
+  data.channels[index].ownerMembers.push({ uId: uId });
   setData(data);
   return {};
 }
@@ -407,7 +408,7 @@ function isChannelPrivate (channelId: number) {
 function isUserGlobalOwner(uId: number) {
   let data: DataStore = getData();
   const index = data.users.findIndex(user => user.uId === uId);
-  if (data.users[index].GlobalPermission === 'owner') {
+  if (data.users[index].globalPermission === 'owner') {
     return true;
   } else {
     return false;
