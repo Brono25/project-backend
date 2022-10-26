@@ -288,6 +288,48 @@ function channelMessagesV1(
     end: end,
   };
 }
+
+// ////////////////////////////////////////////////////// //
+//                     channelAddOwnerV1                  //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channel with ID channelId that the authorised user (uId)
+ * is a member of, adds the user to the list of channel owners.
+ * @param {string, number, number} - token, channelId, uId
+ * @returns {} 
+ */
+export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChannelAddOwnerReturn {
+  // Filter out error cases
+  if (!isValidToken(token)) {
+    return {error: 'Invalid Token'};
+  }
+  if (!isValidChannelId(channelId)) {
+    return {error: 'Invalid Channel Id'};
+  }
+  if (!isValidAuthUserId(uId)) {
+    return {error: 'Invalid User Id'};
+  }
+  if (!isAuthUserMember(uId, channelId)) {
+    return {error: 'User not a member of channel'};
+  }
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    return {error: 'User is already a channel owner'};
+  }
+  if (!isUserGlobalOwner(uId)) {
+    return {error: 'User does not have owner permissions'};
+  }
+  // Success case
+  let data: DataStore = getData();
+  const index = data.channels.findIndex(x => x.channelId === channelId);
+  channel[index].ownerMembers.push({ uId: uId });
+  setData(data);
+}
+
+
+
+
+
+
 // ------------------ Channel Helper functions------------------
 /**
  * Return a list containing owners and their details
@@ -354,6 +396,21 @@ function isChannelPrivate (channelId: number) {
     }
   }
   return true;
+}
+
+/**
+ * Given a valid uId, checks the user's global permissions. Return true if global owner, false if global member.
+ * @param {number} - uId
+ * @returns {boolean} - is user a global owner
+ */
+function isUserGlobalOwner(uId: number) {
+  let data: DataStore = getData();
+  const index = data.users.findIndex(user => user.uId === uId);
+  if (data.users[index].GlobalPermission === 'owner') {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 export {
