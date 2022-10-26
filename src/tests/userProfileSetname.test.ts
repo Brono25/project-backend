@@ -67,20 +67,30 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Change name for user0', () => {
-    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
+    let data: any = h.putRequest(h.USER_PROF_SET_NAME_URL, {
       token: authUserToken0,
       nameFirst: 'New First Name 0',
       nameLast: 'New Last Name 0',
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.USER_ALL_URL, {
+      token: authUserToken0,
+    });
+    expect(data.users[0].nameFirst).toStrictEqual('New First Name 0');
+    expect(data.users[0].nameLast).toStrictEqual('New Last Name 0');
   });
 
   test('Change name for user2', () => {
-    const data = h.putRequest(h.USER_PROF_SET_NAME_URL, {
+    let data: any = h.putRequest(h.USER_PROF_SET_NAME_URL, {
       token: authUserToken2,
       nameFirst: 'New First Name 2',
       nameLast: 'New Last Name 2',
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.USER_ALL_URL, {
+      token: authUserToken2,
+    });
+    expect(data.users[2].nameFirst).toStrictEqual('New First Name 2');
+    expect(data.users[2].nameLast).toStrictEqual('New Last Name 2');
   });
 });

@@ -1,28 +1,31 @@
 import * as h from './test.helper';
 
-// Setup: Create 3 users.
-let authUser0: any;
-let authUser2: any;
+// Setup
 let token0: string;
 let token2: string;
+let handleStr2: string;
+let temp: any;
 
 beforeEach(() => {
-  authUser0 = h.postRequest(h.REGISTER_URL, {
+  temp = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
     password: h.password0,
     nameFirst: h.firstName0,
     nameLast: h.lastName0,
   });
+  token0 = temp.token;
 
-  authUser2 = h.postRequest(h.REGISTER_URL, {
+  temp = h.postRequest(h.REGISTER_URL, {
     email: h.email2,
     password: h.password2,
     nameFirst: h.firstName2,
     nameLast: h.lastName2,
   });
-
-  token0 = authUser0.token;
-  token2 = authUser2.token;
+  token2 = temp.token;
+  temp = h.getRequest(h.USER_ALL_URL, {
+    token: token2,
+  });
+  handleStr2 = temp.users[1].handleStr;
 });
 // Tear down
 afterEach(() => {
@@ -32,32 +35,32 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-  test('Invalid email', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
-      token: token2,
-      email: h.invalidEmail,
+  test('long handleStr', () => {
+    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
+      token: token0,
+      handleStr: 'longhandleStr123456789',
     });
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
-  test('Email address already in use', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
+  test('not alphanumeric handleStr', () => {
+    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: token0,
-      email: h.email2,
+      handleStr: 'h@ndleStr',
     });
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
-  test('Attempt to assign uppercase email when lower case email is already taken', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
+  test('handleStr already being used', () => {
+    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: token0,
-      email: h.email0AltCase,
+      handleStr: handleStr2,
     });
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
 
   test('Invalid token', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
+    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: h.invalidToken,
-      email: h.email0,
+      handleStr: 'firstnameLastname',
     });
     expect(data).toStrictEqual({ error: expect.any(String) });
   });
@@ -66,15 +69,15 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
-  test('change email', () => {
-    let data: any = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
+  test('change handle', () => {
+    let data: any = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: token0,
-      email: 'email_new_@gmail.com',
+      handleStr: 'firstnameLastname',
     });
     expect(data).toStrictEqual({});
     data = h.getRequest(h.USER_ALL_URL, {
       token: token0,
     });
-    expect(data.users[0].email).toStrictEqual('email_new_@gmail.com');
+    expect(data.users[0].handleStr).toStrictEqual('firstnameLastname');
   });
 });

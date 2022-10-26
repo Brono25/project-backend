@@ -9,10 +9,10 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
-import { channelMessagesV1 } from './channel';
+import { channelLeaveV1, channelMessagesV1, channelInviteV2 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1 } from './users';
+import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
 import { channelJoinV2 } from './channel';
 import {
   messageSendV1,
@@ -22,6 +22,7 @@ import {
 import {
   dmCreateV1,
   dmDetailsv1,
+  dmLeavev1,
   dmMessagesV1,
 } from './dm';
 
@@ -70,6 +71,11 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
   res.json(channelsCreateV2(token, name, <boolean>isPublic));
 });
 
+app.post('/channel/invite/v2', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelInviteV2(token, parseInt(channelId), parseInt(uId)));
+});
+
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, parseInt(channelId), message));
@@ -84,6 +90,11 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const dmId = req.query.dmId as string;
   res.json(dmDetailsv1(token, parseInt(dmId)));
+});
+
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmLeavev1(token, parseInt(dmId)));
 });
 
 app.get('/channel/messages/v2', (req: Request, res: Response) => {
@@ -127,6 +138,11 @@ app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
 });
 
+app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
+  const { token, handleStr } = req.body;
+  res.json(userProfileSetHandleV1(token, handleStr));
+});
+
 app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
   const { token, email } = req.body;
   res.json(userProfileSetEmailV1(token, email));
@@ -135,6 +151,11 @@ app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
 app.post('/channel/join/v2', (req: Request, res: Response) => {
   const { token, channelId } = req.body;
   res.json(channelJoinV2(token, parseInt(channelId)));
+});
+
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+  const { token, channelId } = req.body;
+  res.json(channelLeaveV1(token, parseInt(channelId)));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
