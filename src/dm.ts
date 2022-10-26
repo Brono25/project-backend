@@ -7,6 +7,7 @@ import {
   Error,
   PAGE_SIZE,
   NO_MORE_PAGES,
+  Dm,
   DmStore,
   DmCreateReturn,
   dmListReturn,
