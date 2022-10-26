@@ -72,6 +72,7 @@ export type PageMessages = {
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
 export type ChannelLeaveReturn = object | Error;
+export type ChannelAddOwnerReturn = object | Error;
 export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
