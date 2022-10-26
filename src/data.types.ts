@@ -63,6 +63,7 @@ export type AuthRegistorReturn = {token: string,
   authUserId: number
 } | Error;
 export type ChanCreateReturn = ChannelId | Error;
+export type channelInviteReturn = object | Error;
 export type PageMessages = {
   messages: Message[];
   start: number;
@@ -70,11 +71,13 @@ export type PageMessages = {
 };
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
+export type ChannelLeaveReturn = object | Error;
 export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
 export type ChanListReturn = Channel[] | Error;
-
+export type userProfSetHandleReturn = object | Error;
+export type dmLeaveReturn = object | Error;
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //
