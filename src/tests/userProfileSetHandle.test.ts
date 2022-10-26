@@ -70,10 +70,14 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('change handle', () => {
-    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
+    let data: any = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
       token: token0,
       handleStr: 'firstnameLastname',
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.USER_ALL_URL, {
+      token: token0,
+    });
+    expect(data.users[0].handleStr).toStrictEqual('firstnameLastname');
   });
 });

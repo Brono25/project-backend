@@ -158,7 +158,7 @@ function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHa
   const data: DataStore = getData();
   const uId: number = getUIdFromToken(token);
   const userDetails: UserStore = getUserStoreFromId(uId);
-  const index = data.users.indexOf(userDetails);
+  const index = data.users.findIndex(a => a.uId === uId);
   userDetails.handleStr = handleStr;
   data.users[index] = userDetails;
   setData(data);
@@ -190,7 +190,7 @@ function userProfileSetEmailV1(token: string, email: string): any {
   const data: DataStore = getData();
   const uId: number = getUIdFromToken(token);
   const userDetails: UserStore = getUserStoreFromId(uId);
-  const index = data.users.indexOf(userDetails);
+  const index = data.users.findIndex(a => a.uId === uId);
   userDetails.email = email;
   data.users[index] = userDetails;
   setData(data);
