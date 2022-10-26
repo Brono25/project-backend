@@ -323,6 +323,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   const index = data.channels.findIndex(x => x.channelId === channelId);
   channel[index].ownerMembers.push({ uId: uId });
   setData(data);
+  return {};
 }
 
 
