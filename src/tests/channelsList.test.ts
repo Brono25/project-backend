@@ -16,11 +16,11 @@ let user: any;
 let uId0: number;
 let uId1: number;
 let uId2: number;
+let channel: any;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;
 let channelId3: number;
-let channel: any;
 let invalidToken: string;
 let invalidChannelId: number;
 // SETUP
@@ -86,7 +86,6 @@ beforeEach(() => {
   });
   // Error cases
   invalidToken = h.invalidToken;
-  invalidChannelId = Math.abs(channelId0) + Math.abs(channelId1) + Math.abs(channelId2) + 10;
 });
 // Tear down
 afterEach(() => {
