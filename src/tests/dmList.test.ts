@@ -1,4 +1,7 @@
 import * as h from './test.helper';
+import {
+    dmCreateV1,
+} from '../dm';
 
 let uId0: number;
 let uId1: number;
@@ -46,25 +49,13 @@ beforeEach(() => {
     token2 = user2.token;
     uId2 = parseInt(user2.authUserId);
     // Create DMs
-    dm0 = h.postRequest(h.DM_CREATE_URL, {
-        token: token0,
-        uIds: [uId1, uId2],
-    });
+    dm0 = dmCreateV1(token0, [uId1, uId2]);
     dmId0 = parseInt(dm0.dmId);
-    dm1 = h.postRequest(h.DM_CREATE_URL, {
-        token: token1,
-        uIds: [uId0],
-    });
+    dm1 = dmCreateV1(token1, [uId0]);
     dmId1 = parseInt(dm1.dmId);
-    dm2 = h.postRequest(h.DM_CREATE_URL, {
-        token: token0,
-        uIds: [],
-    });
+    dm2 = dmCreateV1(token0, []);
     dmId2 = parseInt(dm2.dmId);
-    dm3 = h.postRequest(h.DM_CREATE_URL, {
-        token: token2,
-        uIds: [],
-    });
+    dm3 = dmCreateV1(token2, []);
     dmId3 = parseInt(dm3.dmId);
     // Error cases
     invalidToken = h.invalidToken;
