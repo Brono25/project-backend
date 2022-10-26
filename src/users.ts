@@ -6,7 +6,8 @@ import {
   Error,
   User,
   UsersAllReturn,
-  UserStore
+  UserStore,
+  userProfSetHandleReturn,
 } from './data.types';
 import {
   getUIdFromToken,
@@ -18,6 +19,9 @@ import {
   getData,
   setData
 } from './dataStore';
+import {
+  isHandleStrUnique,
+} from './auth';
 
 // ////////////////////////////////////////////////////// //
 //                      userProfileV1                     //
@@ -122,10 +126,50 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
 }
 
 // ////////////////////////////////////////////////////// //
+//                  userProfileSetHandleV1                //
+// ////////////////////////////////////////////////////// //
+/**
+ * Update the authorised user's handle
+ *
+ * @param {string, string} - token and handle to update for a user
+ * @returns {}
+ */
+
+function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHandleReturn {
+  if (!isValidToken(token)) {
+    return { error: 'token is invalid!' };
+  }
+
+  const maxHandleLength = 20;
+  const minHandleLength = 3;
+
+  if (handleStr.length < minHandleLength || handleStr.length > maxHandleLength) {
+    return { error: 'Handle must be between 3-20 characters long (inclusive)' };
+  }
+
+  if (!handleStr.match(/^[0-9a-zA-z]+$/)) {
+    return { error: 'handleStr contains characters that are not alphanumeric' };
+  }
+
+  if (!isHandleStrUnique(handleStr)) {
+    return { error: 'Handle is already used by another user' };
+  }
+
+  const data: DataStore = getData();
+  const uId: number = getUIdFromToken(token);
+  const userDetails: UserStore = getUserStoreFromId(uId);
+  const index = data.users.findIndex(a => a.uId === uId);
+  userDetails.handleStr = handleStr;
+  data.users[index] = userDetails;
+  setData(data);
+  return {};
+}
+
+// ////////////////////////////////////////////////////// //
 //                  userProfileSetEmailV1                 //
 // ////////////////////////////////////////////////////// //
 /**
- * Update the authorised user's first and last name
+ * Update the authorised user's email
  *
  * @param {string, string} - token and email to update for a user
  * @returns {}
@@ -157,5 +201,6 @@ export {
   userProfileV2,
   usersAllv1,
   userProfileSetNameV1,
+  userProfileSetHandleV1,
   userProfileSetEmailV1,
 };
