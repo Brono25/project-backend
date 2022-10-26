@@ -98,7 +98,7 @@ afterEach(() => {
 describe('Error Handling', () => {
   test('Invalid Token', () => {
     const invalidInput: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: invalidToken;
+      token: invalidToken,
     });
     expect(invalidInput).toStrictEqual({ error: expect.any(String) });
   });
