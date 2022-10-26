@@ -1,12 +1,12 @@
 import * as h from './test.helper';
 
-let uId0: number = null;
-let uId1: number = null;
-let uId2: number = null;
-let token0: string = null;
-let token1: string = null;
-let token2: string = null;
-let invalidToken: string = null;
+let uId0: number;
+let uId1: number;
+let uId2: number;
+let token0: string;
+let token1: string;
+let token2: string;
+let invalidToken: string;
 let dm0: any;
 let dm1: any;
 let dm2: any;
@@ -15,9 +15,9 @@ let dmId0: number;
 let dmId1: number;
 let dmId2: number;
 let dmId3: number;
-let input: any = {};
-let invalidInput: any = {};
-let dms: any = [];
+let input: any;
+let invalidInput: any;
+let dms: any;
 // SETUP
 beforeEach(() => {
     // Create users 0, 1, 2
