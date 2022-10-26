@@ -88,8 +88,8 @@ export function dmListV1(token: string): dmListReturn {
   const data: DataStore = getData();
   let dm: Dm = {dmId: null, name: null};
   let dms: any = [];
-  const dmMember: DmStore[] = data.dms.filter(dmNum => dmNum.allMembersId.includes(uId) === true);
-  const dmOwner: DmStore[] = data.dms.filter(dmNum => dmNum.ownerId === uId);
+  const dmMember: DmStore[] = data.dms.filter(dmNum => dmNum.allMembersId.includes(uId));
+  const dmOwner: DmStore[] = data.dms.filter(dmElem => dmElem.ownerId === uId);
   if (dmMember !== null) {
     for (const element of dmMember) {
       dm = {
