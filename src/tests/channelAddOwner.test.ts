@@ -43,13 +43,13 @@ beforeEach(() => {
     uId2 = parseInt(user.authUserId);
     // Create channels 0, 1, 2
     channel = h.postRequest(h.CHAN_CREATE_URL, {
-        token: token0,
+        token: token1,
         name: h.channelName0,
         isPublic: h.isPublic,
     });
     channelId0 = parseInt(channel.channelId);
     h.postRequest(h.CHAN_JOIN_URL, {
-        token: token1,
+        token: token0,
         channelId: channelId0,
     });
     h.postRequest(h.CHAN_JOIN_URL, {
@@ -57,7 +57,7 @@ beforeEach(() => {
         channelId: channelId0,
     });
     channel = h.postRequest(h.CHAN_CREATE_URL, {
-        token: token0,
+        token: token1,
         name: h.channelName1,
         isPublic: h.isNotPublic,
     });
@@ -89,22 +89,22 @@ describe('Error Handling', () => {
         const input = h.postRequest(h.CHAN_ADD_OWNER_URL, {
           token: invalidToken,
           channelId: channelId0,
-          uId: uId1,
+          uId: uId2,
         });
         expect(input).toStrictEqual({ error: 'Invalid Token' });
     });
     test('Invalid Channel ID', () => {
       const input = h.postRequest(h.CHAN_ADD_OWNER_URL, {
-        token: token0,
+        token: token2,
         channelId: invalidChannelId,
-        uId: uId1,
+        uId: uId2,
       });
       expect(input).toStrictEqual({ error: 'Invalid Channel Id' });
     });
     test('Invalid User ID', () => {
         const input = h.postRequest(h.CHAN_ADD_OWNER_URL, {
           token: token0,
-          channelId: invalidChannelId,
+          channelId: channelId0,
           uId: invalidUserId,
         });
         expect(input).toStrictEqual({ error: 'Invalid User Id' });
@@ -119,9 +119,9 @@ describe('Error Handling', () => {
     });
     test('Invalid User: Already an owner', () => {
         const input = h.postRequest(h.CHAN_ADD_OWNER_URL, {
-          token: token0,
+          token: token1,
           channelId: channelId0,
-          uId: uId0,
+          uId: uId1,
         });
         expect(input).toStrictEqual({ error: expect.any(String) });
     });
@@ -129,7 +129,7 @@ describe('Error Handling', () => {
         const input = h.postRequest(h.CHAN_ADD_OWNER_URL, {
           token: token2,
           channelId: channelId0,
-          uId: uId1,
+          uId: uId2,
         });
         expect(input).toStrictEqual({ error: expect.any(String) });
     });
@@ -137,22 +137,20 @@ describe('Error Handling', () => {
 
 // ------------------Function Testing------------------//
 describe('Function Testing', () => {
-    test('Make a regular member an owner', () => {
+    test('Make a global member an owner', () => {
         const input: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
-          token: token1,
+          token: token0,
           channelId: channelId0,
-          uId: uId1,
+          uId: uId0,
         });
         expect(input).toStrictEqual({});
     });
-    /*
-    test('Make a member with owner permissions an owner', () => {
-        const input: any = h.postRequest(h.CHAN_ADDOWNER_URL, {
-          token: token1,
+    test('Make a global owner an owner', () => {
+        const input: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+          token: token0,
           channelId: channelId0,
-          uId: uId1,
+          uId: uId0,
         });
         expect(input).toStrictEqual({});
     });
-    */
 });
