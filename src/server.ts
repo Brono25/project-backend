@@ -76,6 +76,11 @@ app.post('/channel/invite/v2', (req: Request, res: Response) => {
   res.json(channelInviteV2(token, parseInt(channelId), parseInt(uId)));
 });
 
+app.post('/channel/addowner/v1', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelAddOwnerV1(token, parseInt(channelId), parseInt(uId)));
+});
+
 app.post('/message/send/v1', (req: Request, res: Response) => {
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, parseInt(channelId), message));
