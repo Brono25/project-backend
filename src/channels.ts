@@ -150,6 +150,31 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
   return { channels: usersChannels };
 }
 
+// ////////////////////////////////////////////////////// //
+//                     channelsListV2                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * Returns a list of all channels a user with an active token is a member of.
+ *
+ * @param {string} - token
+ * @returns {Array} - list of channels
+ */
+
+ export function channelsListV2(token: string): ChannelsListReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  const data: DataStore = getData();
+  const usersChannels: Channel[] = [];
+  const uId: number = getUIdFromToken(token);
+  for (const channel of data.channels) {
+    if (isAuthUserMember(uId, channel.channelId)) {
+      usersChannels.push({ name: channel.name, channelId: channel.channelId });
+    }
+  }
+  return { channels: usersChannels };
+}
+
 // ------------------Channels Helper functions------------------
 /**
  * The channel ID is the same as its index in the
