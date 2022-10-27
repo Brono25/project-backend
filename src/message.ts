@@ -230,7 +230,7 @@ export function messageEditV1(token: string, messageId: number, message: string)
     if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
       return { error: 'Dont have channel owner permissions' };
     }
-    
+
     const channelStore: ChannelStore = getChannelStoreFromId(channelId);
     let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
     const messageStore: Message = channelStore.messages[index];

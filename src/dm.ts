@@ -7,8 +7,10 @@ import {
   Error,
   PAGE_SIZE,
   NO_MORE_PAGES,
+  Dm,
   DmStore,
   DmCreateReturn,
+  dmListReturn,
   dmDetailsReturn,
   dmLeaveReturn,
   dmRemoveReturn,
@@ -70,6 +72,31 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   data.dms.push(dmStore);
   setData(data);
   return { dmId: dmId };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmListV1                         //
+// ////////////////////////////////////////////////////// //
+/**
+ * Shows a list of all the dms that the user is a member of (if the given token is valid).
+ * @param {string} - token
+ * @returns {array} - dms[{dmId: , name: }]
+ */
+export function dmListV1(token: string): dmListReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  const uId: number = getUIdFromToken(token);
+  const data: DataStore = getData();
+  const dms: Dm[] = [];
+  for (const dm of data.dms) {
+    if (dm.allMembersId.includes(uId)) {
+      dms.push({ dmId: dm.dmId, name: dm.name });
+    } else if (dm.ownerId === uId) {
+      dms.push({ dmId: dm.dmId, name: dm.name });
+    }
+  }
+  return { dms: dms };
 }
 
 // ////////////////////////////////////////////////////// //
