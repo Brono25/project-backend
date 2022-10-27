@@ -101,7 +101,7 @@ describe('Error Handling', () => {
       token: invalidToken,
     });
     expect(invalidInput).toStrictEqual({ error: expect.any(String) });
-  });
+  }); 
 });
 
 // ------------------Function Testing------------------//
@@ -124,10 +124,6 @@ describe('Function Testing', () => {
         {
           channelId: channelId2,
           name: h.channelName2,
-        },
-        {
-          channelId: channelId3,
-          name: h.channelName3,
         },
       ]
     });
