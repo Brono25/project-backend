@@ -14,7 +14,9 @@ import {
   getUIdFromToken,
   isValidToken,
   isTokenMemberOfChannel,
+  isUIdOwnerOfChannel,
   isTokenOwnerOfChannel,
+  doesTokenHaveChanOwnerPermissions,
 } from './other';
 
 import {
@@ -27,6 +29,7 @@ import {
   Error,
   channelInviteReturn,
   ChannelJoinReturn,
+  ChanAddOwnerReturn,
   PageMessages,
   PAGE_SIZE,
   NO_MORE_PAGES,
@@ -298,6 +301,47 @@ function channelMessagesV1(
  * @returns {}
  */
 function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
+  return {};
+}
+
+// ////////////////////////////////////////////////////// //
+//                     channelAddOwnerV1                  //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a channel with ID channelId that the authorised user (uId)
+ * is a member of, adds the user to the list of channel owners.
+ * @param {string, number, number} - token, channelId, uId
+ * @returns {}
+ */
+export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChanAddOwnerReturn {
+  // Filter out error cases
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid Channel Id' };
+  }
+  if (!isValidAuthUserId(uId)) {
+    return { error: 'Invalid User Id' };
+  }
+  if (!isAuthUserMember(uId, channelId)) {
+    return { error: 'User not a member of channel' };
+  }
+  if (isUIdOwnerOfChannel(uId, channelId)) {
+    return { error: 'User is already a channel owner' };
+  }
+  // Checks for global owners among members
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+    return { error: 'Token does not have owner permissions' };
+  }
+
+  // Success case
+  const data: DataStore = getData();
+  const channel: ChannelStore = getChannelStoreFromId(channelId);
+  const index: number = data.channels.findIndex(a => a.channelId === channel.channelId);
+  channel.ownerMembers.push({ uId: uId });
+  data.channels[index] = channel;
+  setData(data);
   return {};
 }
 
