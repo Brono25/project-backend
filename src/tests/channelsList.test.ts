@@ -1,12 +1,4 @@
-
-import {
-  channelsCreateV1,
-  channelsListV2,
-} from '../channels';
 import { Channel } from '../data.types';
-import { authRegisterV1 } from '../auth';
-import { clearV1 } from '../other';
-import { channelInviteV1 } from '../channel';
 import * as h from './test.helper';
 
 h.deleteRequest(h.CLEAR_URL, {});

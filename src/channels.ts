@@ -175,7 +175,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
       usersChannels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
-  return { channels: usersChannels };
+  return usersChannels;
 }
 
 // ------------------Channels Helper functions------------------
@@ -202,12 +202,7 @@ function isUserChannelOwner(uId: number, channelId: number): boolean {
   let data: DataStore = getData();
   const index: number = data.channels.findIndex(x => x.channelId === channelId);
   const channel: ChannelStore = data.channels[index];
-  if (channel.isPublic === false) {
-    if (channel.ownerMembers.uId === uId) {
-      return true;
-    }
-  }
-  if (channel.ownerMembers.includes(ownerId => ownerId.uId === uId) === true) {
+  if (channel.ownerMembers.find(ownerId => ownerId.uId === uId)) {
     return true;
   }
   return false;
