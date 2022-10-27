@@ -42,6 +42,7 @@ import {
   dmLeavev1,
   dmMessagesV1,
   dmRemoveV1,
+  dmListV1,
 } from './dm';
 
 // Set up web app

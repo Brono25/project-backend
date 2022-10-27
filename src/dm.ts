@@ -84,56 +84,20 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
  */
 export function dmListV1(token: string): dmListReturn {
   if (!isValidToken(token)) {
-    return { error: 'Invalid Token'};
+    return { error: 'Invalid Token' };
   }
   const uId: number = getUIdFromToken(token);
   const data: DataStore = getData();
-  let dm: Dm = {dmId: null, name: null};
-  const dms: any = [];
-  const dmMember: DmStore[] = data.dms.filter(dmNum => dmNum.allMembersId.includes(uId));
-  const dmOwner: DmStore[] = data.dms.filter(dmElem => dmElem.ownerId === uId);
-  if (dmMember !== null) {
-    for (const element of dmMember) {
-      dm = {
-        dmId: element.dmId,
-        name: element.name,
-      };
-      dms.push(dm);
+  const dms: Dm[] = [];
+  for (const dm of data.dms) {
+    if (dm.allMembersId.includes(uId)) {
+      dms.push({ dmId: dm.dmId, name: dm.name });
+    } else if (dm.ownerId === uId) {
+      dms.push({ dmId: dm.dmId, name: dm.name });
     }
   }
-  if (dmOwner !== null) {
-    for (const element of dmOwner) {
-      dm = {
-        dmId: element.dmId,
-        name: element.name,
-      };
-      dms.push(dm);
-    }
-  }
-  /*
-  for (let dmNum of dmStore) {
-    if (dmNum.ownerId === uId) {
-      dm = {
-        dmId: dmNum.dmId,
-        name: dmNum.name,
-      }
-      dmList.push(dm);
-    }
-  for (let dmNum of dmStore) {
-    for (let member of dmNum.allMembersId) {
-      if (member === uId) {
-        dm = {
-          dmId: dmNum.dmId,
-          name: dmNum.name,
-        };
-        dmList.push(dm);
-      }
-    }
-  }
-  */
-  return { dms };
-} 
-
+  return { dms: dms };
+}
 
 // ////////////////////////////////////////////////////// //
 //                      dmDetails                         //
