@@ -14,7 +14,9 @@ import {
   getUIdFromToken,
   isValidToken,
   isTokenMemberOfChannel,
+  isUIdOwnerOfChannel,
   isTokenOwnerOfChannel,
+  doesTokenHaveChanOwnerPermissions,
 } from './other';
 
 import {
@@ -102,7 +104,7 @@ function channelJoinV1(authUserId: number, channelId: number) {
   setData(data);
 
   return {};
-} 
+}
 
 // ////////////////////////////////////////////////////// //
 //                      channelJoinV2                     //
@@ -297,41 +299,39 @@ function channelMessagesV1(
  * Given a channel with ID channelId that the authorised user (uId)
  * is a member of, adds the user to the list of channel owners.
  * @param {string, number, number} - token, channelId, uId
- * @returns {} 
+ * @returns {}
  */
 export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChanAddOwnerReturn {
   // Filter out error cases
   if (!isValidToken(token)) {
-    return {error: 'Invalid Token'};
+    return { error: 'Invalid Token' };
   }
   if (!isValidChannelId(channelId)) {
-    return {error: 'Invalid Channel Id'};
+    return { error: 'Invalid Channel Id' };
   }
   if (!isValidAuthUserId(uId)) {
-    return {error: 'Invalid User Id'};
+    return { error: 'Invalid User Id' };
   }
   if (!isAuthUserMember(uId, channelId)) {
-    return {error: 'User not a member of channel'};
+    return { error: 'User not a member of channel' };
   }
-  if (isTokenOwnerOfChannel(token, channelId)) {
-    return {error: 'User is already a channel owner'};
+  if (isUIdOwnerOfChannel(uId, channelId)) {
+    return { error: 'User is already a channel owner' };
   }
   // Checks for global owners among members
-  if (!isUserGlobalOwner(uId, channelId)) {
-    return {error: 'User does not have owner permissions'};
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+    return { error: 'Token does not have owner permissions' };
   }
+
   // Success case
-  let data: DataStore = getData();
+  const data: DataStore = getData();
   const channel: ChannelStore = getChannelStoreFromId(channelId);
+  const index: number = data.channels.findIndex(a => a.channelId === channel.channelId);
   channel.ownerMembers.push({ uId: uId });
+  data.channels[index] = channel;
   setData(data);
   return {};
 }
-
-
-
-
-
 
 // ------------------ Channel Helper functions------------------
 /**
@@ -399,23 +399,6 @@ function isChannelPrivate (channelId: number) {
     }
   }
   return true;
-}
-
-/**
- * Given a valid uId, checks the user's global permissions. Return true if global owner, false if global member.
- * @param {number} - uId
- * @returns {boolean} - is user a global owner
- */
-function isUserGlobalOwner(uId: number, channelId: number) {
-  let data: DataStore = getData();
-  const channel: ChannelStore = getChannelStoreFromId(channelId);
-  const user: UserStore = getUserStoreFromId(uId);
-  if (user.globalPermission === 'owner') {
-    if (channel.allMembers.includes({ uId: uId }) === true) {
-      return true;
-    } 
-  }
-  return false;
 }
 
 export {
