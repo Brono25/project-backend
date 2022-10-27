@@ -163,18 +163,18 @@ export function channelLeaveV1(
   }
 
   const data: DataStore = getData();
-  const channelDetails: ChannelStore = getChannelStoreFromId(channelId);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
   // step 1: remove member's uId from allMembers array
   // step 2: if owner, remove uId from owners array
-  const indexOfMember = channelDetails.allMembers.findIndex(a => a.uId === authUserId);
-  channelDetails.allMembers.splice(indexOfMember, 1);
+  const indexOfMember = channelStore.allMembers.findIndex(a => a.uId === authUserId);
+  channelStore.allMembers.splice(indexOfMember, 1);
 
   if (isTokenOwnerOfChannel(token, channelId) === true) {
-    const indexOfOwner = channelDetails.ownerMembers.findIndex(a => a.uId === authUserId);
-    channelDetails.ownerMembers.splice(indexOfOwner, 1);
+    const indexOfOwner = channelStore.ownerMembers.findIndex(a => a.uId === authUserId);
+    channelStore.ownerMembers.splice(indexOfOwner, 1);
   }
-  data.channels[indexOfChannel] = channelDetails;
+  data.channels[indexOfChannel] = channelStore;
   setData(data);
   return {};
 }
