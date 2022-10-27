@@ -6,16 +6,12 @@ let token0: string;
 let token1: string;
 let token2: string;
 let user: any;
-let uId0: number;
-let uId1: number;
-let uId2: number;
 let channel: any;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;
 let channelId3: number;
 let invalidToken: string;
-let invalidChannelId: number;
 // SETUP
 beforeEach(() => {
   // Create users 0, 1, 2
@@ -26,7 +22,6 @@ beforeEach(() => {
     nameLast: h.lastName0,
   });
   token0 = user.token;
-  uId0 = parseInt(user.authUserId);
   user = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
@@ -34,7 +29,6 @@ beforeEach(() => {
     nameLast: h.lastName1,
   });
   token1 = user.token;
-  uId1 = parseInt(user.authUserId);
   user = h.postRequest(h.REGISTER_URL, {
     email: h.email2,
     password: h.password2,
@@ -42,7 +36,6 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = user.token;
-  uId2 = parseInt(user.authUserId);
   // Create channels 0,1,2
   channel = h.postRequest(h.CHAN_CREATE_URL, {
     token: token0,
