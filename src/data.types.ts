@@ -86,6 +86,7 @@ export type dmDetailsReturn = { name: string, members: User[]} | Error;
 export type userProfSetHandleReturn = object | Error;
 
 export type dmLeaveReturn = object | Error;
+export type dmRemoveReturn = object | Error;
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //
