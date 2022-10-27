@@ -7,6 +7,8 @@ import {
   MAX_MSG_LEN,
   MIN_MSG_LEN,
   Error,
+  ChannelStore,
+  MessageTracking,
 } from './data.types';
 import {
   isValidChannelId,
@@ -17,6 +19,9 @@ import {
   getTimeInSecs,
   isValidDmId,
   isTokenMemberOfDm,
+  getMessageLocation,
+  getChannelStoreFromId,
+  doesTokenHaveChanOwnerPermissions,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -46,24 +51,26 @@ export function messageSendV1(
   if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'Only members can message on the channel' };
   }
-
-  const messageId: MessageId = {
-    messageId: generateMessageId(),
+  const messageId: number = generateMessageId();
+  const uId: number = getUIdFromToken(token);
+  const messageLoc: MessageTracking = {
+    messageId: messageId,
     channelId: channelId,
     dmId: null,
+    uId: uId
   };
   const messageDetails: Message = {
-    messageId: messageId.messageId,
-    uId: getUIdFromToken(token),
+    messageId: messageLoc.messageId,
+    uId: uId,
     message: message,
     timeSent: getTimeInSecs(),
   };
   const data: DataStore = getData();
   const index = data.channels.findIndex(a => a.channelId === channelId);
   data.channels[index].messages.unshift(messageDetails);
-  data.messageIds.unshift(messageId);
+  data.messageIds.unshift(messageLoc);
   setData(data);
-  return messageId;
+  return <MessageId>{ messageId: messageId };
 }
 
 // ////////////////////////////////////////////////////// //
@@ -89,24 +96,26 @@ export function messageSendDmV1(
   if (!isTokenMemberOfDm(token, dmId)) {
     return { error: 'Invalid Member' };
   }
-
-  const messageId: MessageId = {
+  const messageId: number = generateMessageId();
+  const uId: number = getUIdFromToken(token);
+  const messageLoc: MessageTracking = {
     messageId: generateMessageId(),
     channelId: null,
     dmId: dmId,
+    uId: uId
   };
   const messageDetails: Message = {
-    messageId: messageId.messageId,
-    uId: getUIdFromToken(token),
+    messageId: messageLoc.messageId,
+    uId: uId,
     message: message,
     timeSent: getTimeInSecs(),
   };
   const data: DataStore = getData();
   const index = data.dms.findIndex(a => a.dmId === dmId);
   data.dms[index].messages.unshift(messageDetails);
-  data.messageIds.unshift(messageId);
+  data.messageIds.unshift(messageLoc);
   setData(data);
-  return messageId;
+  return <MessageId>{ messageId: messageId };
 }
 
 // ////////////////////////////////////////////////////// //
@@ -119,5 +128,39 @@ export function messageSendDmV1(
  */
 
 export function messageRemoveV1(token: string, messageId: number): object | Error {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  const messageLoc: MessageTracking = getMessageLocation(messageId);
+  if (messageLoc === null) {
+    return { error: 'Message doesnt exist' };
+  }
+  if (messageLoc.channelId !== null) {
+    const channelId: number = messageLoc.channelId;
+    console.log(messageLoc);
+    return removeChannelMessage(token, channelId, messageId, messageLoc.uId);
+  }
+
+  return { error: 'something went wrong' };
+}
+
+function removeChannelMessage(token: string, channelId: number, messageId: number, uId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    return { error: 'Invalid message Id' };
+  }
+  const isUsersOwnMessage = <boolean> (getUIdFromToken(token) === uId);
+  console.log(getUIdFromToken(token), uId);
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId) && !isUsersOwnMessage) {
+    return { error: 'Token doesnt have permission' };
+  }
+  const data: DataStore = getData();
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  channelStore.messages.splice(index, 1);
+  index = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[index] = channelStore;
+  index = data.messageIds.findIndex(a => a.messageId === messageId);
+  data.messageIds.splice(index, 1);
+  setData(data);
   return {};
 }

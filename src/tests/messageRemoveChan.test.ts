@@ -4,13 +4,6 @@ import * as h from './test.helper';
 let tokenGlobalOwner: string;
 let token1 : string;
 let token2: string;
-let uIdGlobalOwner: number;
-let uId1: number;
-let uId2: number;
-let channelId0: number;
-let channelId1: number;
-let invalidChannelId: number;
-let invalidUid: number;
 let tmp: any;
 let mId0: number;
 let mId1: number;
@@ -27,7 +20,6 @@ beforeEach(() => {
     nameFirst: h.firstName0,
     nameLast: h.lastName0,
   });
-  uIdGlobalOwner = tmp.authUserId;
   tokenGlobalOwner = tmp.token;
 
   tmp = h.postRequest(h.REGISTER_URL, {
@@ -36,7 +28,7 @@ beforeEach(() => {
     nameFirst: h.firstName1,
     nameLast: h.lastName1,
   });
-  uId1 = tmp.authUserId;
+  const uId1 = tmp.authUserId;
   token1 = tmp.token;
 
   tmp = h.postRequest(h.REGISTER_URL, {
@@ -45,7 +37,6 @@ beforeEach(() => {
     nameFirst: h.firstName2,
     nameLast: h.lastName2,
   });
-  uId2 = tmp.authUserId;
   token2 = tmp.token;
 
   // Channels 0 and private
@@ -54,14 +45,14 @@ beforeEach(() => {
     name: h.channelName0,
     isPublic: h.isPublic,
   });
-  channelId0 = parseInt(tmp.channelId);
+  const channelId0 = parseInt(tmp.channelId);
 
   tmp = h.postRequest(h.CHAN_CREATE_URL, {
     token: token1,
     name: h.channelName1,
     isPublic: h.isPublic,
   });
-  channelId1 = parseInt(tmp.channelId);
+  const channelId1 = parseInt(tmp.channelId);
 
   h.postRequest(h.CHAN_JOIN_URL, {
     token: token1,
@@ -85,9 +76,6 @@ beforeEach(() => {
     channelId: channelId0,
     uId: uId1,
   });
-
-  invalidChannelId = Math.abs(channelId0) + 10;
-  invalidUid = Math.abs(uId1) + Math.abs(uId2) + Math.abs(uIdGlobalOwner) + 10;
   tmp = h.postRequest(h.MSG_SEND_URL, {
     token: tokenGlobalOwner,
     channelId: channelId0,
@@ -134,17 +122,24 @@ describe('Error Handling', () => {
     });
     expect(data).toStrictEqual({ error: 'Invalid token' });
   });
+  test('invalid message Id', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: tokenGlobalOwner,
+      messageId: invalidMId,
+    });
+    expect(data).toStrictEqual({ error: 'Message doesnt exist' });
+  });
   test('User is not part of the channel that the message was posted in', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: token2,
-      channelId: mId4,
+      messageId: mId4,
     });
     expect(data).toStrictEqual({ error: 'Invalid message Id' });
   });
   test('Member try to delete message they didnt post', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: token2,
-      channelId: mId1,
+      messageId: mId1,
     });
     expect(data).toStrictEqual({ error: 'Token doesnt have permission' });
   });
@@ -156,42 +151,42 @@ describe('Function Testing', () => {
   test('Member deletes own message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: token2,
-      channelId: mId2,
+      messageId: mId2,
     });
     expect(data).toStrictEqual({});
   });
   test('Owner deletes own message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: token1,
-      channelId: mId1,
+      messageId: mId1,
     });
     expect(data).toStrictEqual({});
   });
   test('Owner (not global owner) deletes members message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: token1,
-      channelId: mId2,
+      messageId: mId2,
     });
     expect(data).toStrictEqual({});
   });
   test('Owner (global owner) deletes members message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: tokenGlobalOwner,
-      channelId: mId2,
+      messageId: mId2,
     });
     expect(data).toStrictEqual({});
   });
   test('Member but global owner deletes members message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: tokenGlobalOwner,
-      channelId: mId3,
+      messageId: mId3,
     });
     expect(data).toStrictEqual({});
   });
   test('Member but global owner deletes own message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: tokenGlobalOwner,
-      channelId: mId4,
+      messageId: mId4,
     });
     expect(data).toStrictEqual({});
   });
