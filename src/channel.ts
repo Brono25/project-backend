@@ -313,7 +313,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   if (!isAuthUserMember(uId, channelId)) {
     return {error: 'User not a member of channel'};
   }
-  if (!isTokenOwnerOfChannel(token, channelId)) {
+  if (isTokenOwnerOfChannel(token, channelId)) {
     return {error: 'User is already a channel owner'};
   }
   // Checks for global owners among members
