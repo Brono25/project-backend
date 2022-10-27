@@ -198,3 +198,19 @@ function removeDmMessage(token: string, dmId: number, messageId: number, uId: nu
   setData(data);
   return {};
 }
+
+// ////////////////////////////////////////////////////// //
+//                        messageEdit                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * User as part of a DM can send a message.
+ * @param {string, number, string}
+ * @returns { object | Error}
+ */
+
+export function messageEditV1(token: string, messageId: number, message: string): object | Error {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  return {};
+}
