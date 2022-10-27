@@ -26,10 +26,10 @@ import {
   isValidDmId,
   getDmStore,
   isTokenMemberOfDm,
-  isTokenOwnerOfChannel,
   generateDmName,
   generateDmId,
   getUIdFromToken,
+  doesTokenHaveDmOwnerPermissions,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -132,8 +132,6 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
   }
 
   const uId: number = getUIdFromToken(token);
-
-  // fix the following lines of code
   const dmDetails: DmStore = getDmStore(dmId);
   let membersArr: number[] = dmDetails.allMembersId;
   membersArr = membersArr.filter((element) => {
@@ -141,7 +139,8 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
   });
   dmDetails.allMembersId = membersArr;
   const data: DataStore = getData();
-  data.dms.push(dmDetails);
+  const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index] = dmDetails;
   setData(data);
   return {};
 }
@@ -199,7 +198,7 @@ export function dmMessagesV1(
 // ////////////////////////////////////////////////////// //
 /**
  *
- * @param {string, number[]}
+ * @param {string, number}
  * @returns {number}
  */
 
@@ -210,16 +209,15 @@ export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
   }
+  if (!doesTokenHaveDmOwnerPermissions(token, dmId)) {
+    return { error: 'Token is not the owner' };
+  }
   if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'Token owner is not a member of the dm' };
+    return { error: 'Token is not a member' };
   }
-  if (!isTokenOwnerOfChannel(token, dmId)) {
-    return { error: 'Token owner is not the original DM creator' };
-  }
-
-  const data = getData();
-
-  data.dms[dmId].allMembersId.length = 0;
-
+  const data: DataStore = getData();
+  const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index].allMembersId.length = 0;
+  setData(data);
   return {};
 }
