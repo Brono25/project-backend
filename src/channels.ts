@@ -176,7 +176,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
       channels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
-  return { channels };
+  return channels;
 }
 
 // ------------------Channels Helper functions------------------
