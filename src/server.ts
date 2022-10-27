@@ -9,7 +9,7 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
-import { channelLeaveV1, channelMessagesV1, channelInviteV2 } from './channel';
+import { channelLeaveV1, channelMessagesV1, channelInviteV2, channelAddOwnerV1 } from './channel';
 import { debug } from './debug';
 import { clearV1 } from './other';
 import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
@@ -18,7 +18,7 @@ import {
   messageSendV1,
   messageSendDmV1,
 } from './message';
-
+ 
 import {
   dmCreateV1,
   dmDetailsv1,
