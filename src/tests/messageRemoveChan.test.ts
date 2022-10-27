@@ -118,7 +118,7 @@ beforeEach(() => {
     message: 'Second message channel 1 by global owner who is a channel member only'
   });
   mId4 = parseInt(tmp.messageId);
-  invalidMId = Math.abs(mId0 + mId1 + mId2 + mId3 + mId4)
+  invalidMId = Math.abs(mId0 + mId1 + mId2 + mId3 + mId4);
 });
 // Tear down
 afterEach(() => {
@@ -147,5 +147,52 @@ describe('Error Handling', () => {
       channelId: mId1,
     });
     expect(data).toStrictEqual({ error: 'Token doesnt have permission' });
+  });
+});
+
+// ------------------Function Testing------------------//
+
+describe('Function Testing', () => {
+  test('Member deletes own message', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: token2,
+      channelId: mId2,
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Owner deletes own message', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: token1,
+      channelId: mId1,
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Owner (not global owner) deletes members message', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: token1,
+      channelId: mId2,
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Owner (global owner) deletes members message', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: tokenGlobalOwner,
+      channelId: mId2,
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Member but global owner deletes members message', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: tokenGlobalOwner,
+      channelId: mId3,
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Member but global owner deletes own message', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: tokenGlobalOwner,
+      channelId: mId4,
+    });
+    expect(data).toStrictEqual({});
   });
 });
