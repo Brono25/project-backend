@@ -101,7 +101,6 @@ export function messageSendDmV1(
   return messageId;
 }
 
-
 // ////////////////////////////////////////////////////// //
 //                      messageRemove                     //
 // ////////////////////////////////////////////////////// //
@@ -112,6 +111,5 @@ export function messageSendDmV1(
  */
 
 export function messageRemoveV1(token: string, messageId: number): object | Error {
-
   return {};
 }
