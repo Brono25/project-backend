@@ -162,7 +162,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
  * @returns {Array} - list of channels
  */
 
- export function channelsListV2(token: string): ChanListReturn {
+ export function channelsListV2(token: string): Channel[] | Error {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
@@ -176,7 +176,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
       channels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
-  return channels;
+  return { channels };
 }
 
 // ------------------Channels Helper functions------------------
