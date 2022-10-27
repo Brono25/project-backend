@@ -301,6 +301,26 @@ function channelMessagesV1(
  * @returns {}
  */
 function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid Channel Id' };
+  }
+  if (!isValidAuthUserId(uId)) {
+    return { error: 'Invalid User Id' };
+  }
+  if (!isUIdOwnerOfChannel(uId, channelId)) {
+    return { error: 'User is not a channel owner' };
+  }
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+    return { error: 'Token does not have owner permissions' };
+  }
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  if (channelStore.ownerMembers.length === 1) {
+    return { error: 'There must be atleast one owner' };
+  }
+
   return {};
 }
 

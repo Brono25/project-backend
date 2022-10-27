@@ -13,7 +13,6 @@ let invalidChannelId: number;
 let invalidUid: number;
 let tmp: any;
 beforeEach(() => {
-
   // tokens 0,1 and 2
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
@@ -61,7 +60,7 @@ beforeEach(() => {
     token: token1,
     channelId: channelId0,
   });
-  tmp = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+  tmp = h.postRequest(h.CHAN_RMV_OWNER_URL, {
     token: tokenGlobalOwner,
     channelId: channelId0,
     uId: uId1,
@@ -69,6 +68,15 @@ beforeEach(() => {
   h.postRequest(h.CHAN_JOIN_URL, {
     token: tokenGlobalOwner,
     channelId: channelId1,
+  });
+  h.postRequest(h.CHAN_JOIN_URL, {
+    token: token2,
+    channelId: channelId0,
+  });
+  h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    token: tokenGlobalOwner,
+    channelId: channelId0,
+    uId: uId1,
   });
 
   invalidChannelId = Math.abs(channelId0) + 10;
@@ -83,32 +91,40 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
+  test('Invalid Token', () => {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
+      token: h.invalidToken,
+      channelId: channelId0,
+      uId: uIdGlobalOwner,
+    });
+    expect(data).toStrictEqual({ error: 'Invalid Token' });
+  });
   test('Invalid Channel Id', () => {
-    const data = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: tokenGlobalOwner,
       channelId: invalidChannelId,
       uId: uId1,
     });
-    expect(data).toStrictEqual({ error: 'Invalid channel Id' });
+    expect(data).toStrictEqual({ error: 'Invalid Channel Id' });
   });
   test('Invalid  uId', () => {
-    const data = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: tokenGlobalOwner,
       channelId: channelId0,
       uId: invalidUid,
     });
-    expect(data).toStrictEqual({ error: 'Invalid uId' });
+    expect(data).toStrictEqual({ error: 'Invalid User Id' });
   });
   test('Uid is not an owner', () => {
-    const data = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: token1,
       channelId: channelId1,
       uId: uIdGlobalOwner,
     });
-    expect(data).toStrictEqual({ error: 'User ID is not an owner' });
+    expect(data).toStrictEqual({ error: 'User is not a channel owner' });
   });
   test('Only owner cant remove themselves', () => {
-    const data = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: token1,
       channelId: channelId1,
       uId: uId1,
@@ -116,11 +132,49 @@ describe('Error Handling', () => {
     expect(data).toStrictEqual({ error: 'There must be atleast one owner' });
   });
   test('Global owner who is a member cannot remove channel owner who is the only owner', () => {
-    const data = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: tokenGlobalOwner,
       channelId: channelId1,
       uId: uId1,
     });
     expect(data).toStrictEqual({ error: 'There must be atleast one owner' });
   });
-}); 
+  test('Token does not have permission', () => {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
+      token: token2,
+      channelId: channelId0,
+      uId: uId1,
+    });
+    expect(data).toStrictEqual({ error: 'Token does not have owner permissions' });
+  });
+});
+
+// ------------------Function Testing------------------//
+describe('Function Testing', () => {
+  test('Remove Channel Owner', () => {
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
+      token: tokenGlobalOwner,
+      channelId: channelId0,
+      uId: uId1,
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Remove Channel Owner as global owner channel member', () => {
+    h.postRequest(h.CHAN_RMV_OWNER_URL, {
+      token: tokenGlobalOwner,
+      channelId: channelId0,
+      uId: uIdGlobalOwner,
+    });
+    h.postRequest(h.CHAN_ADD_OWNER_URL, {
+      token: tokenGlobalOwner,
+      channelId: channelId0,
+      uId: uId2,
+    });
+    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
+      token: tokenGlobalOwner,
+      channelId: channelId1,
+      uId: uId1,
+    });
+    expect(data).toStrictEqual({});
+  });
+});
