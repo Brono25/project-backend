@@ -14,6 +14,11 @@ let uId1: number;
 let token0: string;
 let token1: string;
 let invalidToken: string;
+h.deleteRequest(h.CLEAR_URL, {});
+
+let authUserId0: number;
+let authUserId1: number;
+let invalidAuthUserId: number;
 let publicChannelId0: number;
 let publicChannelId1: number;
 let privateChannelId0: number;

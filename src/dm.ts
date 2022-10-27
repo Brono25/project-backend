@@ -7,10 +7,13 @@ import {
   Error,
   PAGE_SIZE,
   NO_MORE_PAGES,
+  Dm,
   DmStore,
   DmCreateReturn,
+  dmListReturn,
   dmDetailsReturn,
   dmLeaveReturn,
+  dmRemoveReturn,
 } from './data.types';
 
 import {
@@ -27,7 +30,8 @@ import {
   isTokenMemberOfDm,
   generateDmName,
   generateDmId,
-  getUIdFromToken
+  getUIdFromToken,
+  doesTokenHaveDmOwnerPermissions,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -68,6 +72,31 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   data.dms.push(dmStore);
   setData(data);
   return { dmId: dmId };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmListV1                         //
+// ////////////////////////////////////////////////////// //
+/**
+ * Shows a list of all the dms that the user is a member of (if the given token is valid).
+ * @param {string} - token
+ * @returns {array} - dms[{dmId: , name: }]
+ */
+export function dmListV1(token: string): dmListReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  const uId: number = getUIdFromToken(token);
+  const data: DataStore = getData();
+  const dms: Dm[] = [];
+  for (const dm of data.dms) {
+    if (dm.allMembersId.includes(uId)) {
+      dms.push({ dmId: dm.dmId, name: dm.name });
+    } else if (dm.ownerId === uId) {
+      dms.push({ dmId: dm.dmId, name: dm.name });
+    }
+  }
+  return { dms: dms };
 }
 
 // ////////////////////////////////////////////////////// //
@@ -130,8 +159,6 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
   }
 
   const uId: number = getUIdFromToken(token);
-
-  // fix the following lines of code
   const dmDetails: DmStore = getDmStore(dmId);
   let membersArr: number[] = dmDetails.allMembersId;
   membersArr = membersArr.filter((element) => {
@@ -139,7 +166,8 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
   });
   dmDetails.allMembersId = membersArr;
   const data: DataStore = getData();
-  data.dms.push(dmDetails);
+  const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index] = dmDetails;
   setData(data);
   return {};
 }
@@ -190,4 +218,33 @@ export function dmMessagesV1(
     start: start,
     end: end,
   };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmRemove                          //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {string, number}
+ * @returns {number}
+ */
+
+export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
+  if (!isValidDmId(dmId)) {
+    return { error: 'Invalid dmId' };
+  }
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  if (!doesTokenHaveDmOwnerPermissions(token, dmId)) {
+    return { error: 'Token is not the owner' };
+  }
+  if (!isTokenMemberOfDm(token, dmId)) {
+    return { error: 'Token is not a member' };
+  }
+  const data: DataStore = getData();
+  const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index].allMembersId.length = 0;
+  setData(data);
+  return {};
 }

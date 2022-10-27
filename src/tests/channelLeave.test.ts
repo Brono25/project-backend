@@ -1,4 +1,5 @@
 import * as h from './test.helper';
+h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
 let token0: string;
@@ -100,7 +101,7 @@ describe('Function Testing', () => {
 
   test('channel member leaves the channel', () => {
     const data = h.postRequest(h.CHAN_LEAVE_URL, {
-      token: token0,
+      token: token1,
       channelId: channelId0,
     });
     expect(data).toStrictEqual({});

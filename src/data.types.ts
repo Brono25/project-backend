@@ -12,11 +12,18 @@ export const GLOBAL_OWNER = 0;
 export const MAX_MSG_LEN = 1000;
 export const MIN_MSG_LEN = 1;
 
-export type MessageId = { messageId: number };
+/* export type MessageId = { messageId: number }; */
 export type Error = { error: string };
 export type UserId = { uId: number };
 export type DmId = { dmId: number };
+export type MessageId = { messageId: number};
 
+export type MessageTracking = {
+  messageId: number;
+  dmId: number;
+  channelId: number;
+  uId:number;
+};
 export type User = {
   uId: number;
   email: string;
@@ -71,13 +78,16 @@ export type PageMessages = {
 };
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
+export type DmCreateReturn = { dmId: number } | Error;
 export type ChannelLeaveReturn = object | Error;
-export type DmCreateReturn = {dmId: number} | Error;
+export type ChanAddOwnerReturn = object | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
 export type userProfSetHandleReturn = object | Error;
-
 export type dmLeaveReturn = object | Error;
+export type dmListReturn = { dms: Dm[] } | Error;
+
+export type dmRemoveReturn = object | Error;
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //
@@ -117,6 +127,6 @@ export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
   activeTokens: Token[];
-  messageIds: MessageId[];
+  messageIds: MessageTracking[];
   dms: DmStore[];
 }

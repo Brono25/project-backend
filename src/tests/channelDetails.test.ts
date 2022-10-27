@@ -16,6 +16,11 @@ let token2: string;
 let uId0: number;
 let uId1: number;
 let uId2: number;
+h.deleteRequest(h.CLEAR_URL, {});
+
+// SETUP
+let userId0: number;
+let userId1: number;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;

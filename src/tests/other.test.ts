@@ -2,6 +2,10 @@
 import { AuthRegistorReturn } from '../data.types';
 import * as h from './test.helper';
 
+beforeEach(() => {
+  h.deleteRequest(h.CLEAR_URL, {});
+});
+
 describe('clearV1()', () => {
   test('Adding duplicate user after clearV1 should succeed if clear works', () => {
     let data = h.postRequest(h.REGISTER_URL, {
