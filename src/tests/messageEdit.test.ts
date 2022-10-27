@@ -152,11 +152,27 @@ describe('Function Testing', () => {
     });
     expect(data).toStrictEqual({});
   });
+  test('Edit own channel message to empty', () => {
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token0,
+      messageId: mId0,
+      message: '',
+    });
+    expect(data).toStrictEqual({});
+  });
   test('Edit own DM message', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
       token: token1,
       messageId: mId1,
       message: 'Edited message DM',
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Edit own DM message to empty', () => {
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token1,
+      messageId: mId1,
+      message: '',
     });
     expect(data).toStrictEqual({});
   });
@@ -219,7 +235,7 @@ describe('Function Testing', () => {
       channelId: channelId0,
       uId: uId0,
     });
-    
+
     const data = h.putRequest(h.MSG_EDIT_URL, {
       token: token0,
       messageId: mId,
