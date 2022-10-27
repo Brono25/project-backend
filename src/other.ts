@@ -13,6 +13,7 @@ import {
   ID_ERROR,
   MessageId,
   DmStore,
+  MessageTracking,
 } from './data.types';
 
 /**
@@ -107,6 +108,7 @@ export function isUIdOwnerOfChannel(uId: number, channelId: number) {
   }
   return false;
 }
+
 // ////////////////////////////////////////////////////// //
 //                        IS MEMBER                       //
 // ////////////////////////////////////////////////////// //
@@ -211,6 +213,25 @@ export function getDmStore(dmId: number): DmStore {
   const data: DataStore = getData();
   const dmStore: DmStore = data.dms.find(a => a.dmId === dmId);
   return dmStore;
+}
+
+/**
+ * Retrieve the channel or DM location of a message
+ * @param {number} - message Id
+ * @returns {MessageTracking} - does message exist true/false
+ */
+export function getMessageLocation(messageId: number) {
+  const data: DataStore = getData();
+  const index = data.messageIds.findIndex(a => a.messageId === messageId);
+  if (index < 0) {
+    return null;
+  }
+  return <MessageTracking> {
+    messageId: data.messageIds[index].messageId,
+    dmId: data.messageIds[index].dmId,
+    channelId: data.messageIds[index].channelId,
+    uId: data.messageIds[index].uId,
+  };
 }
 
 // ////////////////////////////////////////////////////// //

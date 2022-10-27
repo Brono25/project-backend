@@ -12,11 +12,18 @@ export const GLOBAL_OWNER = 0;
 export const MAX_MSG_LEN = 1000;
 export const MIN_MSG_LEN = 1;
 
-export type MessageId = { messageId: number };
+/* export type MessageId = { messageId: number }; */
 export type Error = { error: string };
 export type UserId = { uId: number };
 export type DmId = { dmId: number };
+export type MessageId = { messageId: number};
 
+export type MessageTracking = {
+  messageId: number;
+  dmId: number;
+  channelId: number;
+  uId:number;
+};
 export type User = {
   uId: number;
   email: string;
@@ -118,6 +125,6 @@ export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
   activeTokens: Token[];
-  messageIds: MessageId[];
+  messageIds: MessageTracking[];
   dms: DmStore[];
 }

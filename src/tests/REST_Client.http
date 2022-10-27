@@ -131,10 +131,16 @@ content-type: application/json
     "uId": 0
 }
 
+###
+// remopve message
+DELETE http://localhost:3500/message/remove/v1
+    ?token=zIhezigI2d
+    &messageId=0122
+
 
 ###
 //Clear
-DELETE http://localhost:3200/clear/v1/
+DELETE http://localhost:3500/clear/v1/
 content-type: application/json
 
 
