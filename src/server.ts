@@ -39,6 +39,7 @@ import {
   dmDetailsv1,
   dmLeavev1,
   dmMessagesV1,
+  dmRemoveV1,
 } from './dm';
 
 // Set up web app
@@ -117,6 +118,11 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
   res.json(dmLeavev1(token, parseInt(dmId)));
 });
 
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const { token, dmId } = req.body;
+  res.json(dmRemoveV1(token, parseInt(dmId)));
+});
+
 app.get('/channel/messages/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const channelId = req.query.channelId as string;
@@ -179,6 +185,7 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
+
 
 // ////////////////////////////////////////////////////// //
 //                for debugging *delete later*            //
