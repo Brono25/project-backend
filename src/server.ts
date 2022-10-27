@@ -8,7 +8,10 @@ import {
   authRegisterV1,
   AuthLogoutV1
 } from './auth';
-import { channelsCreateV2 } from './channels';
+import { 
+  channelsCreateV2,
+  channelslistAllV2,
+} from './channels';
 import {
   channelLeaveV1,
   channelMessagesV1,
@@ -186,7 +189,10 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
-
+app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  res.json(channelslistAllV2( token ));
+});
 // ////////////////////////////////////////////////////// //
 //                for debugging *delete later*            //
 // ////////////////////////////////////////////////////// //

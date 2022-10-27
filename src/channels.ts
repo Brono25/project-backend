@@ -124,6 +124,22 @@ function channelsListAllV1(authUserId: number): ChannelsListReturn {
   return { channels };
 }
 
+export function channelslistAllV2(token: string): ChannelsListReturn {
+
+  const data = getData();
+
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+
+  const channels = [];
+  for (const channel of data.channels) {
+    channels.push({ channelId: channel.channelId, name: channel.name});
+  }
+
+  return { channels };
+}
+
 // ////////////////////////////////////////////////////// //
 //                     channelsListV1                     //
 // ////////////////////////////////////////////////////// //

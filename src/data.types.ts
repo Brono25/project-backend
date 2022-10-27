@@ -69,6 +69,7 @@ export type PageMessages = {
   start: number;
   end: number;
 };
+
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
 export type ChannelLeaveReturn = object | Error;

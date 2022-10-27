@@ -16,6 +16,8 @@ let invalidUserId: number;
 let publicChannelId : number;
 let privateChannelId0: number;
 let privateChannelId1: number;
+let channelId0: number;
+let start = 0;
 beforeEach(() => {
   let args: h.Args = [h.email0, h.password0, h.firstName0, h.lastName0];
   userId0 = h.authRegisterReturnGaurd(authRegisterV1(...args));
@@ -46,6 +48,20 @@ describe('Error Handling', () => {
     expect(channelsListAllV1(invalidUserId)).toStrictEqual({ error: expect.any(String) });
   });
 });
+
+describe('Error Handling', () => {
+  test('Invalid Token', () => {
+    const data = h.getRequest(h.CHAN_MSG_URL, {
+      token: h.invalidToken,
+      channelId: channelId0,
+      start: start,
+    });
+    expect(data).toStrictEqual({ error: 'Invalid Token' });
+
+  })
+
+
+})
 
 // ------------------Function Testing------------------//
 
