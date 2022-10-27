@@ -12,6 +12,12 @@ let channelId1: number;
 let invalidChannelId: number;
 let invalidUid: number;
 let tmp: any;
+let mId0: number;
+let mId1: number;
+let mId2: number;
+let mId3: number;
+let mId4: number;
+let invalidMId: number;
 beforeEach(() => {
   h.deleteRequest(h.CLEAR_URL, {});
   // tokens 0,1 and 2
@@ -82,6 +88,37 @@ beforeEach(() => {
 
   invalidChannelId = Math.abs(channelId0) + 10;
   invalidUid = Math.abs(uId1) + Math.abs(uId2) + Math.abs(uIdGlobalOwner) + 10;
+  tmp = h.postRequest(h.MSG_SEND_URL, {
+    token: tokenGlobalOwner,
+    channelId: channelId0,
+    message: 'First message channel 0 by global owner'
+  });
+  mId0 = parseInt(tmp.messageId);
+  tmp = h.postRequest(h.MSG_SEND_URL, {
+    token: token1,
+    channelId: channelId0,
+    message: 'Second message channel 0 by user 1'
+  });
+  mId1 = parseInt(tmp.messageId);
+  tmp = h.postRequest(h.MSG_SEND_URL, {
+    token: token2,
+    channelId: channelId0,
+    message: 'Third message channel 0 by user 2'
+  });
+  mId2 = parseInt(tmp.messageId);
+  tmp = h.postRequest(h.MSG_SEND_URL, {
+    token: token1,
+    channelId: channelId1,
+    message: 'First message channel 1 by owner user 1'
+  });
+  mId3 = parseInt(tmp.messageId);
+  tmp = h.postRequest(h.MSG_SEND_URL, {
+    token: tokenGlobalOwner,
+    channelId: channelId1,
+    message: 'Second message channel 1 by global owner who is a channel member only'
+  });
+  mId4 = parseInt(tmp.messageId);
+  invalidMId = Math.abs(mId0 + mId1 + mId2 + mId3 + mId4)
 });
 // Tear down
 afterEach(() => {
@@ -93,8 +130,22 @@ describe('Error Handling', () => {
   test('invalid token', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
       token: h.invalidToken,
-      channelId: channelId0
+      messageId: mId0,
     });
-    expect(data).toStrictEqual({ error: 'Invalid channel Id' });
+    expect(data).toStrictEqual({ error: 'Invalid token' });
+  });
+  test('User is not part of the channel that the message was posted in', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: token2,
+      channelId: mId4,
+    });
+    expect(data).toStrictEqual({ error: 'Invalid message Id' });
+  });
+  test('Member try to delete message they didnt post', () => {
+    const data = h.deleteRequest(h.MSG_RMV_URL, {
+      token: token2,
+      channelId: mId1,
+    });
+    expect(data).toStrictEqual({ error: 'Token doesnt have permission' });
   });
 });
