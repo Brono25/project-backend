@@ -13,6 +13,7 @@ let invalidChannelId: number;
 let invalidUid: number;
 let tmp: any;
 beforeEach(() => {
+  h.deleteRequest(h.CLEAR_URL, {});
   // tokens 0,1 and 2
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email0,
@@ -172,7 +173,7 @@ describe('Function Testing', () => {
     });
     const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: tokenGlobalOwner,
-      channelId: channelId1,
+      channelId: channelId0,
       uId: uId1,
     });
     expect(data).toStrictEqual({});

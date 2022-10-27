@@ -320,6 +320,12 @@ function channelRemoveOwnerV1(token: string, channelId: number, uId: number): ob
   if (channelStore.ownerMembers.length === 1) {
     return { error: 'There must be atleast one owner' };
   }
+  let index: number = channelStore.ownerMembers.findIndex(a => a.uId === uId);
+  channelStore.ownerMembers.splice(index, 1);
+  const data: DataStore = getData();
+  index = data.channels.findIndex(a => a.channelId === channelStore.channelId);
+  data.channels[index] = channelStore;
+  setData(data);
 
   return {};
 }
@@ -334,7 +340,6 @@ function channelRemoveOwnerV1(token: string, channelId: number, uId: number): ob
  * @returns {}
  */
 export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChanAddOwnerReturn {
-  // Filter out error cases
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
@@ -350,12 +355,10 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   if (isUIdOwnerOfChannel(uId, channelId)) {
     return { error: 'User is already a channel owner' };
   }
-  // Checks for global owners among members
   if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
     return { error: 'Token does not have owner permissions' };
   }
 
-  // Success case
   const data: DataStore = getData();
   const channel: ChannelStore = getChannelStoreFromId(channelId);
   const index: number = data.channels.findIndex(a => a.channelId === channel.channelId);
