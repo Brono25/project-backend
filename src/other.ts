@@ -95,7 +95,18 @@ export function isValidToken(token: string): boolean {
   }
   return false;
 }
-
+/**
+ * Set data back to initial state.
+ * @param {number, number} - uId, channel Id
+ * @returns {boolean} - is owner true/false
+ */
+export function isUIdOwnerOfChannel(uId: number, channelId: number) {
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+    return true;
+  }
+  return false;
+}
 // ////////////////////////////////////////////////////// //
 //                        IS MEMBER                       //
 // ////////////////////////////////////////////////////// //
@@ -126,15 +137,11 @@ export function isTokenMemberOfChannel(token: string, channelId: number): boolea
  * @param {number|string, number} - authorised user's token and channel id
  * @returns {boolean} - is user an owner of channel
  */
-export function isTokenOwnerOfChannel(token:string, channelId: number): boolean {
-  const authUserId: number = getUIdFromToken(token);
-  const data: DataStore = getData();
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      if (channel.ownerMembers.find(a => a.uId === authUserId)) {
-        return true;
-      }
-    }
+export function isTokenOwnerOfChannel(token: string, channelId: number) {
+  const uId: number = getUIdFromToken(token);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+    return true;
   }
   return false;
 }
@@ -217,6 +224,26 @@ export function isGlobalOwner (authUserId: number): boolean {
   const user: UserStore = getUserStoreFromId(authUserId);
   if (user.globalPermission === 'owner') {
     return true;
+  }
+  return false;
+}
+
+/**
+ * @param {string, number} - token , channel Id
+ * @returns {boolean} - does token have correct permissions
+ */
+export function doesTokenHaveChanOwnerPermissions (token: string, channelId: number) {
+  const uId: number = getUIdFromToken(token);
+  const userStore: UserStore = getUserStoreFromId(uId);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+
+  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+    return true;
+  }
+  if (channelStore.allMembers.find(a => a.uId === uId)) {
+    if (userStore.globalPermission === 'owner') {
+      return true;
+    }
   }
   return false;
 }
