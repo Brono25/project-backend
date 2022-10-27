@@ -75,6 +75,33 @@ function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetail
   return channelDetails;
 }
 
+export function channelDetailsV2(token: string, channelId: number) : ChannelDetails | Error {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+
+  if (!isValidChannelId(channelId)) {
+    return { error: 'Invalid channel Id' };
+  }
+
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    return { error: 'Token is not a member of this channel' };
+  }
+
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const ownerMembersDetailsList: User[] = getChannelOwners(channelId);
+  const getChannelMembersList: User[] = getChannelMembers(channelId);
+
+  const channelDetails: ChannelDetails = {
+    name: channelStore.name,
+    isPublic: channelStore.isPublic,
+    ownerMembers: ownerMembersDetailsList,
+    allMembers: getChannelMembersList,
+  };
+
+  return channelDetails;
+}
+
 // ////////////////////////////////////////////////////// //
 //                      channelJoinV1                     //
 // ////////////////////////////////////////////////////// //

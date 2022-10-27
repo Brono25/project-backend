@@ -13,6 +13,7 @@ import {
   ID_ERROR,
   MessageId,
   DmStore,
+  MessageTracking,
 } from './data.types';
 
 /**
@@ -107,6 +108,19 @@ export function isUIdOwnerOfChannel(uId: number, channelId: number) {
   }
   return false;
 }
+
+/**
+ * @param {number} - mId
+ * @returns {boolean} - does exist true/false
+ */
+export function isValidMessageId(mId: number) {
+  const dataStore: DataStore = getData();
+  if (dataStore.messageIds.find(a => a.messageId === mId)) {
+    return true;
+  }
+  return false;
+}
+
 // ////////////////////////////////////////////////////// //
 //                        IS MEMBER                       //
 // ////////////////////////////////////////////////////// //
@@ -213,6 +227,25 @@ export function getDmStore(dmId: number): DmStore {
   return dmStore;
 }
 
+/**
+ * Retrieve the channel or DM location of a message
+ * @param {number} - message Id
+ * @returns {MessageTracking} - does message exist true/false
+ */
+export function getMessageLocation(messageId: number) {
+  const data: DataStore = getData();
+  const index = data.messageIds.findIndex(a => a.messageId === messageId);
+  if (index < 0) {
+    return null;
+  }
+  return <MessageTracking> {
+    messageId: data.messageIds[index].messageId,
+    dmId: data.messageIds[index].dmId,
+    channelId: data.messageIds[index].channelId,
+    uId: data.messageIds[index].uId,
+  };
+}
+
 // ////////////////////////////////////////////////////// //
 //                        Permissions                     //
 // ////////////////////////////////////////////////////// //
@@ -244,6 +277,21 @@ export function doesTokenHaveChanOwnerPermissions (token: string, channelId: num
     if (userStore.globalPermission === 'owner') {
       return true;
     }
+  }
+  return false;
+}
+
+/**
+ * @param {string, number} - token , channel Id
+ * @returns {boolean} - does token have correct permissions
+ */
+export function doesTokenHaveDmOwnerPermissions (token: string, dmId: number) {
+  const uId: number = getUIdFromToken(token);
+  const dmStore: DmStore = getDmStore(dmId);
+  const dmOwnerId: number = dmStore.ownerId;
+
+  if (dmOwnerId === uId) {
+    return true;
   }
   return false;
 }
