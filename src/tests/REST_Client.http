@@ -85,6 +85,11 @@ GET http://localhost:3200/users/all/v1
     ?token=token1
     
 ###
+// channel list all
+GET http://localhost:3500/channels/listAll/v2
+    ?token=token1
+    
+###
 // dm list
 GET http://localhost:3500/dm/list/v1
     ?token=EDVKVr0/1/

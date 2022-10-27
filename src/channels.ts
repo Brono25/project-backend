@@ -93,7 +93,7 @@ export function channelsCreateV2(
 }
 
 // ////////////////////////////////////////////////////// //
-//                    channelsListAllV1                   //
+//                    channelsListAllV2                  //
 // ////////////////////////////////////////////////////// //
 
 /**
@@ -109,9 +109,9 @@ type ChannelsListReturn = {
   }[];
 } | Error;
 
-function channelsListAllV1(authUserId: number): ChannelsListReturn {
-  if (isValidAuthUserId(authUserId) === false) {
-    return { error: 'Invalid user ID' };
+function channelsListAllV2(token: string): ChannelsListReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
   }
 
   // check all created channels
@@ -121,22 +121,6 @@ function channelsListAllV1(authUserId: number): ChannelsListReturn {
   for (const channel of data.channels) {
     channels.push(<Channel>{ name: channel.name, channelId: channel.channelId });
   }
-  return { channels };
-}
-
-export function channelslistAllV2(token: string): ChannelsListReturn {
-
-  const data = getData();
-
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
-
-  const channels = [];
-  for (const channel of data.channels) {
-    channels.push({ channelId: channel.channelId, name: channel.name});
-  }
-
   return { channels };
 }
 
@@ -182,7 +166,7 @@ function generateChannelId(): ChannelId {
 }
 
 export {
-  channelsListAllV1,
+  channelsListAllV2,
   channelsCreateV1,
   channelsListV1,
 };

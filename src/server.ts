@@ -8,9 +8,9 @@ import {
   authRegisterV1,
   AuthLogoutV1
 } from './auth';
-import { 
+import {
   channelsCreateV2,
-  channelslistAllV2,
+  channelsListAllV2,
 } from './channels';
 import {
   channelLeaveV1,
@@ -199,6 +199,10 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
 });
+app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  res.json(channelsListAllV2(token));
+});
 app.delete('/message/remove/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const messageId = req.query.messageId as string;
@@ -213,10 +217,6 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
-app.get('/channels/listAll/v2', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  res.json(channelslistAllV2( token ));
-});
 // ////////////////////////////////////////////////////// //
 //                for debugging *delete later*            //
 // ////////////////////////////////////////////////////// //
