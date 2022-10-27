@@ -171,7 +171,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
   for (const channel of data.channels) {
     if (isAuthUserMember(uId, channel.channelId)) {
       usersChannels.push({ name: channel.name, channelId: channel.channelId });
-    } else if (isUserChannelOwner(uId, channelId)) {
+    } else if (isUserChannelOwner(uId, channel.channelId)) {
       usersChannels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
@@ -202,7 +202,12 @@ function isUserChannelOwner(uId: number, channelId: number): boolean {
   let data: DataStore = getData();
   const index: number = data.channels.findIndex(x => x.channelId === channelId);
   const channel: ChannelStore = data.channels[index];
-  if (channel.ownerMembers.find(owner => owner.uId === uId)) {
+  if (channel.isPublic === false) {
+    if (channel.ownerMembers.uId === uId) {
+      return true;
+    }
+  }
+  if (channel.ownerMembers.includes(ownerId => ownerId.uId === uId) === true) {
     return true;
   }
   return false;
