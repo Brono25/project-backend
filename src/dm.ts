@@ -11,6 +11,7 @@ import {
   DmCreateReturn,
   dmDetailsReturn,
   dmLeaveReturn,
+  dmRemoveReturn,
 } from './data.types';
 
 import {
@@ -25,9 +26,10 @@ import {
   isValidDmId,
   getDmStore,
   isTokenMemberOfDm,
+  isTokenOwnerOfChannel,
   generateDmName,
   generateDmId,
-  getUIdFromToken
+  getUIdFromToken,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -190,4 +192,34 @@ export function dmMessagesV1(
     start: start,
     end: end,
   };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      dmRemove                          //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {string, number[]}
+ * @returns {number}
+ */
+
+export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
+  if (!isValidDmId(dmId)) {
+    return { error: 'Invalid dmId' };
+  }
+  if (!isValidToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  if (!isTokenMemberOfDm(token, dmId)) {
+    return { error: 'Token owner is not a member of the dm' };
+  }
+  if (!isTokenOwnerOfChannel(token, dmId)) {
+    return { error: 'Token owner is not the original DM creator' };
+  }
+
+  const data = getData();
+
+  data.dms[dmId].allMembersId.length = 0;
+
+  return {};
 }

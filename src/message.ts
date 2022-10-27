@@ -9,6 +9,7 @@ import {
   Error,
   ChannelStore,
   MessageTracking,
+  DmStore
 } from './data.types';
 import {
   isValidChannelId,
@@ -22,6 +23,8 @@ import {
   getMessageLocation,
   getChannelStoreFromId,
   doesTokenHaveChanOwnerPermissions,
+  doesTokenHaveDmOwnerPermissions,
+  getDmStore,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -99,13 +102,13 @@ export function messageSendDmV1(
   const messageId: number = generateMessageId();
   const uId: number = getUIdFromToken(token);
   const messageLoc: MessageTracking = {
-    messageId: generateMessageId(),
+    messageId: messageId,
     channelId: null,
     dmId: dmId,
     uId: uId
   };
   const messageDetails: Message = {
-    messageId: messageLoc.messageId,
+    messageId: messageId,
     uId: uId,
     message: message,
     timeSent: getTimeInSecs(),
@@ -137,19 +140,26 @@ export function messageRemoveV1(token: string, messageId: number): object | Erro
   }
   if (messageLoc.channelId !== null) {
     const channelId: number = messageLoc.channelId;
-    console.log(messageLoc);
     return removeChannelMessage(token, channelId, messageId, messageLoc.uId);
+  }
+
+  if (messageLoc.dmId !== null) {
+    const dmId: number = messageLoc.dmId;
+    return removeDmMessage(token, dmId, messageId, messageLoc.uId);
   }
 
   return { error: 'something went wrong' };
 }
 
+/**
+ * @param {string, number, number, number}
+ * @returns { object | Error}
+ */
 function removeChannelMessage(token: string, channelId: number, messageId: number, uId: number) {
   if (!isTokenMemberOfChannel(token, channelId)) {
     return { error: 'Invalid message Id' };
   }
   const isUsersOwnMessage = <boolean> (getUIdFromToken(token) === uId);
-  console.log(getUIdFromToken(token), uId);
   if (!doesTokenHaveChanOwnerPermissions(token, channelId) && !isUsersOwnMessage) {
     return { error: 'Token doesnt have permission' };
   }
@@ -159,6 +169,30 @@ function removeChannelMessage(token: string, channelId: number, messageId: numbe
   channelStore.messages.splice(index, 1);
   index = data.channels.findIndex(a => a.channelId === channelId);
   data.channels[index] = channelStore;
+  index = data.messageIds.findIndex(a => a.messageId === messageId);
+  data.messageIds.splice(index, 1);
+  setData(data);
+  return {};
+}
+
+/**
+ * @param {string, number, number, number}
+ * @returns { object | Error}
+ */
+function removeDmMessage(token: string, dmId: number, messageId: number, uId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    return { error: 'Invalid message Id' };
+  }
+  const isUsersOwnMessage = <boolean> (getUIdFromToken(token) === uId);
+  if (!doesTokenHaveDmOwnerPermissions(token, dmId) && !isUsersOwnMessage) {
+    return { error: 'Token doesnt have permission' };
+  }
+  const data: DataStore = getData();
+  const dmStore: DmStore = getDmStore(dmId);
+  let index: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  dmStore.messages.splice(index, 1);
+  index = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index] = dmStore;
   index = data.messageIds.findIndex(a => a.messageId === messageId);
   data.messageIds.splice(index, 1);
   setData(data);
