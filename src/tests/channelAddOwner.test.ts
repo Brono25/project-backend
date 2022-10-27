@@ -78,10 +78,6 @@ beforeEach(() => {
 afterEach(() => {
     h.deleteRequest(h.CLEAR_URL, {});
 });
-// member of 2 member channel
-// already owner
-// no owner permission, valid channelId
-// completely unrelated channel, with no common user
 
 // ------------------Error Testing------------------//
 describe('Error Handling', () => {
@@ -89,7 +85,7 @@ describe('Error Handling', () => {
         const input = h.postRequest(h.CHAN_ADD_OWNER_URL, {
           token: invalidToken,
           channelId: channelId0,
-          uId: uId2,
+          uId: uId2, 
         });
         expect(input).toStrictEqual({ error: 'Invalid Token' });
     });
@@ -139,9 +135,9 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
     test('Make a global member an owner', () => {
         const input: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
-          token: token0,
+          token: token2,
           channelId: channelId0,
-          uId: uId0,
+          uId: uId2,
         });
         expect(input).toStrictEqual({});
     });

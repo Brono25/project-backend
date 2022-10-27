@@ -27,7 +27,7 @@ import {
   Error,
   channelInviteReturn,
   ChannelJoinReturn,
-  ChannelAddOwnerReturn,
+  ChanAddOwnerReturn,
   PageMessages,
   PAGE_SIZE,
   NO_MORE_PAGES,
@@ -102,7 +102,7 @@ function channelJoinV1(authUserId: number, channelId: number) {
   setData(data);
 
   return {};
-}
+} 
 
 // ////////////////////////////////////////////////////// //
 //                      channelJoinV2                     //
@@ -299,7 +299,7 @@ function channelMessagesV1(
  * @param {string, number, number} - token, channelId, uId
  * @returns {} 
  */
-export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChannelAddOwnerReturn {
+export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChanAddOwnerReturn {
   // Filter out error cases
   if (!isValidToken(token)) {
     return {error: 'Invalid Token'};
