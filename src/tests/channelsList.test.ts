@@ -9,6 +9,7 @@ import { clearV1 } from '../other';
 import { channelInviteV1 } from '../channel';
 import * as h from './test.helper';
 
+h.deleteRequest(h.CLEAR_URL, {});
 let token0: string;
 let token1: string;
 let token2: string;
@@ -89,7 +90,6 @@ beforeEach(() => {
 });
 // Tear down
 afterEach(() => {
-  clearV1();
   h.deleteRequest(h.CLEAR_URL, {});
 });
 

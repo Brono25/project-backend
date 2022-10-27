@@ -1,4 +1,5 @@
 import * as h from './test.helper';
+h.deleteRequest(h.CLEAR_URL, {});
 
 // SETUP
 let user: any;

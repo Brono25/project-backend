@@ -78,14 +78,16 @@ export type PageMessages = {
 };
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
+export type DmCreateReturn = { dmId: number } | Error;
 export type ChannelLeaveReturn = object | Error;
 export type ChanAddOwnerReturn = object | Error;
-export type DmCreateReturn = {dmId: number} | Error;
 export type UsersAllReturn = { users: User[] } | Error;
 export type dmDetailsReturn = { name: string, members: User[]} | Error;
 export type ChanListReturn = Channel[] | Error;
 export type userProfSetHandleReturn = object | Error;
 export type dmLeaveReturn = object | Error;
+export type dmListReturn = { dms: Dm[] } | Error;
+
 export type dmRemoveReturn = object | Error;
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //

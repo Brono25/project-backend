@@ -9,6 +9,8 @@ import { clearV1 } from '../other';
 import { channelJoinV1 } from '../channel';
 import * as h from './test.helper';
 
+h.deleteRequest(h.CLEAR_URL, {});
+
 // SETUP
 let userId0: number;
 let userId1: number;

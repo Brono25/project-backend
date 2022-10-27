@@ -1,5 +1,5 @@
 import * as h from './test.helper';
-
+h.deleteRequest(h.CLEAR_URL, {});
 // Setup
 let token0: string;
 let token2: string;

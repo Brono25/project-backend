@@ -1,7 +1,7 @@
 
 import { UserProfileReturn } from '../data.types';
 import * as h from './test.helper';
-
+h.deleteRequest(h.CLEAR_URL, {});
 // Setup
 
 let authUserId0: any;

@@ -1,6 +1,7 @@
 
 import { clearV1 } from '../other';
 import * as h from './test.helper';
+h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
 let tmp: any;
