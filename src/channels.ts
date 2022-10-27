@@ -9,6 +9,7 @@ import {
   isAuthUserMember,
   getUIdFromToken,
   isValidToken,
+  isUIdOwnerOfChannel,
 } from './other';
 import {
   ChannelStore,
@@ -171,11 +172,11 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
   for (const channel of data.channels) {
     if (isAuthUserMember(uId, channel.channelId)) {
       usersChannels.push({ name: channel.name, channelId: channel.channelId });
-    } else if (isUserChannelOwner(uId, channel.channelId)) {
+    } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
       usersChannels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
-  return usersChannels;
+  return { channels: usersChannels };
 }
 
 // ------------------Channels Helper functions------------------
@@ -191,21 +192,6 @@ function generateChannelId(): ChannelId {
   const data: DataStore = getData();
   const id: number = data.channels.length;
   return { channelId: id };
-}
-/**
- * Given a valid user ID and channel ID, returns whether the user is the owner of the channel.
- *
- * @param {number, number} - uId, channelId
- * @returns {boolean} - is channel owner
- */
-function isUserChannelOwner(uId: number, channelId: number): boolean {
-  let data: DataStore = getData();
-  const index: number = data.channels.findIndex(x => x.channelId === channelId);
-  const channel: ChannelStore = data.channels[index];
-  if (channel.ownerMembers.find(ownerId => ownerId.uId === uId)) {
-    return true;
-  }
-  return false;
 }
 
 export {
