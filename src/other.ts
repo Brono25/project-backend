@@ -269,6 +269,21 @@ export function doesTokenHaveChanOwnerPermissions (token: string, channelId: num
   return false;
 }
 
+/**
+ * @param {string, number} - token , channel Id
+ * @returns {boolean} - does token have correct permissions
+ */
+export function doesTokenHaveDmOwnerPermissions (token: string, dmId: number) {
+  const uId: number = getUIdFromToken(token);
+  const dmStore: DmStore = getDmStore(dmId);
+  const dmOwnerId: number = dmStore.ownerId;
+
+  if (dmOwnerId === uId) {
+    return true;
+  }
+  return false;
+}
+
 // ////////////////////////////////////////////////////// //
 //                          Generate                      //
 // ////////////////////////////////////////////////////// //

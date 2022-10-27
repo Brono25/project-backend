@@ -132,10 +132,16 @@ content-type: application/json
 }
 
 ###
-// remopve message
+// remove message
 DELETE http://localhost:3500/message/remove/v1
-    ?token=zIhezigI2d
-    &messageId=0122
+    ?token=ilbXGqIvyf
+    &messageId=2019304712
+
+
+
+
+
+
 
 
 ###

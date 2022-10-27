@@ -203,8 +203,7 @@ export function dmMessagesV1(
  * @returns {number}
  */
 
- export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
-
+export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
   if (!isValidDmId(dmId)) {
     return { error: 'Invalid dmId' };
   }
@@ -215,13 +214,12 @@ export function dmMessagesV1(
     return { error: 'Token owner is not a member of the dm' };
   }
   if (!isTokenOwnerOfChannel(token, dmId)) {
-    return { error: 'Token owner is not the original DM creator'};
+    return { error: 'Token owner is not the original DM creator' };
   }
 
-  let data = getData();
+  const data = getData();
 
-  data.dms[dmId].allMembersId.length = 0
+  data.dms[dmId].allMembersId.length = 0;
 
-  return{};
-
- }
+  return {};
+}
