@@ -13,7 +13,8 @@ import {
   channelLeaveV1,
   channelMessagesV1,
   channelInviteV2,
-  channelAddOwnerV1
+  channelAddOwnerV1,
+  channelDetailsV2
 } from './channel';
 
 import { debug } from './debug';

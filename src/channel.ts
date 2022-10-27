@@ -84,12 +84,11 @@ export function channelDetailsV2(token: string, channelId: number) : ChannelDeta
     return { error: 'Invalid channel Id' };
   }
 
-  if (!isAuthUserMember(authUserId, channelId)) {
-    return { error: 'User is not a member of this channel' };
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    return { error: 'Token is not a member of this channel' };
   }
 
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
-
   const ownerMembersDetailsList: User[] = getChannelOwners(channelId);
   const getChannelMembersList: User[] = getChannelMembers(channelId);
 

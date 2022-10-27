@@ -1,26 +1,16 @@
 
-import { authRegisterV1 } from '../auth';
-import { channelsCreateV1 } from '../channels';
-import { clearV1 } from '../other';
 import { ChannelDetails } from '../data.types';
 import * as h from './test.helper';
-import {
-  channelDetailsV2,
-  channelJoinV1,
-} from '../channel';
 
-clearV1();
 let token0: string;
 let token1: string;
 let token2: string;
 let uId0: number;
 let uId1: number;
-let uId2: number;
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 // SETUP
-let userId0: number;
-let userId1: number;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;
@@ -54,7 +44,6 @@ beforeEach(() => {
     nameLast: h.lastName2,
   });
   token2 = user2.token;
-  uId2 = parseInt(user2.authUserId);
   // Create channels 0,1,2
   const channel0: any = h.postRequest(h.CHAN_CREATE_URL, {
     token: token0,
@@ -76,8 +65,8 @@ beforeEach(() => {
   channelId2 = channel2.channelId;
   // User 1 joins Channel 1
   h.postRequest(h.CHAN_JOIN_URL, {
-  token: token1,
-  channelId: channel1,
+    token: token1,
+    channelId: channelId1,
   });
   // Error cases
   invalidToken = h.invalidToken;
@@ -85,7 +74,6 @@ beforeEach(() => {
 });
 // TEARDOWN
 afterEach(() => {
-  clearV1();
   h.deleteRequest(h.CLEAR_URL, {});
 });
 
@@ -97,7 +85,7 @@ describe('Error Handling', () => {
       token: invalidToken,
       channelId: channelId0,
     });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
+    expect(invalidInput).toStrictEqual({ error: 'Invalid Token' });
   });
 
   test('Error Test: Invalid Channel Id', () => {
@@ -105,7 +93,7 @@ describe('Error Handling', () => {
       token: token0,
       channelId: invalidChannelId,
     });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
+    expect(invalidInput).toStrictEqual({ error: 'Invalid channel Id' });
   });
 
   test('Error Test: User not a member of any channel', () => {
@@ -122,7 +110,7 @@ describe('Error Handling', () => {
     invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
       token: token2,
       channelId: channelId2,
-    })
+    });
     expect(invalidInput).toStrictEqual({ error: expect.any(String) });
   });
 
@@ -136,7 +124,7 @@ describe('Error Handling', () => {
       token: token1,
       channelId: channelId2,
     });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
+    expect(invalidInput).toStrictEqual({ error: 'Token is not a member of this channel' });
   });
 });
 
