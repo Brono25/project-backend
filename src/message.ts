@@ -90,7 +90,11 @@ export function messageSendDmV1(
     return { error: 'Invalid Member' };
   }
 
-  const messageId: MessageId = { messageId: generateMessageId() };
+  const messageId: MessageId = {
+    messageId: generateMessageId(),
+    channelId: null,
+    dmId: dmId,
+  };
   const messageDetails: Message = {
     messageId: messageId.messageId,
     uId: getUIdFromToken(token),
