@@ -32,6 +32,7 @@ import {
 import {
   messageSendV1,
   messageSendDmV1,
+  messageRemoveV1,
 } from './message';
 
 import {
@@ -175,7 +176,11 @@ app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
 });
-
+app.delete('/message/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const messageId = req.query.uId as string;
+  res.json(messageRemoveV1(token, parseInt(messageId)));
+});
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });

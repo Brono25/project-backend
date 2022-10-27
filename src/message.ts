@@ -100,3 +100,18 @@ export function messageSendDmV1(
   setData(data);
   return messageId;
 }
+
+
+// ////////////////////////////////////////////////////// //
+//                      messageRemove                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * User as part of a DM can send a message.
+ * @param {string, number}
+ * @returns { object | Error}
+ */
+
+export function messageRemoveV1(token: string, messageId: number): object | Error {
+
+  return {};
+}
