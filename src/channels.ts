@@ -162,21 +162,23 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
  * @returns {Array} - list of channels
  */
 
- export function channelsListV2(token: string): Channel[] | Error {
+ export function channelsListV2(token: string): ChanListReturn {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
   const data: DataStore = getData();
   const channels: Channel[] = [];
+  const userChannels: Channel[] = [];
   const uId: number = getUIdFromToken(token);
   for (const channel of data.channels) {
     if (isAuthUserMember(uId, channel.channelId)) {
-      channels.push({ name: channel.name, channelId: channel.channelId });
+      userChannels.push({ name: channel.name, channelId: channel.channelId });
     } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
-      channels.push({ name: channel.name, channelId: channel.channelId });
+      userChannels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
-  return { channels };
+  channels.push(userChannels);
+  return channels;
 }
 
 // ------------------Channels Helper functions------------------
