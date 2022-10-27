@@ -1,5 +1,7 @@
 import * as h from './test.helper';
 
+h.deleteRequest(h.CLEAR_URL, {});
+
 // Setup
 let tokenGlobalOwner: string;
 let token1 : string;

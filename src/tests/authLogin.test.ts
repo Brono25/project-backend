@@ -1,6 +1,7 @@
 
 import { AuthLoginReturn } from '../data.types';
 import * as h from './test.helper';
+h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup: Create 3 users.
 let authUserId0: any;
