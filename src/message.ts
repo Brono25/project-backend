@@ -47,7 +47,11 @@ export function messageSendV1(
     return { error: 'Only members can message on the channel' };
   }
 
-  const messageId: MessageId = { messageId: generateMessageId() };
+  const messageId: MessageId = {
+    messageId: generateMessageId(),
+    channelId: channelId,
+    dmId: null,
+  };
   const messageDetails: Message = {
     messageId: messageId.messageId,
     uId: getUIdFromToken(token),
