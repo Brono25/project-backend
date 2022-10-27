@@ -3,6 +3,7 @@ import * as h from './test.helper';
 import {
   dmCreateV1,
 } from '../dm';
+h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup: Create 3 users.
 let uId1: number;

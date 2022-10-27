@@ -1,5 +1,7 @@
 import * as h from './test.helper';
 
+h.deleteRequest(h.CLEAR_URL, {});
+
 // Setup: Create 3 users.
 let uId0: number;
 let uId1: number;
