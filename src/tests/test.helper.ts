@@ -123,7 +123,7 @@ export const getRequest = (url: string, data: any): object => {
 };
 
 export const deleteRequest = (url: string, data: any): object => {
-  const res = request('DELETE', url, {});
+  const res = request('DELETE', url, { qs: data });
   expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;

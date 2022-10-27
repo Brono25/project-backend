@@ -2,8 +2,8 @@
 import { ChannelId } from '../data.types';
 import * as h from './test.helper';
 
-import { clearV1 } from '../other';
-clearV1();
+h.deleteRequest(h.CLEAR_URL, {});
+
 // Setup
 let token0: string;
 const invalidToken = 'Not An Active Token';

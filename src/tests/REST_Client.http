@@ -120,15 +120,37 @@ content-type: application/json
     "token": "5kulR7Mzar",
     "channelId": 0
 }
+###
+// Remove owner
+POST http://localhost:3500/channel/removeowner/v1
+content-type: application/json
+
+{   
+    "token": "token",
+    "channelId": 0,
+    "uId": 0
+}
+
+###
+// remove message
+DELETE http://localhost:3500/message/remove/v1
+    ?token=ilbXGqIvyf
+    &messageId=2019304712
+
+
+
+
+
+
 
 
 ###
 //Clear
-DELETE http://localhost:3200/clear/v1/
+DELETE http://localhost:3500/clear/v1/
 content-type: application/json
 
 
 ###
 //debug - print all dataStore
-POST http://localhost:3200/debug/
+POST http://localhost:3500/debug/
 content-type: application/json

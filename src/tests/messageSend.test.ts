@@ -3,6 +3,8 @@ import {
   MessageId,
 } from '../data.types';
 
+h.deleteRequest(h.CLEAR_URL, {});
+
 const invChanId = 'Invalid channel ID';
 const invMessage = 'Invalid message length';
 const nonMember = 'Only members can message on the channel';

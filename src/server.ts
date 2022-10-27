@@ -9,14 +9,31 @@ import {
   AuthLogoutV1
 } from './auth';
 import { channelsCreateV2 } from './channels';
-import { channelLeaveV1, channelMessagesV1, channelInviteV2 } from './channel';
+import {
+  channelLeaveV1,
+  channelMessagesV1,
+  channelInviteV2,
+  channelAddOwnerV1
+} from './channel';
+
 import { debug } from './debug';
 import { clearV1 } from './other';
-import { userProfileSetNameV1, userProfileV2, usersAllv1, userProfileSetEmailV1, userProfileSetHandleV1 } from './users';
-import { channelJoinV2 } from './channel';
+import {
+  userProfileSetNameV1,
+  userProfileV2,
+  usersAllv1,
+  userProfileSetEmailV1,
+  userProfileSetHandleV1,
+} from './users';
+import {
+  channelJoinV2,
+  channelRemoveOwnerV1,
+} from './channel';
 import {
   messageSendV1,
   messageSendDmV1,
+  messageRemoveV1,
+  messageEditV1,
 } from './message';
 
 import {
@@ -24,6 +41,7 @@ import {
   dmDetailsv1,
   dmLeavev1,
   dmMessagesV1,
+  dmRemoveV1,
 } from './dm';
 
 // Set up web app
@@ -74,6 +92,11 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
 app.post('/channel/invite/v2', (req: Request, res: Response) => {
   const { token, channelId, uId } = req.body;
   res.json(channelInviteV2(token, parseInt(channelId), parseInt(uId)));
+});
+
+app.post('/channel/addowner/v1', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelAddOwnerV1(token, parseInt(channelId), parseInt(uId)));
 });
 
 app.post('/message/send/v1', (req: Request, res: Response) => {
@@ -131,6 +154,10 @@ app.get('/users/all/v1', (req: Request, res: Response) => {
   res.json(usersAllv1(token));
 });
 
+app.put('/message/edit/v1', (req: Request, res: Response) => {
+  const { token, messageId, message } = req.body;
+  res.json(messageEditV1(token, parseInt(messageId), message));
+});
 app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
   const { token, nameFirst, nameLast } = req.body;
   res.json(userProfileSetNameV1(token, nameFirst, nameLast));
@@ -156,6 +183,20 @@ app.post('/channel/leave/v1', (req: Request, res: Response) => {
   res.json(channelLeaveV1(token, parseInt(channelId)));
 });
 
+app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
+  const { token, channelId, uId } = req.body;
+  res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
+});
+app.delete('/message/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const messageId = req.query.messageId as string;
+  res.json(messageRemoveV1(token, parseInt(messageId)));
+});
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  res.json(dmRemoveV1(token, parseInt(dmId)));
+});
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });

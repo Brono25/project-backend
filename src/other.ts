@@ -13,6 +13,7 @@ import {
   ID_ERROR,
   MessageId,
   DmStore,
+  MessageTracking,
 } from './data.types';
 
 /**
@@ -95,6 +96,30 @@ export function isValidToken(token: string): boolean {
   }
   return false;
 }
+/**
+ * Set data back to initial state.
+ * @param {number, number} - uId, channel Id
+ * @returns {boolean} - is owner true/false
+ */
+export function isUIdOwnerOfChannel(uId: number, channelId: number) {
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * @param {number} - mId
+ * @returns {boolean} - does exist true/false
+ */
+export function isValidMessageId(mId: number) {
+  const dataStore: DataStore = getData();
+  if (dataStore.messageIds.find(a => a.messageId === mId)) {
+    return true;
+  }
+  return false;
+}
 
 // ////////////////////////////////////////////////////// //
 //                        IS MEMBER                       //
@@ -126,15 +151,11 @@ export function isTokenMemberOfChannel(token: string, channelId: number): boolea
  * @param {number|string, number} - authorised user's token and channel id
  * @returns {boolean} - is user an owner of channel
  */
-export function isTokenOwnerOfChannel(token:string, channelId: number): boolean {
-  const authUserId: number = getUIdFromToken(token);
-  const data: DataStore = getData();
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      if (channel.ownerMembers.find(a => a.uId === authUserId)) {
-        return true;
-      }
-    }
+export function isTokenOwnerOfChannel(token: string, channelId: number) {
+  const uId: number = getUIdFromToken(token);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+    return true;
   }
   return false;
 }
@@ -206,6 +227,25 @@ export function getDmStore(dmId: number): DmStore {
   return dmStore;
 }
 
+/**
+ * Retrieve the channel or DM location of a message
+ * @param {number} - message Id
+ * @returns {MessageTracking} - does message exist true/false
+ */
+export function getMessageLocation(messageId: number) {
+  const data: DataStore = getData();
+  const index = data.messageIds.findIndex(a => a.messageId === messageId);
+  if (index < 0) {
+    return null;
+  }
+  return <MessageTracking> {
+    messageId: data.messageIds[index].messageId,
+    dmId: data.messageIds[index].dmId,
+    channelId: data.messageIds[index].channelId,
+    uId: data.messageIds[index].uId,
+  };
+}
+
 // ////////////////////////////////////////////////////// //
 //                        Permissions                     //
 // ////////////////////////////////////////////////////// //
@@ -216,6 +256,41 @@ export function getDmStore(dmId: number): DmStore {
 export function isGlobalOwner (authUserId: number): boolean {
   const user: UserStore = getUserStoreFromId(authUserId);
   if (user.globalPermission === 'owner') {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * @param {string, number} - token , channel Id
+ * @returns {boolean} - does token have correct permissions
+ */
+export function doesTokenHaveChanOwnerPermissions (token: string, channelId: number) {
+  const uId: number = getUIdFromToken(token);
+  const userStore: UserStore = getUserStoreFromId(uId);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+
+  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+    return true;
+  }
+  if (channelStore.allMembers.find(a => a.uId === uId)) {
+    if (userStore.globalPermission === 'owner') {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @param {string, number} - token , channel Id
+ * @returns {boolean} - does token have correct permissions
+ */
+export function doesTokenHaveDmOwnerPermissions (token: string, dmId: number) {
+  const uId: number = getUIdFromToken(token);
+  const dmStore: DmStore = getDmStore(dmId);
+  const dmOwnerId: number = dmStore.ownerId;
+
+  if (dmOwnerId === uId) {
     return true;
   }
   return false;
