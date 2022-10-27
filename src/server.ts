@@ -8,7 +8,7 @@ import {
   authRegisterV1,
   AuthLogoutV1
 } from './auth';
-import { channelsCreateV2 } from './channels';
+import { channelsCreateV2, channelsListV2 } from './channels';
 import {
   channelLeaveV1,
   channelMessagesV1,
