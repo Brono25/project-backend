@@ -29,6 +29,7 @@ if (fs.existsSync(DATA_PATH)) {
 function getData(): DataStore {
   const dbstr = fs.readFileSync(DATA_PATH);
   data = JSON.parse(String(dbstr));
+
   return data;
 }
 
