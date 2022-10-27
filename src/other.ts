@@ -109,6 +109,18 @@ export function isUIdOwnerOfChannel(uId: number, channelId: number) {
   return false;
 }
 
+/**
+ * @param {number} - mId
+ * @returns {boolean} - does exist true/false
+ */
+export function isValidMessageId(mId: number) {
+  const dataStore: DataStore = getData();
+  if (dataStore.messageIds.find(a => a.messageId === mId)) {
+    return true;
+  }
+  return false;
+}
+
 // ////////////////////////////////////////////////////// //
 //                        IS MEMBER                       //
 // ////////////////////////////////////////////////////// //

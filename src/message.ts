@@ -25,6 +25,7 @@ import {
   doesTokenHaveChanOwnerPermissions,
   doesTokenHaveDmOwnerPermissions,
   getDmStore,
+  isValidMessageId,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -212,5 +213,49 @@ export function messageEditV1(token: string, messageId: number, message: string)
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
   }
+  const MAX_MSG_LEN = 1000;
+  if (message.length > MAX_MSG_LEN) {
+    return { error: 'Invalid message' };
+  }
+  if (!isValidMessageId(messageId)) {
+    return { error: 'Invalid message ID' };
+  }
+  const messageLoc: MessageTracking = getMessageLocation(messageId);
+  const channelId: number = messageLoc.channelId;
+  const dmId: number = messageLoc.dmId;
+  if (channelId !== null) {
+    if (!isTokenMemberOfChannel(token, channelId)) {
+      return { error: 'Not a channel memeber' };
+    }
+    if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+      return { error: 'Dont have channel owner permissions' };
+    }
+    const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+    let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+    const messageStore: Message = channelStore.messages[index];
+    messageStore.message = message;
+    const data: DataStore = getData();
+    index = data.channels.findIndex(a => a.channelId === channelId);
+    data.channels[index] = channelStore;
+    setData(data);
+  }
+
+  if (messageLoc.dmId !== null) {
+    if (!isTokenMemberOfDm(token, messageLoc.dmId)) {
+      return { error: 'Not a dm memeber' };
+    }
+    if (!doesTokenHaveDmOwnerPermissions(token, messageLoc.dmId)) {
+      return { error: 'Dont have dm owner permissions' };
+    }
+    const dmStore: DmStore = getDmStore(dmId);
+    let index: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+    const messageStore: Message = dmStore.messages[index];
+    messageStore.message = message;
+    const data: DataStore = getData();
+    index = data.dms.findIndex(a => a.dmId === dmId);
+    data.dms[index] = dmStore;
+    setData(data);
+  }
+
   return {};
 }

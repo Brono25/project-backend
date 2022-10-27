@@ -8,9 +8,10 @@ let token1 : string;
 let tmp: any;
 let mId0: number;
 let mId1: number;
-let mId2: number;
 let invalidMId: number;
 let channelId0: number;
+let uId0: number;
+let uId1: number;
 beforeEach(() => {
   h.deleteRequest(h.CLEAR_URL, {});
   // tokens 0,1 and 2
@@ -21,6 +22,7 @@ beforeEach(() => {
     nameLast: h.lastName0,
   });
   token0 = tmp.token;
+  uId0 = tmp.authUserId;
 
   tmp = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
@@ -28,8 +30,8 @@ beforeEach(() => {
     nameFirst: h.firstName1,
     nameLast: h.lastName1,
   });
-  const uId1 = tmp.authUserId;
   token1 = tmp.token;
+  uId1 = tmp.authUserId;
 
   // Channels
   tmp = h.postRequest(h.CHAN_CREATE_URL, {
@@ -77,7 +79,7 @@ describe('Error Handling', () => {
   });
   test('Message too long', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: h.invalidToken,
+      token: token0,
       messageId: mId0,
       message: h.invalidLongMessage,
     });
@@ -97,15 +99,15 @@ describe('Error Handling', () => {
       messageId: mId0,
       message: h.message0,
     });
-    expect(data).toStrictEqual({ error: 'Invalid message ID' });
+    expect(data).toStrictEqual({ error: 'Not a channel memeber' });
   });
   test('User is not a member of DM which has the message', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
       token: token0,
-      messageId: mId0,
+      messageId: mId1,
       message: h.message0,
     });
-    expect(data).toStrictEqual({ error: 'Invalid message ID' });
+    expect(data).toStrictEqual({ error: 'Not a dm memeber' });
   });
   test('Is channel member but doesnt have owner permissions', () => {
     h.postRequest(h.CHAN_JOIN_URL, {
@@ -117,6 +119,112 @@ describe('Error Handling', () => {
       messageId: mId0,
       message: 'edit',
     });
-    expect(data).toStrictEqual({ error: 'Invalid Permissions' });
+    expect(data).toStrictEqual({ error: 'Dont have channel owner permissions' });
+  });
+  test('Is DM member but doesnt have owner permissions', () => {
+    tmp = h.postRequest(h.DM_CREATE_URL, {
+      token: token1,
+      uIds: [uId0]
+    });
+    tmp = h.postRequest(h.MSG_SEND_DM_URL, {
+      token: token1,
+      dmId: tmp.dmId,
+      message: 'Another DM'
+    });
+    const mId = tmp.messageId;
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token0,
+      messageId: mId,
+      message: 'edit',
+    });
+    expect(data).toStrictEqual({ error: 'Dont have dm owner permissions' });
+  });
+});
+
+// ------------------Function Testing------------------//
+
+describe('Function Testing', () => {
+  test('Edit own channel message', () => {
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token0,
+      messageId: mId0,
+      message: 'Edited message Channel',
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Edit own DM message', () => {
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token1,
+      messageId: mId1,
+      message: 'Edited message DM',
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Owner edits members DM message', () => {
+    tmp = h.postRequest(h.DM_CREATE_URL, {
+      token: token1,
+      uIds: [uId0]
+    });
+    tmp = h.postRequest(h.MSG_SEND_DM_URL, {
+      token: token0,
+      dmId: tmp.dmId,
+      message: 'Another DM'
+    });
+    const mId = tmp.messageId;
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token1,
+      messageId: mId,
+      message: 'Edited by owner message DM',
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Owner edits members channel message', () => {
+    tmp = h.postRequest(h.CHAN_JOIN_URL, {
+      token: token1,
+      channelId: channelId0,
+    });
+
+    tmp = h.postRequest(h.MSG_SEND_URL, {
+      token: token1,
+      channelId: channelId0,
+      message: 'Member just joined'
+    });
+    const mId = tmp.messageId;
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token0,
+      messageId: mId,
+      message: 'Edited by owner message channel',
+    });
+    expect(data).toStrictEqual({});
+  });
+  test('Gloabal Owner (not owner member) edits members channel message', () => {
+    tmp = h.postRequest(h.CHAN_JOIN_URL, {
+      token: token1,
+      channelId: channelId0,
+    });
+
+    tmp = h.postRequest(h.MSG_SEND_URL, {
+      token: token1,
+      channelId: channelId0,
+      message: 'Member just joined'
+    });
+    const mId = tmp.messageId;
+    h.postRequest(h.CHAN_ADD_OWNER_URL, {
+      token: token0,
+      channelId: channelId0,
+      uId: uId1,
+    });
+    h.postRequest(h.CHAN_RMV_OWNER_URL, {
+      token: token0,
+      channelId: channelId0,
+      uId: uId0,
+    });
+    
+    const data = h.putRequest(h.MSG_EDIT_URL, {
+      token: token0,
+      messageId: mId,
+      message: 'Edited by global owner message channel',
+    });
+    expect(data).toStrictEqual({});
   });
 });
