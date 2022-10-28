@@ -18,7 +18,6 @@ import {
   Channel,
   UserId,
   ChanCreateReturn,
-  ChanListReturn,
   Error,
 } from './data.types';
 
@@ -162,10 +161,24 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
  * @returns {Array} - list of channels
  */
 
- export function channelsListV2(token: string): ChanListReturn {
+ export function channelsListV2(token: string): ChannelsListReturn {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
+  const data: DataStore = getData();
+  const usersChannels: Channel[] = [];
+  const uId: number = getUIdFromToken(token);
+
+  for (const channel of data.channels) {
+    if (isAuthUserMember(uId, channel.channelId)) {
+      usersChannels.push({ name: channel.name, channelId: channel.channelId });
+    } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
+      usersChannels.push({ name: channel.name, channelId: channel.channelId });
+    }
+  }
+  return { channels: usersChannels };
+
+  /*
   const data: DataStore = getData();
   let channels: any = [];
   let channelsList: any = [];
@@ -181,6 +194,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
     }
   }
   return [channels = channelsList];
+  */
 }
 
 // ------------------Channels Helper functions------------------
