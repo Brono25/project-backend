@@ -167,7 +167,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
     return { error: 'Invalid Token' };
   }
   const data: DataStore = getData();
-  let channels: any = [];
+  let channels: ChanListReturn = [];
   let userChannels: Channel[] = [];
   const uId: number = getUIdFromToken(token);
   for (const channel of data.channels) {
