@@ -405,20 +405,21 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
 function getChannelOwners (channelId: number): User[] {
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
 
-  // commenting out for now to pass linter checks
-  // for (const owner of channel.ownerMembers) {
+  const owners: User[] = [];
 
-  const uId: number = channelStore.ownerMembers[0].uId;
-  const userStore: UserStore = getUserStoreFromId(uId);
-  const owner: User = {
-    uId: userStore.uId,
-    email: userStore.email,
-    nameFirst: userStore.nameFirst,
-    nameLast: userStore.nameLast,
-    handleStr: userStore.handleStr
-  };
-  return [owner];
-  // }
+  for (const ownerId of channelStore.ownerMembers) {
+    const uId: number = ownerId.uId;
+    const userStore: UserStore = getUserStoreFromId(uId);
+    const owner: User = {
+      uId: userStore.uId,
+      email: userStore.email,
+      nameFirst: userStore.nameFirst,
+      nameLast: userStore.nameLast,
+      handleStr: userStore.handleStr
+    };
+    owners.push(owner);
+  }
+  return owners;
 }
 
 /**
