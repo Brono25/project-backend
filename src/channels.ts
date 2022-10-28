@@ -168,18 +168,19 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
   }
   const data: DataStore = getData();
   let channels: any = [];
+  let channelsList: any = [];
   let userChannels: Channel = {channelId: null, name: null};
   const uId: number = getUIdFromToken(token);
   for (const channel of data.channels) {
     if (isAuthUserMember(uId, channel.channelId)) {
       userChannels = { name: channel.name, channelId: channel.channelId };
-      channels.push(userChannels);
+      channelsList.push(userChannels);
     } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
       userChannels = { name: channel.name, channelId: channel.channelId };
-      channels.push(userChannels);
+      channelsList.push(userChannels);
     }
   }
-  return channels;
+  return [channels = channelsList];
 }
 
 // ------------------Channels Helper functions------------------
