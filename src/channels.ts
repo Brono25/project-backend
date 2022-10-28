@@ -161,7 +161,7 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
  * @returns {Array} - list of channels
  */
 
- export function channelsListV2(token: string): ChannelsListReturn {
+export function channelsListV2(token: string): ChannelsListReturn {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }

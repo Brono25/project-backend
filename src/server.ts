@@ -3,16 +3,20 @@ import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
+import { debug } from './debug';
+import { clearV1 } from './other';
 import {
   authLoginV1,
   authRegisterV1,
   AuthLogoutV1
 } from './auth';
+
 import {
   channelsCreateV2,
   channelsListV2,
   channelsListAllV2,
 } from './channels';
+
 import {
   channelLeaveV1,
   channelMessagesV1,
@@ -20,8 +24,7 @@ import {
   channelAddOwnerV1,
   channelDetailsV2
 } from './channel';
-import { debug } from './debug';
-import { clearV1 } from './other';
+
 import {
   userProfileSetNameV1,
   userProfileV2,
@@ -29,10 +32,12 @@ import {
   userProfileSetEmailV1,
   userProfileSetHandleV1,
 } from './users';
+
 import {
   channelJoinV2,
   channelRemoveOwnerV1,
 } from './channel';
+
 import {
   messageSendV1,
   messageSendDmV1,

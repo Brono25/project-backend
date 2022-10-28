@@ -1,4 +1,5 @@
 import * as h from './test.helper';
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 // SETUP
@@ -149,28 +150,43 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 describe('Function Testing', () => {
   test('Make a global member an owner', () => {
-    const data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    let data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
       token: token2,
       channelId: channelId2,
       uId: uId0,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token2,
+      channelId: channelId2,
+    });
+    expect(data.ownerMembers.some((a: any) => <number>a.uId === <number>uId0)).toStrictEqual(true);
   });
   test('Global owner channel member make selves owner', () => {
-    const data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    let data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
       token: token0,
       channelId: channelId2,
       uId: uId0,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channelId2,
+    });
+    expect(data.ownerMembers.some((a: any) => a.uId === uId0)).toStrictEqual(true);
   });
   test('Global owner channel member make member owner', () => {
-    const data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    let data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
       token: token0,
       channelId: channelId0,
       uId: uId2,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+    expect(data.ownerMembers.some((a: any) => a.uId === uId2)).toStrictEqual(true);
   });
   test('Global owner channel owner make member owner', () => {
     const channel: any = h.postRequest(h.CHAN_CREATE_URL, {
@@ -183,11 +199,16 @@ describe('Function Testing', () => {
       channelId: channel.channelId,
     });
 
-    const data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
+    let data: any = h.postRequest(h.CHAN_ADD_OWNER_URL, {
       token: token0,
       channelId: channel.channelId,
       uId: uId1,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channel.channelId,
+    });
+    expect(data.ownerMembers.some((a: any) => a.uId === uId1)).toStrictEqual(true);
   });
 });

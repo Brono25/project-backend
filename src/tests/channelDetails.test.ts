@@ -2,13 +2,13 @@
 import { ChannelDetails } from '../data.types';
 import * as h from './test.helper';
 
+h.deleteRequest(h.CLEAR_URL, {});
+
 let token0: string;
 let token1: string;
 let token2: string;
 let uId0: number;
 let uId1: number;
-
-h.deleteRequest(h.CLEAR_URL, {});
 
 // SETUP
 let channelId0: number;

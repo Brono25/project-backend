@@ -9,16 +9,19 @@ import {
   UserStore,
   userProfSetHandleReturn,
 } from './data.types';
+
 import {
   getUIdFromToken,
   getUserStoreFromId,
   isValidToken,
   isValidAuthUserId
 } from './other';
+
 import {
   getData,
   setData
 } from './dataStore';
+
 import {
   isHandleStrUnique,
 } from './auth';

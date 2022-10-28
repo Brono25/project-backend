@@ -63,21 +63,21 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid dmId', () => {
-    const data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS_URL, {
       token: authUserToken0,
       dmId: 0,
     });
     expect(data).toStrictEqual({ error: 'Invalid dmId' });
   });
   test('Token owner is not a member of the dm', () => {
-    const data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS_URL, {
       token: authUserToken1,
       dmId: dmId2,
     });
     expect(data).toStrictEqual({ error: 'Token owner is not a member of the dm' });
   });
   test('Invalid Token', () => {
-    const data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS_URL, {
       token: h.invalidToken,
       dmId: dmId2,
     });
@@ -89,7 +89,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Details of dm1', () => {
-    const data = h.getRequest(h.DM_DETAILS__URL, {
+    const data = h.getRequest(h.DM_DETAILS_URL, {
       token: authUserToken0,
       dmId: dmId1,
     });

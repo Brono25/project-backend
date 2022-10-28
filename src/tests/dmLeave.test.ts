@@ -1,3 +1,4 @@
+
 import * as h from './test.helper';
 
 h.deleteRequest(h.CLEAR_URL, {});
@@ -6,6 +7,7 @@ h.deleteRequest(h.CLEAR_URL, {});
 let authUser0: any;
 let authUser1: any;
 let authUser2: any;
+let authUserId0: number;
 let authUserId1: number;
 let authUserId2: number;
 let authUserToken0: string;
@@ -22,6 +24,7 @@ beforeEach(() => {
     nameLast: h.lastName0,
   });
   authUserToken0 = authUser0.token;
+  authUserId0 = parseInt(authUser0.authUserId);
   authUser1 = h.postRequest(h.REGISTER_URL, {
     email: h.email1,
     password: h.password1,
@@ -87,10 +90,15 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('the user is removed as a member of this DM.', () => {
-    const data = h.postRequest(h.DM_LEAVE_URL, {
+    let data: any = h.postRequest(h.DM_LEAVE_URL, {
       token: authUserToken0,
       dmId: dmId1,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.DM_DETAILS_URL, {
+      token: authUserToken1,
+      dmId: dmId1,
+    });
+    expect(data.members.some((a: any) => a.uId === authUserId0)).toStrictEqual(false);
   });
 });
