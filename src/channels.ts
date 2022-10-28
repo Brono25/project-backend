@@ -9,6 +9,7 @@ import {
   isAuthUserMember,
   getUIdFromToken,
   isValidToken,
+  isUIdOwnerOfChannel,
 } from './other';
 import {
   ChannelStore,
@@ -148,6 +149,52 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
     }
   }
   return { channels: usersChannels };
+}
+
+// ////////////////////////////////////////////////////// //
+//                     channelsListV2                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * Returns a list of all channels a user with an active token is a member of.
+ *
+ * @param {string} - token
+ * @returns {Array} - list of channels
+ */
+
+ export function channelsListV2(token: string): ChannelsListReturn {
+  if (!isValidToken(token)) {
+    return { error: 'Invalid Token' };
+  }
+  const data: DataStore = getData();
+  const usersChannels: Channel[] = [];
+  const uId: number = getUIdFromToken(token);
+
+  for (const channel of data.channels) {
+    if (isAuthUserMember(uId, channel.channelId)) {
+      usersChannels.push({ name: channel.name, channelId: channel.channelId });
+    } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
+      usersChannels.push({ name: channel.name, channelId: channel.channelId });
+    }
+  }
+  return { channels: usersChannels };
+
+  /*
+  const data: DataStore = getData();
+  let channels: any = [];
+  let channelsList: any = [];
+  let userChannels: Channel = {channelId: null, name: null};
+  const uId: number = getUIdFromToken(token);
+  for (const channel of data.channels) {
+    if (isAuthUserMember(uId, channel.channelId)) {
+      userChannels = { name: channel.name, channelId: channel.channelId };
+      channelsList.push(userChannels);
+    } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
+      userChannels = { name: channel.name, channelId: channel.channelId };
+      channelsList.push(userChannels);
+    }
+  }
+  return [channels = channelsList];
+  */
 }
 
 // ------------------Channels Helper functions------------------
