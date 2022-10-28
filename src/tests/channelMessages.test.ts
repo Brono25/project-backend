@@ -3,6 +3,7 @@ import * as h from './test.helper';
 import {
   PageMessages,
 } from '../data.types';
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 const MSG = 'This is message';

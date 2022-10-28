@@ -1,4 +1,5 @@
 import * as h from './test.helper';
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
@@ -154,12 +155,17 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 describe('Function Testing', () => {
   test('Remove Channel Owner', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
+    let data: any = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: tokenGlobalOwner,
       channelId: channelId0,
       uId: uId1,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: tokenGlobalOwner,
+      channelId: channelId0,
+    });
+    expect(data.ownerMembers.some((a: any) => a.uId === uId1)).toStrictEqual(false);
   });
   test('Remove Channel Owner as global owner channel member', () => {
     h.postRequest(h.CHAN_RMV_OWNER_URL, {
@@ -172,11 +178,17 @@ describe('Function Testing', () => {
       channelId: channelId0,
       uId: uId2,
     });
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
+    let data: any = h.postRequest(h.CHAN_RMV_OWNER_URL, {
       token: tokenGlobalOwner,
       channelId: channelId0,
       uId: uId1,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token1,
+      channelId: channelId0,
+    });
+    expect(data.ownerMembers.some((a: any) => a.uId === uIdGlobalOwner)).toStrictEqual(false);
+    expect(data.allMembers.some((a: any) => a.uId === uIdGlobalOwner)).toStrictEqual(true);
   });
 });

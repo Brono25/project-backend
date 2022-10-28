@@ -11,6 +11,7 @@ import {
   MessageTracking,
   DmStore
 } from './data.types';
+
 import {
   isValidChannelId,
   isValidToken,

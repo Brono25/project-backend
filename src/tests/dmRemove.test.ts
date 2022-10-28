@@ -105,7 +105,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Remove Dm', () => {
-    const data = h.deleteRequest(h.DM_RMV_URL, {
+    const data: any = h.deleteRequest(h.DM_RMV_URL, {
       token: token1,
       dmId: dmId1,
     });

@@ -1,11 +1,6 @@
 
 import request from 'sync-request';
 import config from '../config.json';
-import {
-  AuthUserId,
-  ChannelId,
-  Error,
-} from '../data.types';
 
 const OK = 200;
 const port = config.port;
@@ -31,7 +26,7 @@ export const MSG_RMV_URL = `${url}:${port}/message/remove/v1`;
 export const DM_CREATE_URL = `${url}:${port}/dm/create/v1`;
 export const DM_LIST_URL = `${url}:${port}/dm/list/v1`;
 export const DM_RMV_URL = `${url}:${port}/dm/remove/v1`;
-export const DM_DETAILS__URL = `${url}:${port}/dm/details/v1`;
+export const DM_DETAILS_URL = `${url}:${port}/dm/details/v1`;
 export const DM_LEAVE_URL = `${url}:${port}/dm/leave/v1`;
 export const DM_MSG_URL = `${url}:${port}/dm/messages/v1`;
 export const MSG_SEND_DM_URL = `${url}:${port}/message/senddm/v1`;
@@ -86,20 +81,6 @@ export const invalidShortMessage = '';
 export const invalidLongMessage = 'x'.repeat(1001);
 
 export const invalidToken = 'not a valid token (probably)';
-
-export function authRegisterReturnGaurd(authUserId: AuthUserId | Error): number {
-  if ('authUserId' in authUserId) {
-    return authUserId.authUserId;
-  }
-  return null;
-}
-
-export function channelsCreateReturnGaurd(channelId: ChannelId | Error): number {
-  if ('channelId' in channelId) {
-    return channelId.channelId;
-  }
-  return null;
-}
 
 export const postRequest = (url: string, data: any): object => {
   const res = request('POST', url, { json: data });

@@ -2,6 +2,7 @@ import { Channel } from '../data.types';
 import * as h from './test.helper';
 
 h.deleteRequest(h.CLEAR_URL, {});
+
 let token0: string;
 let token1: string;
 let token2: string;
@@ -86,7 +87,7 @@ describe('Error Handling', () => {
       token: invalidToken,
     });
     expect(invalidInput).toStrictEqual({ error: expect.any(String) });
-  }); 
+  });
 });
 
 // ------------------Function Testing------------------//

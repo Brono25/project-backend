@@ -1,6 +1,7 @@
 
 import { clearV1 } from '../other';
 import * as h from './test.helper';
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
@@ -106,11 +107,16 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('adds the user to the channel', () => {
-    const data = h.postRequest(h.CHAN_INV_URL, {
+    let data: any = h.postRequest(h.CHAN_INV_URL, {
       token: token0,
       channelId: channelId0,
       uId: uId1,
     });
     expect(data).toStrictEqual({});
+    data = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+    expect(data.allMembers.some((a: any) => a.uId === uId1)).toStrictEqual(true);
   });
 });

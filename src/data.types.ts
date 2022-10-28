@@ -88,8 +88,8 @@ export type ChanListReturn = Channel[] | Error;
 export type userProfSetHandleReturn = object | Error;
 export type dmLeaveReturn = object | Error;
 export type dmListReturn = { dms: Dm[] } | Error;
-
 export type dmRemoveReturn = object | Error;
+
 // ////////////////////////////////////////////////////// //
 //                       Data Storage                     //
 // ////////////////////////////////////////////////////// //

@@ -1,12 +1,18 @@
 
 import validator from 'validator';
-import { setData, getData } from './dataStore';
+
+import {
+  setData,
+  getData
+} from './dataStore';
+
 import {
   generateToken,
   getUIdFromToken,
   getUserStoreFromId,
   isValidToken,
 } from './other';
+
 import {
   DataStore,
   UserStore,

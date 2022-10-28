@@ -1,4 +1,5 @@
 import * as h from './test.helper';
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
@@ -91,20 +92,38 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('channel owner leaves the channel', () => {
+    const a: any = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channelId0
+    });
     const data = h.postRequest(h.CHAN_LEAVE_URL, {
       token: token0,
       channelId: channelId0,
     });
 
     expect(data).toStrictEqual({});
+    const b: any = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token1,
+      channelId: channelId0,
+    });
+    expect(b.ownerMembers.length === a.ownerMembers.length - 1).toStrictEqual(true);
   });
 
   test('channel member leaves the channel', () => {
+    const a: any = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token1,
+      channelId: channelId0
+    });
     const data = h.postRequest(h.CHAN_LEAVE_URL, {
       token: token1,
       channelId: channelId0,
     });
     expect(data).toStrictEqual({});
+    const b: any = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channelId0,
+    });
+    expect(b.allMembers.length === a.allMembers.length - 1).toStrictEqual(true);
   });
 
   test('all members leaves the channel', () => {

@@ -1,6 +1,6 @@
 
-// import {ChannelJoinReturn} from '../data.types';
 import * as h from './test.helper';
+
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
@@ -109,12 +109,20 @@ describe('Function Testing', () => {
   });
 
   test('adds a global owner to the channel', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {
+    const a: any = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token1,
+      channelId: channelIdPriv,
+    });
+
+    const data: any = h.postRequest(h.CHAN_JOIN_URL, {
       token: token0,
       channelId: channelIdPriv,
     });
     expect(data).toStrictEqual({});
+    const b: any = h.getRequest(h.CHAN_DETAIL_URL, {
+      token: token0,
+      channelId: channelIdPriv,
+    });
+    expect(b.allMembers.length === a.allMembers.length + 1).toStrictEqual(true);
   });
-
-  // Todo: test with channel details
 });
