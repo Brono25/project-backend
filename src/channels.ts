@@ -167,17 +167,19 @@ function channelsListV1(authUserId: number): ChannelsListReturn {
     return { error: 'Invalid Token' };
   }
   const data: DataStore = getData();
-  let channels: Channel[] = [];
-  let userChannels: any = [];
+  let channels: any = [];
+  let userChannels: Channel = {channelId: null, name: null};
   const uId: number = getUIdFromToken(token);
   for (const channel of data.channels) {
     if (isAuthUserMember(uId, channel.channelId)) {
-      userChannels.push({ name: channel.name, channelId: channel.channelId });
+      userChannels = { name: channel.name, channelId: channel.channelId };
+      channels.push(userChannels);
     } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
-      userChannels.push({ name: channel.name, channelId: channel.channelId });
+      userChannels = { name: channel.name, channelId: channel.channelId };
+      channels.push(userChannels);
     }
   }
-  return { channels: userChannels };
+  return channels;
 }
 
 // ------------------Channels Helper functions------------------
