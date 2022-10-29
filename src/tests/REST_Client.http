@@ -1,0 +1,166 @@
+
+###
+// Register
+POST http://localhost:3200/auth/register/v2/
+content-type: application/json
+
+{
+    "email": "a@gmail.com",
+    "password": "123456",
+    "nameFirst": "A",
+    "nameLast": "B"
+}
+
+
+###
+// Channel Create
+POST http://localhost:3200/channels/create/v2
+content-type: application/json
+
+{   
+    "token": "0tQ16zSRVb",
+    "name": "Channel 2",
+    "isPublic": "true"
+}
+###
+// Dm Create
+POST http://localhost:3200/dm/create/v1
+content-type: application/json
+
+{   
+    "token": "29pRlDyKOV",
+    "uIds": []
+}
+
+###
+// Dm send message
+POST http://localhost:3200/message/senddm/v1
+content-type: application/json
+
+{   
+    "token": "rgbprd/1Hq",
+    "dmId": 3419783552,
+    "message": "Here is a message"
+}
+
+
+###
+// Login
+POST http://localhost:3200/auth/login/v2/
+content-type: application/json
+
+{
+    "email": "cs@gmail.com",
+    "password": "1233dfs4"
+}
+###
+// Logout
+POST http://localhost:3200/auth/logout/v1/
+content-type: application/json
+
+{   
+    "token": "bJZtmUkjIW"
+}
+###
+// Message send
+POST http://localhost:3200/message/send/v1/
+content-type: application/json
+
+{   
+    "token": "zDvvMIx87E",
+    "channelId": 1,
+    "message": "message 4"
+}
+
+
+###
+// User profile
+GET http://localhost:3200/user/profile/v2
+    ?uId=0
+    &token=DP3CQxjO7r
+    
+###
+// User All
+GET http://localhost:3200/users/all/v1
+    ?token=token1
+    
+###
+// channel list all
+GET http://localhost:3500/channels/listAll/v2
+    ?token=token1
+    
+###
+// dm list
+GET http://localhost:3500/dm/list/v1
+    ?token=EDVKVr0/1/
+    
+
+###
+// Get messages
+GET http://localhost:3200/channel/messages/v2
+    ?token=O28xpMia3D
+    &start=57
+    &channelId=0
+     
+###
+// Get DM messages
+GET http://localhost:3200/dm/messages/v1
+    ?token=token0
+    &start=0
+    &dmId=0
+     
+
+### Setname User
+PUT http://localhost:3200/user/profile/setname/v1
+content-type: application/json
+
+{   
+    "token": "hvdB6R0fpD",
+    "nameFirst": "xx",
+    "nameLast": "yy"
+}
+
+
+###
+// Channel Join
+POST http://localhost:3200/channel/join/v2
+content-type: application/json
+
+{   
+    "token": "5kulR7Mzar",
+    "channelId": 0
+}
+###
+// Remove owner
+POST http://localhost:3500/channel/removeowner/v1
+content-type: application/json
+
+{   
+    "token": "token",
+    "channelId": 0,
+    "uId": 0
+}
+
+###
+// remove message
+DELETE http://localhost:3500/message/remove/v1
+    ?token=ilbXGqIvyf
+    &messageId=2019304712
+
+
+
+
+
+
+
+
+###
+//Clear
+DELETE http://localhost:3500/clear/v1/
+content-type: application/json
+
+
+###
+//debug - print all dataStore
+POST http://localhost:3500/debug/
+content-type: application/json
