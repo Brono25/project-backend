@@ -1,11 +1,8 @@
 {
   "check-coverage": true,
   "exclude": [
-    "src/debug.ts"
+    "src/*.debug.ts"
   ],
   "per-file": true,
-  "branches": 99,
-  "lines": 99,
-  "functions": 99,
   "statements": 99
 }
