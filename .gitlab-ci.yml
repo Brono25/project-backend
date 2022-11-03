@@ -2,13 +2,14 @@ image: comp1531/basic:latest
 
 stages:
   - checks
+  - test
   - coverage
 
 before_script:
   - npm install
 
 tests with coverage:
-  stage: checks
+  stage: test
   script:
     - SERVER_LOG=$(mktemp)
     - npm run ts-node-coverage >& $SERVER_LOG & 
