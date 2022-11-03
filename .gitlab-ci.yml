@@ -3,7 +3,7 @@ image: comp1531/basic:latest
 stages:
   - checks
   - test
-  - coverage
+  - coverage-check
 
 before_script:
   - npm install
@@ -38,6 +38,6 @@ tsc:
     - npm run tsc
 
 coverage:
-  stage: coverage
+  stage: coverage-check
   script:
     - npm run pipeline-coverage-check
