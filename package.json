@@ -7,7 +7,7 @@
         "start": "ts-node -T src/server.ts",
         "ts-node-coverage": "nyc --reporter=text --reporter=json-summary ts-node -T src/server.ts",
         "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1",
-        "pipeline-coverage-check": "perl pipeline-coverage-check.pl"
+        "pipeline-coverage-check": "node pipeline-coverage-check.js"
         
     },
     "dependencies": {
