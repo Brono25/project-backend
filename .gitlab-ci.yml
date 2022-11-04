@@ -1,10 +1,10 @@
 image: comp1531/basic:latest
 
-before_script:
-  - npm install
+ 
 
 linting:
   script:
+    - npm install
     - npm run lint-fix
 tsc:
   needs: linting
@@ -12,7 +12,7 @@ tsc:
     - npm run tsc
 
 
-tests with coverage:
+tests:
   needs: tsc
   script:
     - SERVER_LOG=$(mktemp)
@@ -32,6 +32,6 @@ tests with coverage:
 
 
 coverage:
-  needs: tests with coverage
+  needs: tests
   script:
     - npm run pipeline-coverage-check
