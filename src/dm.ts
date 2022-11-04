@@ -92,8 +92,6 @@ export function dmListV1(token: string): dmListReturn {
   for (const dm of data.dms) {
     if (dm.allMembersId.includes(uId)) {
       dms.push({ dmId: dm.dmId, name: dm.name });
-    } else if (dm.ownerId === uId) {
-      dms.push({ dmId: dm.dmId, name: dm.name });
     }
   }
   return { dms: dms };

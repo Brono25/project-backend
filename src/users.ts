@@ -61,7 +61,6 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
       };
     }
   }
-  return { error: 'User to view is invalid!' };
 }
 
 // ////////////////////////////////////////////////////// //

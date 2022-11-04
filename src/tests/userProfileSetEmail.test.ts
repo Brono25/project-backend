@@ -39,14 +39,14 @@ describe('Error Handling', () => {
       token: token2,
       email: h.invalidEmail,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'Invalid Email' });
   });
   test('Email address already in use', () => {
     const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
       token: token0,
       email: h.email2,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'Email is already taken' });
   });
   test('Attempt to assign uppercase email when lower case email is already taken', () => {
     const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
@@ -59,9 +59,9 @@ describe('Error Handling', () => {
   test('Invalid token', () => {
     const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
       token: h.invalidToken,
-      email: h.email0,
+      email: h.email1,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'token is invalid!' });
   });
 });
 

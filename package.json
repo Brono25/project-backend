@@ -1,12 +1,14 @@
 {
     "scripts": {
-        "test": "jest --testMatch  './**/*test.ts'",
+        "test": "jest --testMatch './**/*test.ts'",
         "tsc": "tsc --noImplicitAny",
         "lint": "eslint './**/*.ts'",
         "lint-fix": "eslint --fix './**/*.ts'",
         "start": "ts-node -T src/server.ts",
-        "ts-node-coverage": "nyc --reporter=text --reporter=lcov ts-node -T src/server.ts",
-        "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1"
+        "ts-node-coverage": "nyc --reporter=text --reporter=json-summary ts-node -T src/server.ts",
+        "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1",
+        "pipeline-coverage-check": "node pipeline-coverage-check.js"
+        
     },
     "dependencies": {
         "cors": "^2.8.5",
@@ -35,6 +37,7 @@
         "eslint": "^8.25.0",
         "eslint-plugin-jest": "^26.1.5",
         "jest": "^28.1.0",
+        "jest-coverage-thresholds-bumper": "^1.1.0",
         "nodemon": "^2.0.20",
         "nyc": "^15.1.0",
         "sync-request": "^6.1.0",

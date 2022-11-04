@@ -5,11 +5,9 @@ import {
 } from './dataStore';
 
 import {
-  isValidAuthUserId,
   isAuthUserMember,
   getUIdFromToken,
   isValidToken,
-  isUIdOwnerOfChannel,
 } from './other';
 import {
   ChannelStore,
@@ -30,37 +28,6 @@ import {
  * @param {number, string, boolean} - user ID, channel name, is public
  * @returns {number} - channel ID
  */
-function channelsCreateV1(authUserId: number,
-  name: string,
-  isPublic: boolean
-): ChannelId | Error {
-  const maxChars = 20;
-  const minChars = 1;
-  if (name.length > maxChars || name.length < minChars) {
-    return { error: 'Channels name must be between 1-20 characters (inclusive)' };
-  }
-  if (!isValidAuthUserId(authUserId)) {
-    return { error: 'Invalid User ID' };
-  }
-
-  const userId: UserId = { uId: authUserId };
-  const channelId: ChannelId = generateChannelId();
-  const channel: ChannelStore = {
-    channelId: channelId.channelId,
-    name: name,
-    isPublic: isPublic,
-    ownerMembers: [userId],
-    allMembers: [userId],
-    messages: [],
-  };
-
-  const data: DataStore = getData();
-  data.channels.push(channel);
-  setData(data);
-
-  return channelId;
-}
-
 export function channelsCreateV2(
   token: string,
   name: string,
@@ -110,7 +77,7 @@ type ChannelsListReturn = {
   }[];
 } | Error;
 
-function channelsListAllV2(token: string): ChannelsListReturn {
+export function channelsListAllV2(token: string): ChannelsListReturn {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
@@ -123,32 +90,6 @@ function channelsListAllV2(token: string): ChannelsListReturn {
     channels.push(<Channel>{ name: channel.name, channelId: channel.channelId });
   }
   return { channels };
-}
-
-// ////////////////////////////////////////////////////// //
-//                     channelsListV1                     //
-// ////////////////////////////////////////////////////// //
-/**
- * Returns a list of all channels a user is a member of
- *
- * @param {string} - user ID
- * @returns {Array} - list of channels
- */
-
-function channelsListV1(authUserId: number): ChannelsListReturn {
-  if (!isValidAuthUserId(authUserId)) {
-    return { error: 'Invalid User ID' };
-  }
-
-  const data: DataStore = getData();
-  const usersChannels: Channel[] = [];
-
-  for (const channel of data.channels) {
-    if (isAuthUserMember(authUserId, channel.channelId)) {
-      usersChannels.push({ name: channel.name, channelId: channel.channelId });
-    }
-  }
-  return { channels: usersChannels };
 }
 
 // ////////////////////////////////////////////////////// //
@@ -172,29 +113,9 @@ export function channelsListV2(token: string): ChannelsListReturn {
   for (const channel of data.channels) {
     if (isAuthUserMember(uId, channel.channelId)) {
       usersChannels.push({ name: channel.name, channelId: channel.channelId });
-    } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
-      usersChannels.push({ name: channel.name, channelId: channel.channelId });
     }
   }
   return { channels: usersChannels };
-
-  /*
-  const data: DataStore = getData();
-  let channels: any = [];
-  let channelsList: any = [];
-  let userChannels: Channel = {channelId: null, name: null};
-  const uId: number = getUIdFromToken(token);
-  for (const channel of data.channels) {
-    if (isAuthUserMember(uId, channel.channelId)) {
-      userChannels = { name: channel.name, channelId: channel.channelId };
-      channelsList.push(userChannels);
-    } else if (isUIdOwnerOfChannel(uId, channel.channelId)) {
-      userChannels = { name: channel.name, channelId: channel.channelId };
-      channelsList.push(userChannels);
-    }
-  }
-  return [channels = channelsList];
-  */
 }
 
 // ------------------Channels Helper functions------------------
@@ -211,9 +132,3 @@ function generateChannelId(): ChannelId {
   const id: number = data.channels.length;
   return { channelId: id };
 }
-
-export {
-  channelsListAllV2,
-  channelsCreateV1,
-  channelsListV1,
-};

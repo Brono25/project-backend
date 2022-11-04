@@ -44,9 +44,6 @@ export function clearV1(): any {
 export function isValidAuthUserId(authUserId: number): boolean {
   const data: DataStore = getData();
 
-  if (!data.users.length) {
-    return false;
-  }
   for (const user of data.users) {
     if (user.uId === authUserId) {
       return true;
@@ -62,9 +59,6 @@ export function isValidAuthUserId(authUserId: number): boolean {
 export function isValidChannelId(channelId: number): boolean {
   const data: DataStore = getData();
 
-  if (!data.channels.length) {
-    return false;
-  }
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       return true;
@@ -324,8 +318,8 @@ export function generateDmName(uIds: number[]) {
 export function generateDmId() {
   const data: DataStore = getData();
   const dmIdStores: DmStore[] = data.dms;
-  let newDmId = Math.floor(Math.random() * Math.pow(2, 32));
-  while (dmIdStores.find(a => a.dmId === newDmId)) {
+  let newDmId = -1;
+  while (dmIdStores.find(a => a.dmId === newDmId) || newDmId < 0) {
     newDmId = Math.floor(Math.random() * Math.pow(2, 32));
   }
   return newDmId;
@@ -338,8 +332,8 @@ export function generateDmId() {
 export function generateMessageId() {
   const data: DataStore = getData();
   const messageIds: MessageId[] = data.messageIds;
-  let newMessageId = Math.floor(Math.random() * Math.pow(2, 32));
-  while (messageIds.find(a => a.messageId === newMessageId)) {
+  let newMessageId = -1;
+  while (messageIds.find(a => a.messageId === newMessageId) || newMessageId < 0) {
     newMessageId = Math.floor(Math.random() * Math.pow(2, 32));
   }
   return newMessageId;

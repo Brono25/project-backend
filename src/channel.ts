@@ -37,43 +37,8 @@ import {
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
-//                      channelDetailsV1                  //
+//                      channelDetails                    //
 // ////////////////////////////////////////////////////// //
-
-/**
- *Given a channel with ID channelId that the authorised user is
- *a member of, provides basic details about the channel.
- * @param {number, number} - uId
- * @returns {ChannelDetails} - channel name
- */
-
-function channelDetailsV1(authUserId: number, channelId: number) : ChannelDetails | Error {
-  if (!isValidAuthUserId(authUserId)) {
-    return { error: 'Invalid User Id' };
-  }
-
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel Id' };
-  }
-
-  if (!isAuthUserMember(authUserId, channelId)) {
-    return { error: 'User is not a member of this channel' };
-  }
-
-  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
-
-  const ownerMembersDetailsList: User[] = getChannelOwners(channelId);
-  const getChannelMembersList: User[] = getChannelMembers(channelId);
-
-  const channelDetails: ChannelDetails = {
-    name: channelStore.name,
-    isPublic: channelStore.isPublic,
-    ownerMembers: ownerMembersDetailsList,
-    allMembers: getChannelMembersList,
-  };
-
-  return channelDetails;
-}
 
 export function channelDetailsV2(token: string, channelId: number) : ChannelDetails | Error {
   if (!isValidToken(token)) {
@@ -100,37 +65,6 @@ export function channelDetailsV2(token: string, channelId: number) : ChannelDeta
   };
 
   return channelDetails;
-}
-
-// ////////////////////////////////////////////////////// //
-//                      channelJoinV1                     //
-// ////////////////////////////////////////////////////// //
-/**
- * Given a channelId of a channel that the authorised user can
- * join, adds them to that channel.
- * @param {number, number} - user id and channel id
- * @returns {}
- */
-
-function channelJoinV1(authUserId: number, channelId: number) {
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel Id' };
-  } else if (!isValidAuthUserId(authUserId)) {
-    return { error: 'Invalid User Id' };
-  } else if (isAuthUserMember(authUserId, channelId)) {
-    return { error: 'User is already a member of the channel' };
-  } else if (isChannelPrivate(channelId) &&
-            !isAuthUserMember(authUserId, channelId) &&
-            !isGlobalOwner(authUserId)) {
-    return { error: 'Private channel' };
-  }
-
-  const data: DataStore = getData();
-  const index = data.channels.findIndex(a => a.channelId === channelId);
-  data.channels[index].allMembers.push({ uId: authUserId });
-  setData(data);
-
-  return {};
 }
 
 // ////////////////////////////////////////////////////// //
@@ -215,34 +149,7 @@ export function channelLeaveV1(
  * @returns {}
  */
 
-function channelInviteV1(authUserId: number, channelId: number, uId: number) {
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel Id' };
-  } else if (!isValidAuthUserId(authUserId)) {
-    return { error: 'Invalid User Id' };
-  } else if (isAuthUserMember(uId, channelId)) {
-    return { error: 'User is already a member of the channel' };
-  } else if (!isAuthUserMember(authUserId, channelId)) {
-    const authUser = getUserStoreFromId(authUserId);
-    if (authUser.globalPermission !== 'owner') {
-      return { error: 'User is not a member of the channel' };
-    }
-  } else if (!isValidAuthUserId(uId)) {
-    return { error: 'Invalid User Id' };
-  }
-
-  const data: DataStore = getData();
-  // Replace this
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      channel.allMembers.push({ uId: uId });
-    }
-  }
-  setData(data);
-  return {};
-}
-
-function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
+export function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
   if (!isValidToken(token)) {
     return { error: 'Token is invalid!' };
   }
@@ -281,7 +188,7 @@ function channelInviteV2(token: string, channelId: number, uId: number): channel
  * @returns {ChannelMessages | Error} - { messages, start, end }
  */
 
-function channelMessagesV1(
+export function channelMessagesV1(
   token: string,
   channelId: number,
   start: number
@@ -327,7 +234,7 @@ function channelMessagesV1(
  * @param {string, number, number}
  * @returns {}
  */
-function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
+export function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
   if (!isValidToken(token)) {
     return { error: 'Invalid Token' };
   }
@@ -463,12 +370,3 @@ function isChannelPrivate (channelId: number) {
   }
   return true;
 }
-
-export {
-  channelDetailsV1,
-  channelJoinV1,
-  channelInviteV1,
-  channelMessagesV1,
-  channelInviteV2,
-  channelRemoveOwnerV1,
-};

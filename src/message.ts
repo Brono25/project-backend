@@ -149,8 +149,6 @@ export function messageRemoveV1(token: string, messageId: number): object | Erro
     const dmId: number = messageLoc.dmId;
     return removeDmMessage(token, dmId, messageId, messageLoc.uId);
   }
-
-  return { error: 'something went wrong' };
 }
 
 /**
