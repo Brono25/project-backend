@@ -1,19 +1,19 @@
 image: comp1531/basic:latest
 
- 
+before_script:
+  - npm install
 
 linting:
+  stage: checks
   script:
-    - npm install
     - npm run lint-fix
 tsc:
-  needs: ["linting"]
+  stage: checks
   script:
     - npm run tsc
 
-
-tests:
-  needs: ["tsc"]
+tests with coverage:
+  stage: checks
   script:
     - SERVER_LOG=$(mktemp)
     - npm run ts-node-coverage >& $SERVER_LOG & 
@@ -29,9 +29,8 @@ tests:
     expose_as: Coverage Report
     expire_in: 1 week
 
-
-
 coverage:
-  needs: ["tests"]
+  stage: checks
+  needs: ["tests with coverage"]
   script:
     - npm run pipeline-coverage-check
