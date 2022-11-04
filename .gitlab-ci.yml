@@ -25,6 +25,7 @@ tests with coverage:
     - kill -SIGINT %1
     - sleep 2
     - cat $SERVER_LOG
+    - npm run pipeline-coverage-check
   coverage: '/All files\s*\|\s*(\d+(?:\.\d+)?)/'
   artifacts:
     paths:
@@ -32,8 +33,3 @@ tests with coverage:
     expose_as: Coverage Report
     expire_in: 1 week
 
-coverage:
-  stage: checks
-  needs: ["tests with coverage"]
-  script:
-    - npm run pipeline-coverage-check
