@@ -2,14 +2,13 @@ image: comp1531/basic:latest
 
 stages:
   - checks
-  - test
-  - coverage-check
+
 
 before_script:
   - npm install
 
 tests with coverage:
-  stage: test
+  stage: check
   script:
     - SERVER_LOG=$(mktemp)
     - npm run ts-node-coverage >& $SERVER_LOG & 
@@ -24,7 +23,8 @@ tests with coverage:
       - coverage/
     expose_as: Coverage Report
     expire_in: 1 week
-
+  coverage-Check:
+    - npm run pipeline-coverage-check
 
 linting:
   stage: checks
@@ -37,7 +37,3 @@ tsc:
   script:
     - npm run tsc
 
-coverage:
-  stage: coverage-check
-  script:
-    - npm run pipeline-coverage-check
