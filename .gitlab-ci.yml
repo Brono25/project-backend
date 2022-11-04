@@ -23,7 +23,7 @@ tests with coverage:
       - coverage/
     expose_as: Coverage Report
     expire_in: 1 week
-  coverage-Check:
+  after_script:
     - npm run pipeline-coverage-check
 
 linting:
