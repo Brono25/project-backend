@@ -12,6 +12,12 @@ const OTHER_THRESHOLD = 99;
 const SERVER_THRESHOLD = 98.26;
 const USERS_THRESHOLD = 99;
 
+if (!fs.existsSync('./coverage/coverage-summary.json')) {
+  console.log('error: summary not found');
+  process.exit(1);
+}
+
+
 const dbstr = fs.readFileSync('./coverage/coverage-summary.json');
 const data = JSON.parse(String(dbstr));
 
