@@ -7,13 +7,13 @@ linting:
     - npm install
     - npm run lint-fix
 tsc:
-  needs: linting
+  needs: ["linting"]
   script:
     - npm run tsc
 
 
 tests:
-  needs: tsc
+  needs: ["tsc"]
   script:
     - SERVER_LOG=$(mktemp)
     - npm run ts-node-coverage >& $SERVER_LOG & 
@@ -32,6 +32,6 @@ tests:
 
 
 coverage:
-  needs: tests
+  needs: ["tests"]
   script:
     - npm run pipeline-coverage-check
