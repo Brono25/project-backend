@@ -1,20 +1,20 @@
 
 ###
 // Register
-POST http://localhost:3200/auth/register/v2/
+POST http://localhost:3500/auth/register/v2/
 content-type: application/json
 
 {
     "email": "a@gmail.com",
     "password": "123456",
-    "nameFirst": "A",
-    "nameLast": "B"
+    "nameFirst": "First Name 0",
+    "nameLast": "Last Name 0"
 }
 
 
 ###
 // Channel Create
-POST http://localhost:3200/channels/create/v2
+POST http://localhost:3500/channels/create/v2
 content-type: application/json
 
 {   
@@ -24,17 +24,17 @@ content-type: application/json
 }
 ###
 // Dm Create
-POST http://localhost:3200/dm/create/v1
+POST http://localhost:3500/dm/create/v1
 content-type: application/json
 
 {   
-    "token": "29pRlDyKOV",
+    "token": "CvUmyJG4F2",
     "uIds": []
 }
 
 ###
 // Dm send message
-POST http://localhost:3200/message/senddm/v1
+POST http://localhost:3500/message/senddm/v1
 content-type: application/json
 
 {   
@@ -46,7 +46,7 @@ content-type: application/json
 
 ###
 // Login
-POST http://localhost:3200/auth/login/v2/
+POST http://localhost:3500/auth/login/v2/
 content-type: application/json
 
 {
@@ -55,7 +55,7 @@ content-type: application/json
 }
 ###
 // Logout
-POST http://localhost:3200/auth/logout/v1/
+POST http://localhost:3500/auth/logout/v1/
 content-type: application/json
 
 {   
@@ -63,7 +63,7 @@ content-type: application/json
 }
 ###
 // Message send
-POST http://localhost:3200/message/send/v1/
+POST http://localhost:3500/message/send/v1/
 content-type: application/json
 
 {   
@@ -75,13 +75,13 @@ content-type: application/json
 
 ###
 // User profile
-GET http://localhost:3200/user/profile/v2
+GET http://localhost:3500/user/profile/v2
     ?uId=0
     &token=DP3CQxjO7r
     
 ###
 // User All
-GET http://localhost:3200/users/all/v1
+GET http://localhost:3500/users/all/v1
     ?token=token1
     
 ###
@@ -97,21 +97,21 @@ GET http://localhost:3500/dm/list/v1
 
 ###
 // Get messages
-GET http://localhost:3200/channel/messages/v2
+GET http://localhost:3500/channel/messages/v2
     ?token=O28xpMia3D
     &start=57
     &channelId=0
      
 ###
 // Get DM messages
-GET http://localhost:3200/dm/messages/v1
+GET http://localhost:3500/dm/messages/v1
     ?token=token0
     &start=0
     &dmId=0
      
 
 ### Setname User
-PUT http://localhost:3200/user/profile/setname/v1
+PUT http://localhost:3500/user/profile/setname/v1
 content-type: application/json
 
 {   
@@ -123,7 +123,7 @@ content-type: application/json
 
 ###
 // Channel Join
-POST http://localhost:3200/channel/join/v2
+POST http://localhost:3500/channel/join/v2
 content-type: application/json
 
 {   

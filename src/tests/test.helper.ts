@@ -39,19 +39,19 @@ type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
 export type Args = AuthRegisterArgs | ChannelsCreateArgs;
 
-export const firstName0 = 'First Name 0';
-export const lastName0 = 'Last Name 0';
+export const firstName0 = 'My First Name 0';
+export const lastName0 = 'My Last Name 0';
 export const email0 = 'email_0_@gmail.com';
 export const password0 = 'password_0';
 export const email0AltCase = 'EMAIL_0_@GMAIL.COM';
 
-export const firstName1 = 'First Name 1';
-export const lastName1 = 'Last Name 1';
+export const firstName1 = 'My First Name 1';
+export const lastName1 = 'My Last Name 1';
 export const email1 = 'email_1_@gmail.com';
 export const password1 = 'password_1';
 
-export const firstName2 = 'First Name 2';
-export const lastName2 = 'Last Name 2';
+export const firstName2 = 'My First Name 2';
+export const lastName2 = 'My Last Name 2';
 export const email2 = 'email_2_@gmail.com';
 export const password2 = 'password_2';
 

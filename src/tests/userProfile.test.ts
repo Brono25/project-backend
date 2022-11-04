@@ -28,17 +28,17 @@ afterEach(() => {
 describe('Error Handling', () => {
   test('Incorrect uId', () => {
     const data = h.getRequest(h.USER_PROF_URL, {
-      token: authUserId0.token,
-      uId: Math.abs(authUserId0.uId) + 10,
+      token: authUserToken,
+      uId: Math.abs(authUserId0) + 10,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'authUserId is invalid!' });
   });
   test('Invalid token', () => {
     const data = h.getRequest(h.USER_PROF_URL, {
       token: 'invalidToken',
-      uId: authUserId0.uId,
+      uId: authUserId0,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'token is invalid!' });
   });
 });
 
