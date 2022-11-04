@@ -16,45 +16,48 @@ if (!fs.existsSync('./coverage/coverage-summary.json')) {
   console.log('error: summary not found');
   process.exit(1);
 }
-
-
 const dbstr = fs.readFileSync('./coverage/coverage-summary.json');
 const data = JSON.parse(String(dbstr));
+let keys = Object.keys(data);
 
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/auth.ts'].statements.pct < AUTH_THRESHOLD) {
-  console.log(`error: auth.ts coverage is less then ${AUTH_THRESHOLD}%`);
+keys = keys.filter(a => a !== 'total');
+keys = keys.filter(a => a.match(/echo/g) === null);
+keys.sort();
+
+if (data[keys[1]].statements.pct < AUTH_THRESHOLD) {
+  console.log(`error: ${keys[0]} coverage is less then ${AUTH_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/channel.ts'].statements.pct < CHANNEL_THRESHOLD) {
-  console.log(`error: channel.ts coverage is less then ${CHANNEL_THRESHOLD}%`);
+if (data[keys[2]].statements.pct < CHANNEL_THRESHOLD) {
+  console.log(`error: ${keys[1]} coverage is less then ${CHANNEL_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/channels.ts'].statements.pct < CHANNELS_THRESHOLD) {
-  console.log(`error: channels.ts coverage is less then ${CHANNELS_THRESHOLD}%`);
+if (data[keys[3]].statements.pct < CHANNELS_THRESHOLD) {
+  console.log(`error: ${keys[2]} coverage is less then ${CHANNELS_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/dataStore.ts'].statements.pct < DATA_THRESHOLD) {
-  console.log(`error: dataStore.ts coverage is less then ${DATA_THRESHOLD}%`);
+if (data[keys[4]].statements.pct < DATA_THRESHOLD) {
+  console.log(`error: ${keys[3]} coverage is less then ${DATA_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/dm.ts'].statements.pct < DM_THRESHOLD) {
-  console.log(`error: dm.ts coverage is less then ${DM_THRESHOLD}%`);
+if (data[keys[5]].statements.pct < DM_THRESHOLD) {
+  console.log(`error: ${keys[4]} coverage is less then ${DM_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/message.ts'].statements.pct < MESSAGE_THRESHOLD) {
-  console.log(`error: message.ts coverage is less then ${MESSAGE_THRESHOLD}%`);
+if (data[keys[6]].statements.pct < MESSAGE_THRESHOLD) {
+  console.log(`error: ${keys[5]} coverage is less then ${MESSAGE_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/other.ts'].statements.pct < OTHER_THRESHOLD) {
-  console.log(`error: other.ts coverage is less then ${OTHER_THRESHOLD}%`);
+if (data[keys[7]].statements.pct < OTHER_THRESHOLD) {
+  console.log(`error: ${keys[6]} coverage is less then ${OTHER_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/server.ts'].statements.pct < SERVER_THRESHOLD) {
-  console.log(`error: server.ts coverage is less then ${SERVER_THRESHOLD}%`);
+if (data[keys[8]].statements.pct < SERVER_THRESHOLD) {
+  console.log(`error: ${keys[7]} coverage is less then ${SERVER_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
-if (data['/Users/brono/Desktop/COMP1531/project-backend/src/users.ts'].statements.pct < USERS_THRESHOLD) {
-  console.log(`error: users.ts coverage is less then ${USERS_THRESHOLD}%`);
+if (data[keys[9]].statements.pct < USERS_THRESHOLD) {
+  console.log(`error: ${keys[8]} coverage is less then ${USERS_THRESHOLD}%`);
   FAIL_FLAG = 1;
 }
 
