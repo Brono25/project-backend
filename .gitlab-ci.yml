@@ -7,7 +7,9 @@ stages:
   - coverage
 
 build:
-  - npm install
+  stage: build
+  script:
+    - npm install
 
 tests with coverage:
   stage: test
