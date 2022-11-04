@@ -1,11 +1,12 @@
 image: comp1531/basic:latest
 
 stages:
+  - build
   - checks
-  - test
-  - coverage-check
+  - testing
+  - coverage
 
-before_script:
+build:
   - npm install
 
 tests with coverage:
@@ -22,7 +23,6 @@ tests with coverage:
   artifacts:
     paths:
       - coverage/
-      - node_modules
     expose_as: Coverage Report
     expire_in: 1 week
 
