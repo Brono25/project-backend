@@ -3,6 +3,9 @@ image: comp1531/basic:latest
 before_script:
   - npm install
 
+stages:
+  - checks
+
 linting:
   stage: checks
   script:
