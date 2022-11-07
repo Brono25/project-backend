@@ -7,13 +7,14 @@
         "start": "ts-node -T src/server.ts",
         "ts-node-coverage": "nyc --reporter=text --reporter=json-summary ts-node -T src/server.ts",
         "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1",
-        "pipeline-coverage-check": "node pipeline-coverage-check.js"
-        
+        "pipeline-coverage-check": "node ./utilities/pipeline-coverage-check.js",
+        "test-suite": "./utilities/test-suite.sh"
     },
     "dependencies": {
         "cors": "^2.8.5",
         "crypto-md5": "^1.0.0",
         "express": "^4.18.0",
+        "find-pid-from-port": "^0.1.0",
         "fs": "^0.0.1-security",
         "http-errors": "^2.0.0",
         "middleware-http-errors": "^0.1.1",
