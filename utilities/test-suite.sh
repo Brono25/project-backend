@@ -14,7 +14,7 @@ then
     PID=$(lsof -nP -i4TCP:$PORT | sed -E 's/[ ]+/ /g'|cut -d' '  -f2|tail -1)
 elif [[ "$OSTYPE" =~ ^linux ]]
 then
-    PID=$(netstat -an --tcp --program 2>/dev/null |grep "$PORT" | sed -E 's?.*LISTEN\s*([0-9]+)/node.*?\1?') 
+    PID=$(netstat -an --tcp --program 2>/dev/null |grep -w ":$PORT\b" | sed -E 's?.*LISTEN\s*([0-9]+)/node.*$?\1?') 
 fi
 
 if [[ "$PID" == '' ]] 
