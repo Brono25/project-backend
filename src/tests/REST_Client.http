@@ -50,8 +50,8 @@ POST http://localhost:3500/auth/login/v2/
 content-type: application/json
 
 {
-    "email": "cs@gmail.com",
-    "password": "1233dfs4"
+    "email": "a@gmail.com",
+    "password": "123456"
 }
 ###
 // Logout

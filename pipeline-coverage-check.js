@@ -64,6 +64,8 @@ if (data[keys[9]].statements.pct < USERS_THRESHOLD) {
 if (FAIL_FLAG === 1) {
   process.exit(1);
 }
+console.log('\n\n');
 console.log('//---------------------------------------------//');
 console.log('           success: coverage PASSED');
 console.log('//---------------------------------------------//');
+console.log('\n\n');

@@ -87,4 +87,22 @@ describe('Function Testing', () => {
       token: expect.any(String),
     });
   });
+  test('Login twice with the same user', () => {
+    let data = h.postRequest(h.LOGIN_URL, {
+      email: h.email0AltCase,
+      password: h.password0,
+    });
+    expect(data).toStrictEqual(<AuthLoginReturn>{
+      authUserId: authUserId0,
+      token: expect.any(String),
+    });
+    data = h.postRequest(h.LOGIN_URL, {
+      email: h.email0AltCase,
+      password: h.password0,
+    });
+    expect(data).toStrictEqual(<AuthLoginReturn>{
+      authUserId: authUserId0,
+      token: expect.any(String),
+    });
+  });
 });
