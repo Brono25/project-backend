@@ -29,24 +29,6 @@ for (const key of keys) {
 }
 
 if (FAIL_FLAG === 1) {
-  failure();
+  console.log('FAILED');
   process.exit(1);
-} else {
-  success();
-}
-
-function success() {
-  console.log('\n');
-  console.log('//---------------------------------------------//');
-  console.log('           success: coverage PASSED');
-  console.log('//---------------------------------------------//');
-  console.log('\n\n');
-}
-
-function failure() {
-  console.log('\n');
-  console.log('//---------------------------------------------//');
-  console.log('           failure: coverage FAILED');
-  console.log('//---------------------------------------------//');
-  console.log('\n\n');
-}
+} 

@@ -1,27 +1,51 @@
 #!/bin/bash
 
+trap 'kill -INT $PID 2> /dev/null; echo Exiting $PID' INT 
+
 PORT=$(cat ./src/config.json| sed -n 3p|tr -dc '[0-9]')
 
+cat << eof
+|--------------------------------|
+          Checking linter              
+|--------------------------------|
+eof
 
 npm run lint-fix 
-npm run tsc
-npm run ts-node-coverage &
+[ $? ] || exit 1
+echo "PASSED"
+
+cat << eof
+|--------------------------------|
+          Checking tsc
+|--------------------------------|
+eof
+npm run tsc 
+[ $? ] || exit 1
+echo "PASSED"
+
+cat << eof
+|--------------------------------|
+       Checking jest tests
+|--------------------------------|
+eof
+
+npm run ts-node-coverage 1> /dev/null &
+
+while [ "$PID" == '' ]; do
+
+    if [[ "$OSTYPE" =~ ^darwin ]]
+    then 
+        PID=$(lsof -nP -i4TCP:$PORT | sed -E 's/[ ]+/ /g'|cut -d' '  -f2|tail -1)
+    elif [[ "$OSTYPE" =~ ^linux ]]
+    then
+        PID=$(netstat -an --tcp --program 2>/dev/null |grep  ".*:$PORT\b.*LISTEN"|sed -E 's?.*LISTEN\s*([0-9]+)/node[ ]*$?\1?') 
+    fi 
+done
+
 npm t
+[ $? ] || exit 1
 
 
-if [[ "$OSTYPE" =~ ^darwin ]]
-then 
-    PID=$(lsof -nP -i4TCP:$PORT | sed -E 's/[ ]+/ /g'|cut -d' '  -f2|tail -1)
-elif [[ "$OSTYPE" =~ ^linux ]]
-then
-    PID=$(netstat -an --tcp --program 2>/dev/null |grep  ".*:$PORT\b.*LISTEN"|sed -E 's?.*LISTEN\s*([0-9]+)/node[ ]*$?\1?') 
-fi
-
-if [[ "$PID" == '' ]] 
-then
-    echo "PID not found - server is not running"
-    exit 1
-fi
 cat << eof
 
     ⚡️ Killing PID: $PID belonging to PORT: $PORT ⚡️
@@ -29,4 +53,10 @@ cat << eof
 eof
 
 kill -INT $PID 
+cat << eof
+|--------------------------------|
+       Checking coverage
+|--------------------------------|
+eof
 npm run pipeline-coverage-check
+[ $? ] || exit 1
