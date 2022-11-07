@@ -63,7 +63,7 @@ describe('Error Handling', () => {
       channelId: invalidChannelId,
       uId: uId0,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'Invalid channel Id' });
   });
 
   test('Invalid User Id', () => {
@@ -72,7 +72,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       uId: invalidUId,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'Invalid uId' });
   });
 
   test('User already member of channel', () => {
@@ -81,7 +81,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       uId: uId0,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'User is already a member of the channel' });
   });
 
   test('authUser not a member', () => {
@@ -90,7 +90,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       uId: uId1,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'User is not a member of the channel' });
   });
 
   test('Invalid token', () => {
@@ -99,7 +99,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       uId: uId1,
     });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    expect(data).toStrictEqual({ error: 'Token is invalid!' });
   });
 });
 
