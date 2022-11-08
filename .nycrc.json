@@ -2,7 +2,5 @@
   "check-coverage": true,
   "exclude": [
     "src/*.debug.ts"
-  ],
-  "per-file": true,
-  "statements": 99
+  ]
 }

@@ -131,7 +131,6 @@ export function messageSendDmV1(
  * @param {string, number}
  * @returns { object | Error}
  */
-
 export function messageRemoveV1(token: string, messageId: number): object | Error {
   if (!isValidToken(token)) {
     return { error: 'Invalid token' };
@@ -229,19 +228,18 @@ export function messageEditV1(token: string, messageId: number, message: string)
     if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
       return { error: 'Dont have channel owner permissions' };
     }
-
     const channelStore: ChannelStore = getChannelStoreFromId(channelId);
     let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
     const messageStore: Message = channelStore.messages[index];
+    const data: DataStore = getData();
     messageStore.message = message;
     if (message === '') {
       channelStore.messages.splice(index, 1);
+      data.messageIds.splice(index, 1);
     }
-    const data: DataStore = getData();
     index = data.channels.findIndex(a => a.channelId === channelId);
     data.channels[index] = channelStore;
     index = data.messageIds.findIndex(a => a.messageId === messageId);
-    data.messageIds.splice(index, 1);
     setData(data);
   }
 
@@ -255,15 +253,15 @@ export function messageEditV1(token: string, messageId: number, message: string)
     const dmStore: DmStore = getDmStore(dmId);
     let index: number = dmStore.messages.findIndex(a => a.messageId === messageId);
     const messageStore: Message = dmStore.messages[index];
+    const data: DataStore = getData();
     messageStore.message = message;
     if (message === '') {
       dmStore.messages.splice(index, 1);
+      data.messageIds.splice(index, 1);
     }
-    const data: DataStore = getData();
     index = data.dms.findIndex(a => a.dmId === dmId);
     data.dms[index] = dmStore;
     index = data.messageIds.findIndex(a => a.messageId === messageId);
-    data.messageIds.splice(index, 1);
     setData(data);
   }
 

@@ -48,6 +48,7 @@ function authLoginV1(email: string, password: string): AuthLoginReturn {
       const token: Token = generateToken(email);
       user.activeTokens.push(token);
       data.activeTokens.push(token);
+      setData(data);
       return <AuthLoginReturn> { token: token.token, authUserId: user.uId };
     }
   }

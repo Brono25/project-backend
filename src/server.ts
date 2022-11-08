@@ -144,7 +144,17 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
   const { token, dmId } = req.body;
   res.json(dmLeavev1(token, parseInt(dmId)));
 });
-
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  res.json(dmRemoveV1(token, parseInt(dmId)));
+});
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  const start = req.query.start as string;
+  res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
+});
 app.get('/channel/messages/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const channelId = req.query.channelId as string;
@@ -156,13 +166,6 @@ app.get('/channel/details/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const channelId = req.query.channelId as string;
   res.json(channelDetailsV2(token, parseInt(channelId)));
-});
-
-app.get('/dm/messages/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  const dmId = req.query.dmId as string;
-  const start = req.query.start as string;
-  res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
@@ -223,11 +226,7 @@ app.delete('/message/remove/v1', (req: Request, res: Response) => {
   const messageId = req.query.messageId as string;
   res.json(messageRemoveV1(token, parseInt(messageId)));
 });
-app.delete('/dm/remove/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  const dmId = req.query.dmId as string;
-  res.json(dmRemoveV1(token, parseInt(dmId)));
-});
+
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });

@@ -123,18 +123,14 @@ export function isValidMessageId(mId: number) {
  * @param {number|string, number} - authorised user's id and channel id
  * @returns {boolean} - is user already member of channel
  */
-export function isAuthUserMember(authUserId: number, channelId: number): boolean {
-  const data: DataStore = getData();
-  for (const channel of data.channels) {
-    if (channel.channelId === channelId) {
-      if (channel.allMembers.find(a => a.uId === authUserId)) {
-        return true;
-      }
-    }
+export function isAuthUserMember(authUserId: number, channelId: number) {
+  const channel: ChannelStore = getChannelStoreFromId(channelId);
+  if (channel.allMembers.some(a => a.uId === authUserId)) {
+    return true;
   }
   return false;
 }
-export function isTokenMemberOfChannel(token: string, channelId: number): boolean {
+export function isTokenMemberOfChannel(token: string, channelId: number) {
   const authUserId: number = getUIdFromToken(token);
   if (isAuthUserMember(authUserId, channelId)) {
     return true;
@@ -148,7 +144,7 @@ export function isTokenMemberOfChannel(token: string, channelId: number): boolea
 export function isTokenOwnerOfChannel(token: string, channelId: number) {
   const uId: number = getUIdFromToken(token);
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
-  if (channelStore.ownerMembers.find(a => a.uId === uId)) {
+  if (channelStore.ownerMembers.some(a => a.uId === uId)) {
     return true;
   }
   return false;

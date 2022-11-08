@@ -18,7 +18,7 @@ POST http://localhost:3500/channels/create/v2
 content-type: application/json
 
 {   
-    "token": "0tQ16zSRVb",
+    "token": "token",
     "name": "Channel 2",
     "isPublic": "true"
 }
@@ -28,7 +28,7 @@ POST http://localhost:3500/dm/create/v1
 content-type: application/json
 
 {   
-    "token": "CvUmyJG4F2",
+    "token": "kJ2RT5EALB",
     "uIds": []
 }
 
@@ -43,15 +43,39 @@ content-type: application/json
     "message": "Here is a message"
 }
 
-
 ###
+// Get DM messages
+GET http://localhost:3500/dm/messages/v1
+    ?token=token0
+    &start=0
+    &dmId=0
+     
+###
+// DM Details
+GET http://localhost:3500/dm/details/v1
+    ?token=luyMtdUMbT
+    &dmId=4158043789
+     
+###
+// dm list
+GET http://localhost:3500/dm/list/v1
+    ?token=kJ2RT5EALB
+    
+###
+// DM remove 
+DELETE http://localhost:3500/dm/remove/v1
+    ?token=kJ2RT5EALB
+    &dmId=4158043789
+
+
+
 // Login
 POST http://localhost:3500/auth/login/v2/
 content-type: application/json
 
 {
-    "email": "cs@gmail.com",
-    "password": "1233dfs4"
+    "email": "a@gmail.com",
+    "password": "123456"
 }
 ###
 // Logout
@@ -67,11 +91,25 @@ POST http://localhost:3500/message/send/v1/
 content-type: application/json
 
 {   
-    "token": "zDvvMIx87E",
-    "channelId": 1,
-    "message": "message 4"
+    "token": "token",
+    "channelId": 0,
+    "message": "message 1"
 }
+###
+// remove message
+DELETE http://localhost:3500/message/remove/v1
+    ?token=token
+    &messageId=0
 
+### Edit message
+PUT http://localhost:3500/message/edit/v1
+content-type: application/json
+
+{   
+    "token": "token",
+    "messageId": 0,
+    "message": ""
+}
 
 ###
 // User profile
@@ -89,11 +127,6 @@ GET http://localhost:3500/users/all/v1
 GET http://localhost:3500/channels/listAll/v2
     ?token=token1
     
-###
-// dm list
-GET http://localhost:3500/dm/list/v1
-    ?token=EDVKVr0/1/
-    
 
 ###
 // Get messages
@@ -102,13 +135,7 @@ GET http://localhost:3500/channel/messages/v2
     &start=57
     &channelId=0
      
-###
-// Get DM messages
-GET http://localhost:3500/dm/messages/v1
-    ?token=token0
-    &start=0
-    &dmId=0
-     
+
 
 ### Setname User
 PUT http://localhost:3500/user/profile/setname/v1
@@ -140,12 +167,6 @@ content-type: application/json
     "channelId": 0,
     "uId": 0
 }
-
-###
-// remove message
-DELETE http://localhost:3500/message/remove/v1
-    ?token=ilbXGqIvyf
-    &messageId=2019304712
 
 
 
