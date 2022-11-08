@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap 'kill -INT $PID 2> /dev/null; echo Exiting $PID' INT 
+trap 'kill -INT $PID 2> /dev/null; exit 1' INT 
 
 PORT=$(cat ./src/config.json| sed -n 3p|tr -dc '[0-9]')
 
