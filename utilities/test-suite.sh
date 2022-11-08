@@ -5,25 +5,29 @@ trap 'kill -INT $PID 2> /dev/null; echo Exiting $PID' INT
 PORT=$(cat ./src/config.json| sed -n 3p|tr -dc '[0-9]')
 
 cat << eof
+
 |--------------------------------|
           Checking linter              
 |--------------------------------|
 eof
 
 npm run lint-fix 
-[ $? ] || exit 1
+
+[ $? -eq 1 ] && exit 1
 echo "PASSED"
 
 cat << eof
+
 |--------------------------------|
           Checking tsc
 |--------------------------------|
 eof
 npm run tsc 
-[ $? ] || exit 1
+[ $? -eq 1 ] && exit 1
 echo "PASSED"
 
 cat << eof
+
 |--------------------------------|
        Checking jest tests
 |--------------------------------|
@@ -43,20 +47,39 @@ while [ "$PID" == '' ]; do
 done
 
 npm t
-[ $? ] || exit 1
+[ $? -eq 1 ] && exit 1
 
 
 cat << eof
 
-    ⚡️ Killing PID: $PID belonging to PORT: $PORT ⚡️
+⚡️ Killing PID: $PID belonging to PORT: $PORT ⚡️
 
 eof
 
 kill -INT $PID 
 cat << eof
+
 |--------------------------------|
        Checking coverage
 |--------------------------------|
 eof
 npm run pipeline-coverage-check
-[ $? ] || exit 1
+[ $? -eq 1 ] && exit 1
+
+timeTested=$(date +%T)
+dateTested=$(date +%D)
+
+cat << eof
+
+|--------------------------------|
+         ALL TESTS PASSED 
+        $timeTested $dateTested
+|--------------------------------|
+    ✓ Linting
+    ✓ TSC
+    ✓ Jest Tests
+    ✓ Coverage
+
+eof
+
+
