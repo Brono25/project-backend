@@ -13,7 +13,7 @@ export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v3`;
 
 export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v3`;
 export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v3`;
-export const CHAN_INV_URL = `${url}:${port}/channel/invite/v2`;
+export const CHAN_INV_URL = `${url}:${port}/channel/invite/v3`;
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
 
 export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;

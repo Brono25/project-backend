@@ -1,5 +1,4 @@
 
-import { clearV1 } from '../other';
 import * as h from './test.helper';
 
 h.deleteRequest(h.CLEAR_URL, {});
@@ -9,33 +8,24 @@ let tmp: any;
 let uId0: number;
 let uId1: number;
 let invalidUId: number;
-
 let token0: string;
-
 let channelId0: number;
 let invalidChannelId: number;
 
 beforeEach(() => {
-  // uIds and tokens 0 and 1
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   uId0 = parseInt(tmp.authUserId);
   token0 = tmp.token;
-
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   uId1 = parseInt(tmp.authUserId);
-
-  // Channel 0
   tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(tmp.channelId);
-
-  // error inputs
   invalidChannelId = Math.abs(channelId0) + 10;
   invalidUId = Math.abs(uId0) + 10;
 });
 
 // Tear down
 afterEach(() => {
-  clearV1();
   h.deleteRequest(h.CLEAR_URL, {});
 });
 
@@ -54,7 +44,7 @@ describe('Error Handling', () => {
       channelId: channelId0,
       uId: invalidUId,
     };
-    h.testErrorThrown(h.CHAN_JOIN_URL, 'POST', 400, data, token0);
+    h.testErrorThrown(h.CHAN_INV_URL, 'POST', 400, data, token0);
   });
 
   test('User already member of channel', () => {
@@ -62,15 +52,17 @@ describe('Error Handling', () => {
       channelId: channelId0,
       uId: uId0,
     };
-    h.testErrorThrown(h.CHAN_JOIN_URL, 'POST', 400, data, token0);
+    h.testErrorThrown(h.CHAN_INV_URL, 'POST', 400, data, token0);
   });
 
   test('authUser not a member', () => {
+    tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+    const token2 = tmp.token;
     const data = {
       channelId: channelId0,
       uId: uId1,
     };
-    h.testErrorThrown(h.CHAN_JOIN_URL, 'POST', 403, data, token0);
+    h.testErrorThrown(h.CHAN_INV_URL, 'POST', 403, data, token2);
   });
 
   test('Invalid token', () => {

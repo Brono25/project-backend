@@ -114,12 +114,10 @@ export function channelLeaveV1(
   if (!isAuthUserMember(authUserId, channelId)) {
     throw HTTPError(403, 'User is not a member');
   }
-
   const data: DataStore = getData();
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
-  // step 1: remove member's uId from allMembers array
-  // step 2: if owner, remove uId from owners array
+
   const indexOfMember = channelStore.allMembers.findIndex(a => a.uId === authUserId);
   channelStore.allMembers.splice(indexOfMember, 1);
 
@@ -140,7 +138,6 @@ export function channelLeaveV1(
  * @param {number, number, number} - authUserId, channelId and uId
  * @returns {}
  */
-
 export function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
   isValidToken(token);
   isValidChannelId(channelId);
@@ -148,13 +145,11 @@ export function channelInviteV2(token: string, channelId: number, uId: number): 
   const authUserId: number = getUIdFromToken(token);
 
   if (isAuthUserMember(uId, channelId)) {
-    return { error: 'User is already a member of the channel' };
+    throw HTTPError(400, 'User is already a member of the channel');
   } else if (!isAuthUserMember(authUserId, channelId) && !isGlobalOwner(authUserId)) {
-    return { error: 'User is not a member of the channel' };
+    throw HTTPError(403, 'User is not a member of the channel');
   }
-
   const data: DataStore = getData();
-
   for (const channel of data.channels) {
     if (channel.channelId === channelId) {
       channel.allMembers.push({ uId: uId });
@@ -163,6 +158,7 @@ export function channelInviteV2(token: string, channelId: number, uId: number): 
   setData(data);
   return {};
 }
+
 // ////////////////////////////////////////////////////// //
 //                     channelMessagesV1                  //
 // ////////////////////////////////////////////////////// //
