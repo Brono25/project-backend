@@ -165,7 +165,6 @@ export function isAuthUserMember(authUserId: number, channelId: number) {
 }
 export function isTokenMemberOfChannel(token: string, channelId: number) {
   const authUserId: number = getUIdFromToken(token);
-  console.log('----------', authUserId);
   if (isAuthUserMember(authUserId, channelId)) {
     return true;
   }

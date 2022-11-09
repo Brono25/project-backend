@@ -1,4 +1,4 @@
-import HTTPError from 'http-errors';
+
 import { Channel } from '../data.types';
 import * as h from './test.helper';
 

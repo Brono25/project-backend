@@ -8,7 +8,6 @@ h.deleteRequest(h.CLEAR_URL, {});
 let authUserId0: any;
 let authUserId2: any;
 beforeEach(() => {
-  const data = h.generateUserRegisterArgs(0);
   authUserId0 = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   authUserId0 = parseInt(authUserId0.authUserId);
   h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));

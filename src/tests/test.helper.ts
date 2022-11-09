@@ -13,18 +13,19 @@ export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v3`;
 
 export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v3`;
 export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v3`;
-
+export const CHAN_INV_URL = `${url}:${port}/channel/invite/v2`;
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
 
 export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;
 export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v2`;
+export const CHAN_LEAVE_URL = `${url}:${port}/channel/leave/v2`;
+export const CHAN_ADD_OWNER_URL = `${url}:${port}/channel/addowner/v2`;
 
-export const CHAN_INV_URL = `${url}:${port}/channel/invite/v2`;
 export const CHAN_MSG_URL = `${url}:${port}/channel/messages/v2`;
 export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
 
-export const CHAN_LEAVE_URL = `${url}:${port}/channel/leave/v1`;
-export const CHAN_ADD_OWNER_URL = `${url}:${port}/channel/addowner/v1`;
+
+
 export const CHAN_RMV_OWNER_URL = `${url}:${port}/channel/removeowner/v1`;
 export const MSG_SEND_URL = `${url}:${port}/message/send/v1`;
 export const MSG_EDIT_URL = `${url}:${port}/message/edit/v1`;

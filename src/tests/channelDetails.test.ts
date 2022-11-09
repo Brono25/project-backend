@@ -1,6 +1,4 @@
 
-import HTTPError from 'http-errors';
-import { token } from 'morgan';
 import { ChannelDetails } from '../data.types';
 import * as h from './test.helper';
 
@@ -17,7 +15,6 @@ let channelId0: number;
 let channelId1: number;
 let channelId2: number;
 let invalidChannelId: number;
-let invalidInput: any;
 let input: any;
 // SETUP
 beforeEach(() => {

@@ -22,13 +22,12 @@ beforeEach(() => {
   token1 = tmp.token;
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = tmp.token;
-  // error inputs
-  invalidChannelId = Math.abs(channelId0) + 10;
   // Channels 0 and private
   tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(tmp.channelId);
   tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, false), token1);
   channelIdPriv = parseInt(tmp.channelId);
+  invalidChannelId = Math.abs(channelId0) + 10;
 });
 
 // Tear down
@@ -62,12 +61,12 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 describe('Function Testing', () => {
   test('adds a global member to the channel', () => {
-    const data = h.postRequest(h.CHAN_JOIN_URL, {channelId: channelId0}, token2);
+    const data = h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token2);
     expect(data).toStrictEqual({});
   });
 
   test('adds a global owner to the channel', () => {
-    const a: any = h.getRequest(h.CHAN_DETAIL_URL, {channelId: channelIdPriv}, token1);
+    const a: any = h.getRequest(h.CHAN_DETAIL_URL, { channelId: channelIdPriv }, token1);
 
     const data: any = h.postRequest(h.CHAN_JOIN_URL, {
       channelId: channelIdPriv,
