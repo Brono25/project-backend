@@ -53,7 +53,10 @@ export type ChannelDetails = {
 export type Token = {
   token: string;
 }
-
+export type TokenHash = {
+  hash: string;
+  uId: number;
+}
 export type Dm = {
   dmId: number;
   name: string;
@@ -116,7 +119,6 @@ export type UserStore = {
   handleStr: string;
   globalPermission: GlobalPermision;
   password: string;
-  activeTokens: Token[];
 }
 export type DmStore = {
   dmId: number;
@@ -128,7 +130,9 @@ export type DmStore = {
 export type DataStore = {
   users: UserStore[];
   channels: ChannelStore[];
-  activeTokens: Token[];
+  activeTokens: TokenHash[];
   messageIds: MessageTracking[];
   dms: DmStore[];
 }
+
+export const TOKEN_SECRET = 'xaThoo6xuagah9bahj9ooC1Aeng2aezai9Pei7zelahxoh5ak8oonoo3phifooR3';

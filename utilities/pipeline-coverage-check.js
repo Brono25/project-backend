@@ -13,8 +13,6 @@ const data = JSON.parse(String(dbstr));
 let keys = Object.keys(data);
 
 keys = keys.filter(a => a.match(/total/g) === null);
-keys = keys.filter(a => a.match(/echo/g) === null);
-keys = keys.filter(a => a.match(/server/g) === null);
 keys = keys.filter(a => a.match(/dataStore/g) === null);
 keys.sort();
 for (const key of keys) {

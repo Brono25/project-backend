@@ -1,5 +1,9 @@
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 const MD5 = require('crypto-md5');
+const crypto = require('crypto');
 import {
   setData,
   getData,
@@ -9,11 +13,12 @@ import {
   DataStore,
   ChannelStore,
   UserStore,
-  Token,
   ID_ERROR,
   MessageId,
   DmStore,
   MessageTracking,
+  TokenHash,
+  TOKEN_SECRET,
 } from './data.types';
 
 /**
@@ -85,7 +90,8 @@ export function isValidDmId(dmId: number) {
  */
 export function isValidToken(token: string): boolean {
   const data: DataStore = getData();
-  if (data.activeTokens.find(a => a.token === token)) {
+  const hash: string = generateTokenHash(token);
+  if (data.activeTokens.some(a => a.hash === hash)) {
     return true;
   }
   return false;
@@ -199,12 +205,12 @@ export function getChannelStoreFromId(channelId: number):ChannelStore {
  */
 export function getUIdFromToken(token: string): number {
   const data: DataStore = getData();
-  for (const user of data.users) {
-    if (user.activeTokens.find(a => a.token === token)) {
-      return user.uId;
-    }
+  const hash: string = generateTokenHash(token);
+  const session: TokenHash = data.activeTokens.find(a => a.hash === hash);
+  if (session === undefined) {
+    return ID_ERROR;
   }
-  return ID_ERROR;
+  return session.uId;
 }
 /**
  * Get the uId of the token owner or return nothing.
@@ -341,10 +347,20 @@ export function generateMessageId() {
  * @param {string}
  * @returns {Token}
  */
-export function generateToken(email: string): Token {
+export function generateToken(email: string): string {
   const time = Date.now().toString();
-  const token: Token = { token: MD5(time + email.toString()).slice(0, 10) };
-  return token;
+  return MD5(time + email.toString()).slice(0, 10);
+}
+
+/**
+ * Generate a hash of token + secret
+ * @param {string}
+ * @returns {Token}
+ */
+export function generateTokenHash(token: string): string {
+  const key = token.concat(TOKEN_SECRET);
+  const hash = crypto.createHash('sha256').update(key).digest('hex');
+  return hash;
 }
 
 // ////////////////////////////////////////////////////// //

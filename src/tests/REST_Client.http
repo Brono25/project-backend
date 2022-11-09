@@ -5,13 +5,28 @@ POST http://localhost:3500/auth/register/v2/
 content-type: application/json
 
 {
-    "email": "a@gmail.com",
+    "email": "b@gmail.com",
     "password": "123456",
     "nameFirst": "First Name 0",
     "nameLast": "Last Name 0"
 }
+###
+// Login
+POST http://localhost:3500/auth/login/v2/
+content-type: application/json
 
+{
+    "email": "b@gmail.com",
+    "password": "123456"
+}
+###
+// Logout
+POST http://localhost:3500/auth/logout/v1/
+content-type: application/json
 
+{   
+    "token": "A11TW/IUXu"
+}
 ###
 // Channel Create
 POST http://localhost:3500/channels/create/v2
@@ -69,22 +84,7 @@ DELETE http://localhost:3500/dm/remove/v1
 
 
 
-// Login
-POST http://localhost:3500/auth/login/v2/
-content-type: application/json
 
-{
-    "email": "a@gmail.com",
-    "password": "123456"
-}
-###
-// Logout
-POST http://localhost:3500/auth/logout/v1/
-content-type: application/json
-
-{   
-    "token": "bJZtmUkjIW"
-}
 ###
 // Message send
 POST http://localhost:3500/message/send/v1/
@@ -180,8 +180,3 @@ content-type: application/json
 DELETE http://localhost:3500/clear/v1/
 content-type: application/json
 
-
-###
-//debug - print all dataStore
-POST http://localhost:3500/debug/
-content-type: application/json
