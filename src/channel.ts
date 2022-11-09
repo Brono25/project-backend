@@ -220,24 +220,19 @@ export function channelMessagesV1(
  * @returns {}
  */
 export function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid Channel Id' };
-  }
-  if (!isValidAuthUserId(uId)) {
-    return { error: 'Invalid User Id' };
-  }
+  isValidToken(token);
+  isValidChannelId(channelId);
+  isValidAuthUserId(uId);
+
   if (!isUIdOwnerOfChannel(uId, channelId)) {
-    return { error: 'User is not a channel owner' };
+    throw HTTPError(400, 'User is not a channel owner');
   }
   if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
-    return { error: 'Token does not have owner permissions' };
+    throw HTTPError(403, 'AuthUser does not have owner permissions');
   }
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   if (channelStore.ownerMembers.length === 1) {
-    return { error: 'There must be atleast one owner' };
+    throw HTTPError(400, 'Owner is last member');
   }
   let index: number = channelStore.ownerMembers.findIndex(a => a.uId === uId);
   channelStore.ownerMembers.splice(index, 1);

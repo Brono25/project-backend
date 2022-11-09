@@ -12,78 +12,37 @@ let uId2: number;
 let channelId0: number;
 let channelId1: number;
 let invalidChannelId: number;
-let invalidUid: number;
+let invalidUserId: number;
 let tmp: any;
 beforeEach(() => {
   h.deleteRequest(h.CLEAR_URL, {});
   // tokens 0,1 and 2
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  uIdGlobalOwner = tmp.authUserId;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   tokenGlobalOwner = tmp.token;
-
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  uId1 = tmp.authUserId;
+  uIdGlobalOwner = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
-
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-  uId2 = tmp.authUserId;
+  uId1 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = tmp.token;
+  uId2 = parseInt(tmp.authUserId);
 
-  // Channels 0 and private
-  tmp = h.postRequest(h.CHAN_CREATE_URL, {
-    token: tokenGlobalOwner,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
+  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), tokenGlobalOwner);
   channelId0 = parseInt(tmp.channelId);
-
-  tmp = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token1,
-    name: h.channelName1,
-    isPublic: h.isPublic,
-  });
+  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, true), token1);
   channelId1 = parseInt(tmp.channelId);
 
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token1,
-    channelId: channelId0,
-  });
-  tmp = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-    token: tokenGlobalOwner,
-    channelId: channelId0,
-    uId: uId1,
-  });
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: tokenGlobalOwner,
-    channelId: channelId1,
-  });
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token2,
-    channelId: channelId0,
-  });
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token1);
+
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId1 }, tokenGlobalOwner);
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token2);
   h.postRequest(h.CHAN_ADD_OWNER_URL, {
-    token: tokenGlobalOwner,
     channelId: channelId0,
     uId: uId1,
-  });
+  }, tokenGlobalOwner);
 
   invalidChannelId = Math.abs(channelId0) + 10;
-  invalidUid = Math.abs(uId1) + Math.abs(uId2) + Math.abs(uIdGlobalOwner) + 10;
+  invalidUserId = Math.abs(uId1) + Math.abs(uId2) + Math.abs(uIdGlobalOwner) + 10;
 });
 
 // Tear down
@@ -95,60 +54,53 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid Token', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: h.invalidToken,
+    const data = {
       channelId: channelId0,
       uId: uIdGlobalOwner,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Token' });
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 403, data, h.invalidToken);
   });
   test('Invalid Channel Id', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: tokenGlobalOwner,
+    const data = {
       channelId: invalidChannelId,
       uId: uId1,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Channel Id' });
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 400, data, tokenGlobalOwner);
   });
   test('Invalid  uId', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: tokenGlobalOwner,
+    const data = {
       channelId: channelId0,
-      uId: invalidUid,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid User Id' });
+      uId: invalidUserId,
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 400, data, tokenGlobalOwner);
   });
   test('Uid is not an owner', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: token1,
-      channelId: channelId1,
-      uId: uIdGlobalOwner,
-    });
-    expect(data).toStrictEqual({ error: 'User is not a channel owner' });
+    const data = {
+      channelId: channelId0,
+      uId: uId2,
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 400, data, token1);
   });
   test('Only owner cant remove themselves', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: token1,
+    const data = {
       channelId: channelId1,
       uId: uId1,
-    });
-    expect(data).toStrictEqual({ error: 'There must be atleast one owner' });
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 400, data, token1);
   });
   test('Global owner who is a member cannot remove channel owner who is the only owner', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: tokenGlobalOwner,
+    const data = {
       channelId: channelId1,
       uId: uId1,
-    });
-    expect(data).toStrictEqual({ error: 'There must be atleast one owner' });
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 400, data, tokenGlobalOwner);
   });
   test('Token does not have permission', () => {
-    const data = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: token2,
+    const data = {
       channelId: channelId0,
       uId: uId1,
-    });
-    expect(data).toStrictEqual({ error: 'Token does not have owner permissions' });
+    };
+    h.testErrorThrown(h.CHAN_RMV_OWNER_URL, 'POST', 403, data, token2);
   });
 });
 
@@ -156,38 +108,32 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Remove Channel Owner', () => {
     let data: any = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: tokenGlobalOwner,
       channelId: channelId0,
       uId: uId1,
-    });
+    }, tokenGlobalOwner);
     expect(data).toStrictEqual({});
     data = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: tokenGlobalOwner,
       channelId: channelId0,
-    });
+    }, tokenGlobalOwner);
     expect(data.ownerMembers.some((a: any) => a.uId === uId1)).toStrictEqual(false);
   });
   test('Remove Channel Owner as global owner channel member', () => {
     h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: tokenGlobalOwner,
       channelId: channelId0,
       uId: uIdGlobalOwner,
-    });
+    }, tokenGlobalOwner);
     h.postRequest(h.CHAN_ADD_OWNER_URL, {
-      token: tokenGlobalOwner,
       channelId: channelId0,
       uId: uId2,
-    });
+    }, tokenGlobalOwner);
     let data: any = h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: tokenGlobalOwner,
       channelId: channelId0,
       uId: uId1,
-    });
+    }, tokenGlobalOwner);
     expect(data).toStrictEqual({});
     data = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token1,
       channelId: channelId0,
-    });
+    }, token1);
     expect(data.ownerMembers.some((a: any) => a.uId === uIdGlobalOwner)).toStrictEqual(false);
     expect(data.allMembers.some((a: any) => a.uId === uIdGlobalOwner)).toStrictEqual(true);
   });

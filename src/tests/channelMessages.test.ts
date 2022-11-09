@@ -13,9 +13,6 @@ const MSG_PER_PAGE = 50;
 // Setup
 let token0: string;
 let token1 : string;
-let uId0: number;
-let uId1: number;
-
 let channelId0: number;
 let invalidChannelId: number;
 let start = 0;
@@ -26,10 +23,8 @@ beforeEach(() => {
 
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  uId0 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
-  uId1 = parseInt(tmp.authUserId);
 
   tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(tmp.channelId);
