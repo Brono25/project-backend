@@ -12,11 +12,11 @@ content-type: application/json
 }
 ###
 // Login
-POST http://localhost:3500/auth/login/v2/
+POST http://localhost:3500/auth/login/v3/
 content-type: application/json
 
 {
-    "email": "b@gmail.com",
+    "email": "ba@gmail.com",
     "password": "123456"
 }
 ###

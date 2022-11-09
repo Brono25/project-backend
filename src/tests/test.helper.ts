@@ -5,9 +5,12 @@ import config from '../config.json';
 const OK = 200;
 const port = config.port;
 const url = config.url;
+
+export const LOGIN_URL = `${url}:${port}/auth/login/v3`;
+
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
 export const REGISTER_URL = `${url}:${port}/auth/register/v2`;
-export const LOGIN_URL = `${url}:${port}/auth/login/v2`;
+
 export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v2`;
 export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;
 export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v2`;
@@ -43,8 +46,8 @@ export const firstName0 = 'My First Name 0';
 export const lastName0 = 'My Last Name 0';
 export const email0 = 'email_0_@gmail.com';
 export const password0 = 'password_0';
-export const email0AltCase = 'EMAIL_0_@GMAIL.COM';
 
+export const email0AltCase = 'EMAIL_0_@GMAIL.COM';
 export const firstName1 = 'My First Name 1';
 export const lastName1 = 'My Last Name 1';
 export const email1 = 'email_1_@gmail.com';
@@ -54,6 +57,20 @@ export const firstName2 = 'My First Name 2';
 export const lastName2 = 'My Last Name 2';
 export const email2 = 'email_2_@gmail.com';
 export const password2 = 'password_2';
+
+export const user0Login = {
+  email: email0,
+  password: password0,
+};
+export const user1Login = {
+  email: email1,
+  password: password1,
+};
+
+export const user2Login = {
+  email: email2,
+  password: password2,
+};
 
 export const wrongEmail = 'anything@gmail.com';
 export const wrongPassword = 'wrongpassword';
@@ -81,6 +98,18 @@ export const invalidShortMessage = '';
 export const invalidLongMessage = 'x'.repeat(1001);
 
 export const invalidToken = 'not a valid token (probably)';
+
+type ReqType = 'PUT'| 'POST' | 'GET' | 'DELETE';
+type ErrorList = 400 | 403;
+export const testErrorThrown = (url: string, data: any, reqType: ReqType, error: ErrorList) => {
+  if (reqType === 'PUT' || reqType === 'POST') {
+    const res = request(reqType, url, { json: data });
+    expect(res.statusCode).toBe(error);
+  } else if (reqType === 'GET' || reqType === 'DELETE') {
+    const res = request(reqType, url, { json: data });
+    expect(res.statusCode).toBe(error);
+  }
+};
 
 export const postRequest = (url: string, data: any): object => {
   const res = request('POST', url, { json: data });

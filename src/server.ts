@@ -84,7 +84,7 @@ app.use(morgan('dev'));
 // ////////////////////////////////////////////////////// //
 //                    Interface Wrappers                  //
 // ////////////////////////////////////////////////////// //
-app.post('/auth/login/v2', (req: Request, res: Response) => {
+app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
   res.json(authLoginV1(email, password));
 });

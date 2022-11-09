@@ -1,6 +1,6 @@
 
 import validator from 'validator';
-
+import HTTPError from 'http-errors';
 import {
   setData,
   getData
@@ -34,11 +34,11 @@ import {
  */
 function authLoginV1(email: string, password: string): AuthLoginReturn {
   if (!isEmailUsed(email)) {
-    return { error: 'Email does not belong to a user' };
+    throw HTTPError(400, 'Email does not belong to a user');
   }
 
   if (!isPasswordCorrect(email, password)) {
-    return { error: 'Password is incorrect' };
+    throw HTTPError(400, 'Password is incorrect');
   }
 
   const data: DataStore = getData();
