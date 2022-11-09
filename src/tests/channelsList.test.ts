@@ -28,20 +28,13 @@ beforeEach(() => {
   channelId0 = parseInt(channel.channelId);
   channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, false), token0);
   channelId1 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(2, true), token0);
   channelId2 = parseInt(channel.channelId);
   channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(3, false), token1);
   channelId3 = parseInt(channel.channelId);
   // User 1 joins Channel 0 and Channel 1
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token1,
-    channelId: channelId0,
-  });
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token1,
-    channelId: channelId2,
-  });
-  // Error cases
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token1);
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId2 }, token1);
   invalidToken = h.invalidToken;
 });
 // Tear down
@@ -53,10 +46,7 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid Token', () => {
-    const invalidInput: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: invalidToken,
-    });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
+    h.testErrorThrown(h.CHAN_LIST_URL, 'GET', 403, {}, h.invalidToken);
   });
 });
 
@@ -64,9 +54,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('For Owner: List users channels with mix of public and private channels', () => {
-    const input: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: token0,
-    });
+    const input: any = h.getRequest(h.CHAN_LIST_URL, {}, token0);
     expect(input).toStrictEqual({
       channels: <Channel[]>[
         {
@@ -85,9 +73,7 @@ describe('Function Testing', () => {
     });
   });
   test('For Member: List channels with mix of public and private channels', () => {
-    const input: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: token1,
-    });
+    const input: any = h.getRequest(h.CHAN_LIST_URL, {}, token1);
     expect(input).toStrictEqual({
       channels: <Channel[]>[
         {
@@ -106,9 +92,7 @@ describe('Function Testing', () => {
     });
   });
   test('For user who has no channels', () => {
-    const input: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: token2,
-    });
+    const input: any = h.getRequest(h.CHAN_LIST_URL, {}, token2);
     expect(input).toStrictEqual({
       channels: <Channel[]>[]
     });

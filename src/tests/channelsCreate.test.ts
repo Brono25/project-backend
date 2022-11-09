@@ -6,9 +6,9 @@ h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
 let token0: string;
-const invalidToken = 'Not An Active Token';
+let tmp: any;
 beforeEach(() => {
-  const tmp: any = h.postRequest(h.REGISTER_URL, h.user0Register);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
 });
 
@@ -39,7 +39,7 @@ describe('Error Handling', () => {
       name: h.channelName1,
       isPublic: h.isPublic,
     };
-    h.testErrorThrown(h.CHAN_CREATE_URL, 'POST', 403, data, invalidToken);
+    h.testErrorThrown(h.CHAN_CREATE_URL, 'POST', 403, data, h.invalidToken);
   });
 });
 
