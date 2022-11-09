@@ -1,5 +1,4 @@
 
-import validator from 'validator';
 import HTTPError from 'http-errors';
 import {
   setData,
@@ -10,6 +9,9 @@ import {
   generateToken,
   isValidToken,
   generateTokenHash,
+  isValidEmail,
+  isEmailUsed,
+  isEmailFound,
 } from './other';
 
 import {
@@ -33,13 +35,9 @@ import {
  * @returns {AuthLoginReturn} - authUserId
  */
 function authLoginV1(email: string, password: string): AuthLoginReturn {
-  if (!isEmailUsed(email)) {
-    throw HTTPError(400, 'Email does not belong to a user');
-  }
-
-  if (!isPasswordCorrect(email, password)) {
-    throw HTTPError(400, 'Password is incorrect');
-  }
+  isValidEmail(email);
+  isEmailFound(email);
+  isPasswordCorrect(email, password);
 
   const data: DataStore = getData();
   for (const user of data.users) {
@@ -69,23 +67,20 @@ function authRegisterV1(
   nameFirst: string,
   nameLast: string
 ): AuthRegistorReturn {
-  if (!validator.isEmail(email)) {
-    return { error: 'Invalid Email' };
-  }
-  if (isEmailUsed(email)) {
-    return { error: 'Email is already taken' };
-  }
+  isValidEmail(email);
+  isEmailUsed(email);
+
   const minPasswordLength = 6;
   if (password.length < minPasswordLength) {
-    return { error: 'Passwords must at-least 6 characters' };
+    throw HTTPError(400, 'Passwords must at-least 6 characters');
   }
   const maxNameLength = 50;
   const minNameLength = 1;
   if (nameFirst.length < minNameLength || nameFirst.length > maxNameLength) {
-    return { error: 'First name must be between 1-50 characters long (inclusive)' };
+    throw HTTPError(400, 'First name must be between 1-50 characters long (inclusive)');
   }
   if (nameLast.length < minNameLength || nameLast.length > maxNameLength) {
-    return { error: 'Last name must be between 1-50 characters long (inclusive)' };
+    throw HTTPError(400, 'Last name must be between 1-50 characters long (inclusive)');
   }
 
   const handleStr: string = generateHandleStr(nameFirst, nameLast);
@@ -127,10 +122,7 @@ function authRegisterV1(
  */
 
 function AuthLogoutV1(token: string): any {
-  console.log('help');
-  if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
-  }
+  isValidToken(token);
   const data: DataStore = getData();
   const hash = generateTokenHash(token);
   const index = data.activeTokens.findIndex(a => a.hash === hash);
@@ -202,24 +194,6 @@ function generateAuthUserId(): AuthUserId {
 }
 
 /**
- * @param {string} - users email
- * @returns {boolean} - is email already claimed by another user
- */
-export function isEmailUsed(email: string) {
-  const data: DataStore = getData();
-
-  if (!data.users.length) {
-    return false;
-  }
-  for (const user of data.users) {
-    if (user.email.toLowerCase() === email.toLowerCase()) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
  * @param {string, string} - users email and password
  * @returns {number} - users id
  */
@@ -230,7 +204,7 @@ function isPasswordCorrect(email: string, password: string) {
       if (password === user.password) {
         return true;
       } else {
-        return false;
+        throw HTTPError(400, 'Password is incorrect');
       }
     }
   }

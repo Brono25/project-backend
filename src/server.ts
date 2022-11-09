@@ -81,6 +81,13 @@ app.use(errorHandler());
 // for logging errors (print to terminal)
 app.use(morgan('dev'));
 
+function getTokenFromHeader(req: Request) {
+  const token = req.header('token');
+  console.log('---------', token);
+  // const obj = JSON.parse(json);
+  return token;
+}
+
 // ////////////////////////////////////////////////////// //
 //                    Interface Wrappers                  //
 // ////////////////////////////////////////////////////// //
@@ -89,18 +96,19 @@ app.post('/auth/login/v3', (req: Request, res: Response) => {
   res.json(authLoginV1(email, password));
 });
 
-app.post('/auth/register/v2', (req: Request, res: Response) => {
+app.post('/auth/register/v3', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
   res.json(authRegisterV1(email, password, nameFirst, nameLast));
 });
 
-app.post('/auth/logout/v1', (req: Request, res: Response) => {
-  const { token } = req.body;
+app.post('/auth/logout/v2', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
   res.json(AuthLogoutV1(token));
 });
 
-app.post('/channels/create/v2', (req: Request, res: Response) => {
-  const { token, name, isPublic } = req.body;
+app.post('/channels/create/v3', (req: Request, res: Response) => {
+  const { name, isPublic } = req.body;
+  const token = getTokenFromHeader(req);
   res.json(channelsCreateV2(token, name, <boolean>isPublic));
 });
 
@@ -162,8 +170,8 @@ app.get('/channel/messages/v2', (req: Request, res: Response) => {
   res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
 });
 
-app.get('/channel/details/v2', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+app.get('/channel/details/v3', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
   const channelId = req.query.channelId as string;
   res.json(channelDetailsV2(token, parseInt(channelId)));
 });
@@ -203,8 +211,9 @@ app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
   res.json(userProfileSetEmailV1(token, email));
 });
 
-app.post('/channel/join/v2', (req: Request, res: Response) => {
-  const { token, channelId } = req.body;
+app.post('/channel/join/v3', (req: Request, res: Response) => {
+  const { channelId } = req.body;
+  const token = getTokenFromHeader(req);
   res.json(channelJoinV2(token, parseInt(channelId)));
 });
 

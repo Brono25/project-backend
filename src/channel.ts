@@ -1,4 +1,4 @@
-
+import HTTPError from 'http-errors';
 import {
   setData,
   getData,
@@ -41,16 +41,11 @@ import {
 // ////////////////////////////////////////////////////// //
 
 export function channelDetailsV2(token: string, channelId: number) : ChannelDetails | Error {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
-
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel Id' };
-  }
+  isValidToken(token);
+  isValidChannelId(channelId);
 
   if (!isTokenMemberOfChannel(token, channelId)) {
-    return { error: 'Token is not a member of this channel' };
+    throw HTTPError(403, 'Invalid channel id');
   }
 
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
@@ -80,18 +75,17 @@ export function channelJoinV2(
   token: string,
   channelId: number
 ): ChannelJoinReturn {
+  isValidToken(token);
+  isValidChannelId(channelId);
+
   const authUserId = getUIdFromToken(token);
 
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel Id' };
-  } else if (isAuthUserMember(authUserId, channelId)) {
-    return { error: 'User is already a member of the channel' };
+  if (isAuthUserMember(authUserId, channelId)) {
+    throw HTTPError(400, 'User is not a member');
   } else if (isChannelPrivate(channelId) &&
   !isAuthUserMember(authUserId, channelId) &&
   !isGlobalOwner(authUserId)) {
-    return { error: 'Private channel' };
-  } else if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
+    throw HTTPError(400, 'Channel is private');
   }
 
   const data: DataStore = getData();

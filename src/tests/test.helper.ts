@@ -7,19 +7,22 @@ const port = config.port;
 const url = config.url;
 
 export const LOGIN_URL = `${url}:${port}/auth/login/v3`;
+export const REGISTER_URL = `${url}:${port}/auth/register/v3`;
+export const LOGOUT_URL = `${url}:${port}/auth/logout/v2`;
+export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v3`;
+
+export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v3`;
+export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v3`;
 
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
-export const REGISTER_URL = `${url}:${port}/auth/register/v2`;
 
-export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v2`;
 export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;
 export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v2`;
-export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v2`;
-export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v2`;
+
 export const CHAN_INV_URL = `${url}:${port}/channel/invite/v2`;
 export const CHAN_MSG_URL = `${url}:${port}/channel/messages/v2`;
 export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
-export const LOGOUT_URL = `${url}:${port}/auth/logout/v1`;
+
 export const CHAN_LEAVE_URL = `${url}:${port}/channel/leave/v1`;
 export const CHAN_ADD_OWNER_URL = `${url}:${port}/channel/addowner/v1`;
 export const CHAN_RMV_OWNER_URL = `${url}:${port}/channel/removeowner/v1`;
@@ -58,20 +61,6 @@ export const lastName2 = 'My Last Name 2';
 export const email2 = 'email_2_@gmail.com';
 export const password2 = 'password_2';
 
-export const user0Login = {
-  email: email0,
-  password: password0,
-};
-export const user1Login = {
-  email: email1,
-  password: password1,
-};
-
-export const user2Login = {
-  email: email2,
-  password: password2,
-};
-
 export const wrongEmail = 'anything@gmail.com';
 export const wrongPassword = 'wrongpassword';
 
@@ -101,42 +90,64 @@ export const invalidToken = 'not a valid token (probably)';
 
 type ReqType = 'PUT'| 'POST' | 'GET' | 'DELETE';
 type ErrorList = 400 | 403;
-export const testErrorThrown = (url: string, data: any, reqType: ReqType, error: ErrorList) => {
+export const testErrorThrown = (url: string, reqType: ReqType, error: ErrorList, data: any, token?: string) => {
   if (reqType === 'PUT' || reqType === 'POST') {
-    const res = request(reqType, url, { json: data });
+    const res = request(reqType, url, { json: data, headers: { token: token } });
     expect(res.statusCode).toBe(error);
   } else if (reqType === 'GET' || reqType === 'DELETE') {
-    const res = request(reqType, url, { json: data });
+    const res = request(reqType, url, { qs: data, headers: { token: token } });
     expect(res.statusCode).toBe(error);
   }
 };
 
-export const postRequest = (url: string, data: any): object => {
-  const res = request('POST', url, { json: data });
+export const postRequest = (url: string, data: any, token?: string): object => {
+  const res = request('POST', url, { json: data, headers: { token: token } });
   expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const putRequest = (url: string, data: any): object => {
-  const res = request('PUT', url, { json: data });
+export const putRequest = (url: string, data: any, token?: string): object => {
+  const res = request('PUT', url, { json: data, headers: { token: token } });
   expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const getRequest = (url: string, data: any): object => {
-  const res = request('GET', url, { qs: data });
+export const getRequest = (url: string, data: any, token?: string): object => {
+  const res = request('GET', url, { qs: data, headers: { token: token } });
   expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
-export const deleteRequest = (url: string, data: any): object => {
-  const res = request('DELETE', url, { qs: data });
+export const deleteRequest = (url: string, data: any, token?: string): object => {
+  const res = request('DELETE', url, { qs: data, headers: { token: token } });
   expect(res.statusCode).toBe(OK);
   const bodyObj = JSON.parse(res.getBody() as string);
   return bodyObj;
 };
 
 export * from './test.helper';
+export const password = 'password123456';
+
+export function generateUserLoginArgs(n: number) {
+  return {
+    email: 'email_' + n.toString() + '_@gmail.com',
+    password: password
+  };
+}
+export function generateUserRegisterArgs(n: number) {
+  return {
+    email: 'email_' + n.toString() + '_@gmail.com',
+    password: password,
+    nameFirst: 'My First Name '.concat(n.toString()),
+    nameLast: 'My Last Name '.concat(n.toString()),
+  };
+}
+export function generateChannelsCreateArgs(n: number, isPublic: boolean) {
+  return {
+    name: 'Channel '.concat(n.toString()),
+    isPublic: isPublic,
+  };
+}

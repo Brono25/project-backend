@@ -53,7 +53,7 @@ cat << eof
 |--------------------------------|
 eof
 
-npm run ts-node-coverage 1> /dev/null &
+npm run ts-node-coverage 2>&1 /dev/null &
 
 
 waiting=0

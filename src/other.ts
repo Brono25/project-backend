@@ -1,14 +1,12 @@
 
-const dotenv = require('dotenv');
-dotenv.config();
-
+import HTTPError from 'http-errors';
 const MD5 = require('crypto-md5');
 const crypto = require('crypto');
 import {
   setData,
   getData,
 } from './dataStore';
-
+import validator from 'validator';
 import {
   DataStore,
   ChannelStore,
@@ -42,6 +40,37 @@ export function clearV1(): any {
 // ////////////////////////////////////////////////////// //
 //                         IS VALID                       //
 // ////////////////////////////////////////////////////// //
+
+/**
+ * @param {string} - users email
+ * @returns {boolean} - is email already claimed by another user
+ */
+export function isEmailUsed(email: string) {
+  const data: DataStore = getData();
+  for (const user of data.users) {
+    if (user.email.toLowerCase() === email.toLowerCase()) {
+      throw HTTPError(400, 'Email in use');
+    }
+  }
+}
+export function isEmailFound(email: string) {
+  const data: DataStore = getData();
+  for (const user of data.users) {
+    if (user.email.toLowerCase() === email.toLowerCase()) {
+      return true;
+    }
+  }
+  throw HTTPError(400, 'Email not found');
+}
+/**
+ * @param {string} - email
+ */
+export function isValidEmail(email: string) {
+  if (!validator.isEmail(email)) {
+    throw HTTPError(400, 'Invalid email');
+  }
+}
+
 /**
  * @param {string} - users handle
  * @returns {boolean} - is handle unique
@@ -54,7 +83,7 @@ export function isValidAuthUserId(authUserId: number): boolean {
       return true;
     }
   }
-  return false;
+  throw HTTPError(400, 'User is not a member');
 }
 /**
  * @param {number} - channel id
@@ -69,7 +98,7 @@ export function isValidChannelId(channelId: number): boolean {
       return true;
     }
   }
-  return false;
+  throw HTTPError(400, 'Invalid channel id');
 }
 
 /**
@@ -86,15 +115,13 @@ export function isValidDmId(dmId: number) {
 /**
  * Set data back to initial state.
  * @param {string}
- * @returns {boolean}
  */
-export function isValidToken(token: string): boolean {
+export function isValidToken(token: string) {
   const data: DataStore = getData();
   const hash: string = generateTokenHash(token);
-  if (data.activeTokens.some(a => a.hash === hash)) {
-    return true;
+  if (!data.activeTokens.some(a => a.hash === hash)) {
+    throw HTTPError(403, 'Invalid token');
   }
-  return false;
 }
 /**
  * Set data back to initial state.
@@ -138,6 +165,7 @@ export function isAuthUserMember(authUserId: number, channelId: number) {
 }
 export function isTokenMemberOfChannel(token: string, channelId: number) {
   const authUserId: number = getUIdFromToken(token);
+  console.log('----------', authUserId);
   if (isAuthUserMember(authUserId, channelId)) {
     return true;
   }

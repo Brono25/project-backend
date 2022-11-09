@@ -1,3 +1,4 @@
+import HTTPError from 'http-errors';
 import { Channel } from '../data.types';
 import * as h from './test.helper';
 
@@ -16,51 +17,20 @@ let invalidToken: string;
 // SETUP
 beforeEach(() => {
   // Create users 0, 1, 2
-  user = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  user = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = user.token;
-  user = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
+  user = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = user.token;
-  user = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  user = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = user.token;
   // Create channels 0,1,2
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName1,
-    isPublic: h.isNotPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, false), token0);
   channelId1 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName2,
-    isPublic: h.isPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId2 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token1,
-    name: h.channelName3,
-    isPublic: h.isNotPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(3, false), token1);
   channelId3 = parseInt(channel.channelId);
   // User 1 joins Channel 0 and Channel 1
   h.postRequest(h.CHAN_JOIN_URL, {

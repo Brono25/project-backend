@@ -23,10 +23,8 @@ content-type: application/json
 // Logout
 POST http://localhost:3500/auth/logout/v1/
 content-type: application/json
+token: {"token":"Dpi4rfBDZ9"}
 
-{   
-    "token": "A11TW/IUXu"
-}
 ###
 // Channel Create
 POST http://localhost:3500/channels/create/v2

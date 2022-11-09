@@ -1,4 +1,6 @@
 
+import HTTPError from 'http-errors';
+import { token } from 'morgan';
 import { ChannelDetails } from '../data.types';
 import * as h from './test.helper';
 
@@ -14,62 +16,30 @@ let uId1: number;
 let channelId0: number;
 let channelId1: number;
 let channelId2: number;
-let invalidToken: string;
 let invalidChannelId: number;
 let invalidInput: any;
 let input: any;
 // SETUP
 beforeEach(() => {
   // Create users 0, 1, 2
-  const user0: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  const user0: any = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = user0.token;
   uId0 = parseInt(user0.authUserId);
-  const user1: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
+  const user1: any = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = user1.token;
   uId1 = parseInt(user1.authUserId);
-  const user2: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  const user2: any = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = user2.token;
   // Create channels 0,1,2
-  const channel0: any = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
+  const channel0: any = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = channel0.channelId;
-  const channel1: any = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName1,
-    isPublic: h.isPublic,
-  });
+  const channel1: any = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, true), token0);
   channelId1 = channel1.channelId;
-  const channel2: any = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName2,
-    isPublic: h.isNotPublic,
-  });
+  const channel2: any = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(2, false), token0);
   channelId2 = channel2.channelId;
   // User 1 joins Channel 1
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token1,
-    channelId: channelId1,
-  });
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId1 }, token1);
   // Error cases
-  invalidToken = h.invalidToken;
   invalidChannelId = Math.abs(channelId0) + Math.abs(channelId1) + Math.abs(channelId2) + 10;
 });
 // TEARDOWN
@@ -81,50 +51,29 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Error Test: Invalid Token', () => {
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: invalidToken,
-      channelId: channelId0,
-    });
-    expect(invalidInput).toStrictEqual({ error: 'Invalid Token' });
+    const data = { channelId: channelId0 };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 403, data, h.invalidToken);
   });
 
   test('Error Test: Invalid Channel Id', () => {
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token0,
-      channelId: invalidChannelId,
-    });
-    expect(invalidInput).toStrictEqual({ error: 'Invalid channel Id' });
+    const data = { channelId: invalidChannelId };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 400, data, token0);
   });
 
   test('Error Test: User not a member of any channel', () => {
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token2,
-      channelId: channelId0,
-    });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token2,
-      channelId: channelId1,
-    });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token2,
-      channelId: channelId2,
-    });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
+    let data = { channelId: channelId0 };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 403, data, token2);
+    data = { channelId: channelId1 };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 403, data, token2);
+    data = { channelId: channelId2 };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 403, data, token2);
   });
 
   test('Error Test: User not a member of channel', () => {
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token1,
-      channelId: channelId0,
-    });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
-    invalidInput = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token1,
-      channelId: channelId2,
-    });
-    expect(invalidInput).toStrictEqual({ error: 'Token is not a member of this channel' });
+    let data = { channelId: channelId0 };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 403, data, token1);
+    data = { channelId: channelId2 };
+    h.testErrorThrown(h.CHAN_DETAIL_URL, 'GET', 403, data, token1);
   });
 });
 
@@ -132,10 +81,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Function Test: Member of a channel with more than one member', () => {
-    input = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token0,
-      channelId: channelId1,
-    });
+    input = h.getRequest(h.CHAN_DETAIL_URL, { channelId: channelId1 }, token0);
     expect(input).toStrictEqual(
       <ChannelDetails>{
         name: h.channelName1,
@@ -170,10 +116,7 @@ describe('Function Testing', () => {
   });
 
   test('Function Test: Member of a single-member channel', () => {
-    input = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token0,
-      channelId: channelId0,
-    });
+    input = h.getRequest(h.CHAN_DETAIL_URL, { channelId: channelId0 }, token0);
     expect(input).toStrictEqual(
       <ChannelDetails>{
         name: h.channelName0,
@@ -201,10 +144,7 @@ describe('Function Testing', () => {
   });
 
   test('Function Test: Member of a private channel', () => {
-    input = h.getRequest(h.CHAN_DETAIL_URL, {
-      token: token0,
-      channelId: channelId2,
-    });
+    input = h.getRequest(h.CHAN_DETAIL_URL, { channelId: channelId2 }, token0);
     expect(input).toStrictEqual(
       <ChannelDetails>{
         name: h.channelName2,
