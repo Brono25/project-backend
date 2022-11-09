@@ -78,9 +78,7 @@ type ChannelsListReturn = {
 } | Error;
 
 export function channelsListAllV2(token: string): ChannelsListReturn {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+  isValidToken(token);
 
   // check all created channels
   const channels: Channel[] = [];
@@ -104,7 +102,7 @@ export function channelsListAllV2(token: string): ChannelsListReturn {
 
 export function channelsListV2(token: string): ChannelsListReturn {
   isValidToken(token);
-  
+
   const data: DataStore = getData();
   const usersChannels: Channel[] = [];
   const uId: number = getUIdFromToken(token);

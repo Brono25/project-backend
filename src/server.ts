@@ -236,7 +236,7 @@ app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
 });
-app.get('/channels/listAll/v2', (req: Request, res: Response) => {
+app.get('/channels/listAll/v3', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(channelsListAllV2(token));
 });
