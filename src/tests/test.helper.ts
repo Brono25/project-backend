@@ -20,14 +20,13 @@ export const CHAN_LIST_URL = `${url}:${port}/channels/list/v2`;
 export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v2`;
 export const CHAN_LEAVE_URL = `${url}:${port}/channel/leave/v2`;
 export const CHAN_ADD_OWNER_URL = `${url}:${port}/channel/addowner/v2`;
+export const CHAN_MSG_URL = `${url}:${port}/channel/messages/v3`;
 
-export const CHAN_MSG_URL = `${url}:${port}/channel/messages/v2`;
+export const MSG_SEND_URL = `${url}:${port}/message/send/v2`;
+
 export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
-
-
-
 export const CHAN_RMV_OWNER_URL = `${url}:${port}/channel/removeowner/v1`;
-export const MSG_SEND_URL = `${url}:${port}/message/send/v1`;
+
 export const MSG_EDIT_URL = `${url}:${port}/message/edit/v1`;
 export const MSG_RMV_URL = `${url}:${port}/message/remove/v1`;
 export const DM_CREATE_URL = `${url}:${port}/dm/create/v1`;

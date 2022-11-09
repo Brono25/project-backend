@@ -1,4 +1,4 @@
-
+import HTTPError from 'http-errors';
 import validator from 'validator';
 import { isEmailUsed } from './auth';
 import {

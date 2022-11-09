@@ -12,43 +12,33 @@ const MSG_PER_PAGE = 50;
 
 // Setup
 let token0: string;
-let token1: string;
+let token1 : string;
+let uId0: number;
+let uId1: number;
+
 let channelId0: number;
 let invalidChannelId: number;
 let start = 0;
 const invalidStart = MSG_PER_PAGE + 10;
+let tmp: any;
 beforeEach(() => {
   h.deleteRequest(h.CLEAR_URL, {});
-  let tmp: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  parseInt(tmp.authUserId);
-  token0 = tmp.token;
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  parseInt(tmp.authUserId);
-  token1 = tmp.token;
 
-  tmp = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
-  channelId0 = tmp.channelId;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
+  token0 = tmp.token;
+  uId0 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  token1 = tmp.token;
+  uId1 = parseInt(tmp.authUserId);
+
+  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
+  channelId0 = parseInt(tmp.channelId);
   invalidChannelId = Math.abs(channelId0) + 10;
 
   h.postRequest(h.MSG_SEND_URL, {
-    token: token0,
     channelId: channelId0,
     message: 'Setup message',
-  });
+  }, token0);
 });
 
 // Tear down
@@ -60,38 +50,34 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid Token', () => {
-    const data = h.getRequest(h.CHAN_MSG_URL, {
-      token: h.invalidToken,
+    const data = {
       channelId: channelId0,
       start: start,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Token' });
+    };
+    h.testErrorThrown(h.CHAN_MSG_URL, 'GET', 403, data, h.invalidToken);
   });
 
   test('Invalid channelId', () => {
-    const data = h.getRequest(h.CHAN_MSG_URL, {
-      token: token0,
+    const data = {
       channelId: invalidChannelId,
       start: start,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid channel Id' });
+    };
+    h.testErrorThrown(h.CHAN_MSG_URL, 'GET', 400, data, token0);
   });
   test('Valid channelId, token not a member', () => {
-    const data = h.getRequest(h.CHAN_MSG_URL, {
-      token: token1,
+    const data = {
       channelId: channelId0,
       start: start,
-    });
-    expect(data).toStrictEqual({ error: 'User is not a member of the channel' });
+    };
+    h.testErrorThrown(h.CHAN_MSG_URL, 'GET', 403, data, token1);
   });
 
   test('start greater than num messages', () => {
-    const data = h.getRequest(h.CHAN_MSG_URL, {
-      token: token0,
+    const data = {
       channelId: channelId0,
       start: invalidStart,
-    });
-    expect(data).toStrictEqual({ error: 'Messages start too high' });
+    };
+    h.testErrorThrown(h.CHAN_MSG_URL, 'GET', 400, data, token0);
   });
 });
 
@@ -101,16 +87,14 @@ describe('Function Testing', () => {
     const NUM_MSG = 3;
     for (let i = 0; i < NUM_MSG; i++) {
       h.postRequest(h.MSG_SEND_URL, {
-        token: token0,
         channelId: channelId0,
         message: `${MSG} ${i}`
-      });
+      }, token0);
     }
     const data = h.getRequest(h.CHAN_MSG_URL, {
-      token: token0,
       channelId: channelId0,
       start: start,
-    });
+    }, token0);
     expect(data).toStrictEqual(
       <PageMessages>{
         start: start,
@@ -148,16 +132,14 @@ describe('Function Testing', () => {
     start = 3;
     for (let i = 0; i < NUM_MSG; i++) {
       h.postRequest(h.MSG_SEND_URL, {
-        token: token0,
         channelId: channelId0,
         message: `${MSG} ${i}`
-      });
+      }, token0);
     }
     const data = <PageMessages> h.getRequest(h.CHAN_MSG_URL, {
-      token: token0,
       channelId: channelId0,
       start: start,
-    });
+    }, token0);
     expect(data).toStrictEqual(
       <PageMessages>{
         start: start,
@@ -172,16 +154,14 @@ describe('Function Testing', () => {
     start = NUM_MSG + 1;
     for (let i = 0; i < NUM_MSG; i++) {
       h.postRequest(h.MSG_SEND_URL, {
-        token: token0,
         channelId: channelId0,
         message: `${MSG} ${i}`
-      });
+      }, token0);
     }
     const data = <PageMessages> h.getRequest(h.CHAN_MSG_URL, {
-      token: token0,
       channelId: channelId0,
       start: start,
-    });
+    }, token0);
     expect(data).toStrictEqual(
       <PageMessages>{
         start: start,

@@ -5,41 +5,21 @@ import {
 
 h.deleteRequest(h.CLEAR_URL, {});
 
-const invChanId = 'Invalid channel ID';
-const invMessage = 'Invalid message length';
-const nonMember = 'Only members can message on the channel';
-const invToken = 'Invalid token';
-
 // Setup
 let token0: string;
 let token1: string;
 let channelId0: number;
 let invalidChannelId: number;
+let tmp: any;
 beforeEach(() => {
   h.deleteRequest(h.CLEAR_URL, {});
-  let tmp: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
 
-  tmp = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
-  channelId0 = tmp.channelId;
+  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
+  channelId0 = parseInt(tmp.channelId);
   invalidChannelId = Math.abs(channelId0) + 10;
 });
 
@@ -52,44 +32,39 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid channel ID', () => {
-    const data = h.postRequest(h.MSG_SEND_URL, {
-      token: token0,
+    const data = {
       channelId: invalidChannelId,
       message: h.message0
-    });
-    expect(data).toStrictEqual({ error: invChanId });
+    };
+    h.testErrorThrown(h.MSG_SEND_URL, 'POST', 400, data, token0);
   });
   test('Message too short', () => {
-    const data = h.postRequest(h.MSG_SEND_URL, {
-      token: token0,
+    const data = {
       channelId: channelId0,
       message: h.invalidShortMessage,
-    });
-    expect(data).toStrictEqual({ error: invMessage });
+    };
+    h.testErrorThrown(h.MSG_SEND_URL, 'POST', 400, data, token0);
   });
   test('Message too long', () => {
-    const data = h.postRequest(h.MSG_SEND_URL, {
-      token: token0,
+    const data = {
       channelId: channelId0,
       message: h.invalidLongMessage,
-    });
-    expect(data).toStrictEqual({ error: invMessage });
+    };
+    h.testErrorThrown(h.MSG_SEND_URL, 'POST', 400, data, token0);
   });
   test('Valid channel, user exists but is not a member', () => {
-    const data = h.postRequest(h.MSG_SEND_URL, {
-      token: token1,
+    const data = {
       channelId: channelId0,
       message: h.message0
-    });
-    expect(data).toStrictEqual({ error: nonMember });
+    };
+    h.testErrorThrown(h.MSG_SEND_URL, 'POST', 403, data, token1);
   });
   test('Invalid Token', () => {
-    const data = h.postRequest(h.MSG_SEND_URL, {
-      token: h.invalidToken,
+    const data = {
       channelId: channelId0,
       message: h.message0
-    });
-    expect(data).toStrictEqual({ error: invToken });
+    };
+    h.testErrorThrown(h.MSG_SEND_URL, 'POST', 403, data, h.invalidToken);
   });
 });
 
@@ -98,16 +73,14 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Sending a message', () => {
     let data = h.postRequest(h.MSG_SEND_URL, {
-      token: token0,
       channelId: channelId0,
       message: h.message0
-    });
+    }, token0);
     expect(data).toStrictEqual(<MessageId>{ messageId: expect.any(Number) });
     data = h.postRequest(h.MSG_SEND_URL, {
-      token: token0,
       channelId: channelId0,
       message: h.message0
-    });
+    }, token0);
     expect(data).toStrictEqual(<MessageId>{ messageId: expect.any(Number) });
   });
 });

@@ -180,19 +180,17 @@ export function channelMessagesV1(
   channelId: number,
   start: number
 ): PageMessages | Error {
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel Id' };
-  }
+  isValidToken(token);
+  isValidChannelId(channelId);
+
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const messages: Message[] = channelStore.messages;
   const numMessages = messages.length;
 
   if (start > numMessages) {
-    return { error: 'Messages start too high' };
-  } else if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
+    throw HTTPError(400, 'Invalid start');
   } else if (!isTokenMemberOfChannel(token, channelId)) {
-    return { error: 'User is not a member of the channel' };
+    throw HTTPError(403, 'User is not a member');
   } else if (start === numMessages) {
     return <PageMessages>{
       messages: [],

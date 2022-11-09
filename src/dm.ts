@@ -1,3 +1,4 @@
+import HTTPError from 'http-errors';
 import {
   DataStore,
   User,

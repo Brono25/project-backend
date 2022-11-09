@@ -48,7 +48,7 @@ describe('Error Handling', () => {
     const data = {
       channelId: channelId0,
     };
-     h.testErrorThrown(h.CHAN_LEAVE_URL, 'POST', 403, data, token2);
+    h.testErrorThrown(h.CHAN_LEAVE_URL, 'POST', 403, data, token2);
   });
 
   test('Invalid token', () => {

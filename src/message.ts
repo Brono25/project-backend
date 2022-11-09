@@ -1,4 +1,4 @@
-
+import HTTPError from 'http-errors';
 import {
   MessageSendReturn,
   MessageId,
@@ -44,17 +44,14 @@ export function messageSendV1(
   channelId: number,
   message: string)
   : MessageSendReturn {
-  if (!isValidChannelId(channelId)) {
-    return { error: 'Invalid channel ID' };
-  }
+  isValidToken(token);
+  isValidChannelId(channelId);
+
   if (message.length < MIN_MSG_LEN || message.length > MAX_MSG_LEN) {
-    return { error: 'Invalid message length' };
-  }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
+    throw HTTPError(400, 'Invalid message');
   }
   if (!isTokenMemberOfChannel(token, channelId)) {
-    return { error: 'Only members can message on the channel' };
+    throw HTTPError(403, 'User is not a member');
   }
   const messageId: number = generateMessageId();
   const uId: number = getUIdFromToken(token);
