@@ -1,10 +1,10 @@
+
 import express, { json, Request, Response } from 'express';
 import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
 import errorHandler from 'middleware-http-errors';
-import { debug } from './rest.debug';
 import { clearV1 } from './other';
 import {
   authLoginV1,
@@ -231,12 +231,6 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
 });
 
-// ////////////////////////////////////////////////////// //
-//                for debugging *delete later*            //
-// ////////////////////////////////////////////////////// //
-app.post('/debug', (req: Request, res: Response) => {
-  res.json(debug());
-});
 // ----------------------------------------------------------
 
 // start server

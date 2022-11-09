@@ -8,9 +8,8 @@ import {
 
 import {
   generateToken,
-  getUIdFromToken,
-  getUserStoreFromId,
   isValidToken,
+  generateTokenHash,
 } from './other';
 
 import {
@@ -19,9 +18,9 @@ import {
   GlobalPermision,
   GLOBAL_OWNER,
   AuthUserId,
-  Token,
   AuthLoginReturn,
-  AuthRegistorReturn
+  AuthRegistorReturn,
+  TokenHash,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -45,11 +44,11 @@ function authLoginV1(email: string, password: string): AuthLoginReturn {
   const data: DataStore = getData();
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
-      const token: Token = generateToken(email);
-      user.activeTokens.push(token);
-      data.activeTokens.push(token);
+      const token: string = generateToken(email);
+      const tokenHash: TokenHash = { uId: user.uId, hash: generateTokenHash(token) };
+      data.activeTokens.push(tokenHash);
       setData(data);
-      return <AuthLoginReturn> { token: token.token, authUserId: user.uId };
+      return <AuthLoginReturn> { token: token, authUserId: user.uId };
     }
   }
 }
@@ -96,7 +95,8 @@ function authRegisterV1(
   if (authUserId.authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
-  const token: Token = generateToken(email);
+  const token: string = generateToken(email);
+  const tokenHash: TokenHash = { uId: authUserId.authUserId, hash: generateTokenHash(token) };
   const userStore: UserStore = {
     uId: authUserId.authUserId,
     nameFirst: nameFirst,
@@ -105,17 +105,15 @@ function authRegisterV1(
     password: password,
     handleStr: handleStr,
     globalPermission: globalPermission,
-    activeTokens: [],
   };
 
   const data: DataStore = getData();
 
-  userStore.activeTokens.push(token);
-  data.activeTokens.push(token);
+  data.activeTokens.push(tokenHash);
   data.users.push(userStore);
   setData(data);
 
-  return <AuthRegistorReturn> { token: token.token, authUserId: authUserId.authUserId };
+  return <AuthRegistorReturn> { token: token, authUserId: authUserId.authUserId };
 }
 
 // ////////////////////////////////////////////////////// //
@@ -129,27 +127,14 @@ function authRegisterV1(
  */
 
 function AuthLogoutV1(token: string): any {
+  console.log('help');
   if (!isValidToken(token)) {
     return { error: 'token is invalid!' };
   }
-
   const data: DataStore = getData();
-  const tokensList: Token[] = data.activeTokens;
-  const newTokensList: Token[] = tokensList.filter(element => {
-    return element.token !== token;
-  });
-
-  data.activeTokens = newTokensList;
-
-  const uId: number = getUIdFromToken(token);
-  const user: UserStore = getUserStoreFromId(uId);
-  const index = data.users.findIndex(a => a.uId === uId);
-  const tokensList1: Token[] = user.activeTokens;
-  const newTokensList1: Token[] = tokensList1.filter(element => {
-    return element.token !== token;
-  });
-  user.activeTokens = newTokensList1;
-  data.users[index] = user;
+  const hash = generateTokenHash(token);
+  const index = data.activeTokens.findIndex(a => a.hash === hash);
+  data.activeTokens.splice(index, 1);
   setData(data);
   return {};
 }
