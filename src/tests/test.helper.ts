@@ -79,8 +79,10 @@ export const isPublic = true;
 export const isNotPublic = false;
 
 export const message0 = 'This is the 0th message';
-export const message01 = 'This is the 1st message';
-export const message02 = 'This is the 2st message';
+export const message1 = 'This is the 1st message';
+export const message2 = 'This is the 2nd message';
+export const message3 = 'This is the 3rd message';
+export const message4 = 'This is the 4th message';
 
 export const invalidShortMessage = '';
 export const invalidLongMessage = 'x'.repeat(1001);

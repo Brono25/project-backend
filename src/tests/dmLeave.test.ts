@@ -46,11 +46,11 @@ describe('Error Handling', () => {
     h.testErrorThrown(h.DM_LEAVE_URL, 'POST', 400, data, token0);
   });
   test('Token owner is not a member of the dm', () => {
-    const data = {dmId: dmId1};
+    const data = { dmId: dmId1 };
     h.testErrorThrown(h.DM_LEAVE_URL, 'POST', 403, data, token1);
   });
   test('Invalid Token', () => {
-    const data = { dmId: dmId1};
+    const data = { dmId: dmId1 };
     h.testErrorThrown(h.DM_LEAVE_URL, 'POST', 403, data, h.invalidToken);
   });
 });

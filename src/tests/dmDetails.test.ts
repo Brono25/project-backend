@@ -39,11 +39,11 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid dmId', () => {
-    const data = {dmId: invalidDmId};
+    const data = { dmId: invalidDmId };
     h.testErrorThrown(h.DM_DETAILS_URL, 'GET', 400, data, token0);
   });
   test('Token owner is not a member of the dm', () => {
-    const data = {dmId: dmId1 };
+    const data = { dmId: dmId1 };
     h.testErrorThrown(h.DM_DETAILS_URL, 'GET', 403, data, token1);
   });
   test('Invalid Token', () => {

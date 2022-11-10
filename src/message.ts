@@ -200,25 +200,23 @@ function removeDmMessage(token: string, dmId: number, messageId: number, uId: nu
  */
 
 export function messageEditV1(token: string, messageId: number, message: string): object | Error {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
+  isValidToken(token);
   const MAX_MSG_LEN = 1000;
   if (message.length > MAX_MSG_LEN) {
-    return { error: 'Invalid message' };
+    throw HTTPError(400, 'Invalid message');
   }
   if (!isValidMessageId(messageId)) {
-    return { error: 'Invalid message ID' };
+    throw HTTPError(400, 'Invalid message ID');
   }
   const messageLoc: MessageTracking = getMessageLocation(messageId);
   const channelId: number = messageLoc.channelId;
   const dmId: number = messageLoc.dmId;
   if (channelId !== null) {
     if (!isTokenMemberOfChannel(token, channelId)) {
-      return { error: 'Not a channel memeber' };
+      throw HTTPError(403, 'Not a channel memeber');
     }
     if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
-      return { error: 'Dont have channel owner permissions' };
+      throw HTTPError(403, 'Dont have channel owner permissions');
     }
     const channelStore: ChannelStore = getChannelStoreFromId(channelId);
     let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
@@ -237,10 +235,10 @@ export function messageEditV1(token: string, messageId: number, message: string)
 
   if (messageLoc.dmId !== null) {
     if (!isTokenMemberOfDm(token, messageLoc.dmId)) {
-      return { error: 'Not a dm memeber' };
+      throw HTTPError(403, 'Not a dm memeber');
     }
     if (!doesTokenHaveDmOwnerPermissions(token, messageLoc.dmId)) {
-      return { error: 'Dont have dm owner permissions' };
+      throw HTTPError(403, 'Dont have dm owner permissions');
     }
     const dmStore: DmStore = getDmStore(dmId);
     let index: number = dmStore.messages.findIndex(a => a.messageId === messageId);

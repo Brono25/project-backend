@@ -40,7 +40,7 @@ describe('Error Handling', () => {
     h.testErrorThrown(h.DM_RMV_URL, 'DELETE', 400, data, token1);
   });
   test('Invalid token', () => {
-    const data = { dmId: dmId0};
+    const data = { dmId: dmId0 };
     h.testErrorThrown(h.DM_RMV_URL, 'DELETE', 403, data, h.invalidToken);
   });
   test('Token is not the owner of DM', () => {
@@ -56,7 +56,7 @@ describe('Error Handling', () => {
     h.postRequest(h.DM_LEAVE_URL, {
       dmId: dmId1,
     }, token1);
-    const data = {dmId: dmId1};
+    const data = { dmId: dmId1 };
     h.testErrorThrown(h.DM_RMV_URL, 'DELETE', 403, data, token1);
   });
 });

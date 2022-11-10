@@ -32,7 +32,6 @@ beforeEach(() => {
   tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId0] }, token1);
   const dmId1 = parseInt(tmp.dmId);
 
-
   tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: MSG + '0' }, token0);
   tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: MSG + '1' }, token1);
   mId1 = parseInt(tmp.messageId);
@@ -51,9 +50,8 @@ afterEach(() => {
 
 // ------------------Error Testing------------------///
 describe('Error Handling', () => {
-
   test('Invalid token', () => {
-    const data = {messageId: mId4};
+    const data = { messageId: mId4 };
     h.testErrorThrown(h.MSG_RMV_URL, 'DELETE', 403, data, h.invalidToken);
   });
   test('User is not part of the DM that the message was posted in', () => {
@@ -61,15 +59,15 @@ describe('Error Handling', () => {
     h.testErrorThrown(h.MSG_RMV_URL, 'DELETE', 403, data, token2);
   });
   test('Member try to delete message they didnt post', () => {
-    const data = {messageId: mId1};
+    const data = { messageId: mId1 };
     h.testErrorThrown(h.MSG_RMV_URL, 'DELETE', 403, data, token2);
   });
   test('Global owner who didnt create dm try to delete message they didnt create', () => {
-    const data = {messageId: mId3};
+    const data = { messageId: mId3 };
     h.testErrorThrown(h.MSG_RMV_URL, 'DELETE', 403, data, token0);
   });
   test('Invalid message id', () => {
-    const data = {messageId: invalidMsgId};
+    const data = { messageId: invalidMsgId };
     h.testErrorThrown(h.MSG_RMV_URL, 'DELETE', 400, data, token0);
   });
 });
