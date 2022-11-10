@@ -27,9 +27,12 @@ export const MSG_SEND_URL = `${url}:${port}/message/send/v2`;
 
 export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
 
+export const DM_CREATE_URL = `${url}:${port}/dm/create/v2`;
+
+
 export const MSG_EDIT_URL = `${url}:${port}/message/edit/v1`;
 export const MSG_RMV_URL = `${url}:${port}/message/remove/v1`;
-export const DM_CREATE_URL = `${url}:${port}/dm/create/v1`;
+
 export const DM_LIST_URL = `${url}:${port}/dm/list/v1`;
 export const DM_RMV_URL = `${url}:${port}/dm/remove/v1`;
 export const DM_DETAILS_URL = `${url}:${port}/dm/details/v1`;

@@ -44,20 +44,21 @@ import {
  * @returns {number}
  */
 export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
+  
+  isValidToken(token);
+  
   if (uIds.find(a => isValidAuthUserId(a) === false)) {
-    return { error: 'Invalid User ID' };
+    throw HTTPError(400, 'Invalid User ID');
   }
   const numUniqueIds: number = new Set(uIds).size;
   if (numUniqueIds !== uIds.length) {
-    return { error: 'Duplicate uId' };
+    throw HTTPError(400, 'Duplicate uId');
   }
   const ownerId = getUIdFromToken(token);
   if (uIds.includes(ownerId)) {
-    return { error: 'Dm creator can not include themselves' };
+    throw HTTPError(400, 'Dm creator can not include themselves');
   }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+  
   uIds.unshift(ownerId);
 
   const dmId: number = generateDmId();
