@@ -5,7 +5,6 @@ h.deleteRequest(h.CLEAR_URL, {});
 // Setup: Create 3 users.
 let token0: string;
 let token1 : string;
-let token2 : string;
 let uId0: number;
 let uId1: number;
 let uId2: number;
@@ -21,7 +20,6 @@ beforeEach(() => {
   token1 = tmp.token;
   uId1 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
-  token2 = tmp.token;
   uId2 = parseInt(tmp.authUserId);
 
   tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1, uId2] }, token0);

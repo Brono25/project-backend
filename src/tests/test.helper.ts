@@ -9,13 +9,12 @@ const url = config.url;
 export const LOGIN_URL = `${url}:${port}/auth/login/v3`;
 export const REGISTER_URL = `${url}:${port}/auth/register/v3`;
 export const LOGOUT_URL = `${url}:${port}/auth/logout/v2`;
-export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v3`;
 
+export const CHAN_CREATE_URL = `${url}:${port}/channels/create/v3`;
 export const CHAN_JOIN_URL = `${url}:${port}/channel/join/v3`;
 export const CHAN_DETAIL_URL = `${url}:${port}/channel/details/v3`;
 export const CHAN_INV_URL = `${url}:${port}/channel/invite/v3`;
 export const CLEAR_URL = `${url}:${port}/clear/v1`;
-
 export const CHAN_LIST_URL = `${url}:${port}/channels/list/v3`;
 export const CHAN_LIST_ALL_URL = `${url}:${port}/channels/listAll/v3`;
 export const CHAN_LEAVE_URL = `${url}:${port}/channel/leave/v2`;
@@ -23,26 +22,23 @@ export const CHAN_ADD_OWNER_URL = `${url}:${port}/channel/addowner/v2`;
 export const CHAN_MSG_URL = `${url}:${port}/channel/messages/v3`;
 export const CHAN_RMV_OWNER_URL = `${url}:${port}/channel/removeowner/v2`;
 
-export const MSG_SEND_URL = `${url}:${port}/message/send/v2`;
-
-export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
-
+export const DM_MSG_URL = `${url}:${port}/dm/messages/v2`;
 export const DM_CREATE_URL = `${url}:${port}/dm/create/v2`;
 export const DM_DETAILS_URL = `${url}:${port}/dm/details/v2`;
+export const DM_LEAVE_URL = `${url}:${port}/dm/leave/v2`;
+export const DM_LIST_URL = `${url}:${port}/dm/list/v2`;
+export const DM_RMV_URL = `${url}:${port}/dm/remove/v2`;
 
-export const MSG_EDIT_URL = `${url}:${port}/message/edit/v1`;
-export const MSG_RMV_URL = `${url}:${port}/message/remove/v1`;
+export const MSG_SEND_URL = `${url}:${port}/message/send/v2`;
+export const MSG_EDIT_URL = `${url}:${port}/message/edit/v2`;
+export const MSG_RMV_URL = `${url}:${port}/message/remove/v2`;
+export const MSG_SEND_DM_URL = `${url}:${port}/message/senddm/v2`;
 
-export const DM_LIST_URL = `${url}:${port}/dm/list/v1`;
-export const DM_RMV_URL = `${url}:${port}/dm/remove/v1`;
-
-export const DM_LEAVE_URL = `${url}:${port}/dm/leave/v1`;
-export const DM_MSG_URL = `${url}:${port}/dm/messages/v1`;
-export const MSG_SEND_DM_URL = `${url}:${port}/message/senddm/v1`;
-export const USER_ALL_URL = `${url}:${port}/users/all/v1`;
-export const USER_PROF_SET_NAME_URL = `${url}:${port}/user/profile/setname/v1`;
-export const USER_PROF_SET_EMAIL_URL = `${url}:${port}/user/profile/setemail/v1`;
-export const USER_PROF_SET_HANDLE_URL = `${url}:${port}/user/profile/sethandle/v1`;
+export const USER_PROF_URL = `${url}:${port}/user/profile/v2`;
+export const USER_ALL_URL = `${url}:${port}/users/all/v2`;
+export const USER_PROF_SET_NAME_URL = `${url}:${port}/user/profile/setname/v2`;
+export const USER_PROF_SET_EMAIL_URL = `${url}:${port}/user/profile/setemail/v2`;
+export const USER_PROF_SET_HANDLE_URL = `${url}:${port}/user/profile/sethandle/v2`;
 
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
