@@ -22,8 +22,6 @@ function get_PID_of_PORT() {
 # close a server it if is already running
 PID=$(get_PID_of_PORT $PORT) && kill -INT "$PID" 
 
-
-
 cat << eof
 
 |--------------------------------|
@@ -33,7 +31,7 @@ eof
 
 npm run lint-fix 
 
-[ $? -eq 1 ] && exit 1
+[ $? -eq 0 ] || exit 1
 echo "PASSED"
 
 cat << eof
@@ -43,7 +41,7 @@ cat << eof
 |--------------------------------|
 eof
 npm run tsc 
-[ $? -eq 1 ] && exit 1
+[ $? -eq 0 ] || exit 1
 echo "PASSED"
 
 cat << eof
@@ -53,7 +51,7 @@ cat << eof
 |--------------------------------|
 eof
 
-npm run ts-node-coverage 2>&1 /dev/null &
+npm run ts-node-coverage 2>& 1 /dev/null &
 
 
 waiting=0
@@ -62,8 +60,8 @@ while [ "$waiting" -ne 1 ]; do
     [ "$PID" == '' ] || waiting=1
 done
 
-npm t
-[ $? -eq 1 ] && exit 1
+npm t  2>& 1 /dev/null
+[ $? -eq 0 ] || exit 1
 
 
 cat << eof
@@ -80,7 +78,7 @@ cat << eof
 |--------------------------------|
 eof
 npm run pipeline-coverage-check
-[ $? -eq 1 ] && exit 1
+[ $? -eq 0 ] || exit 1
 
 timeTested=$(date +%T)
 dateTested=$(date +%D)

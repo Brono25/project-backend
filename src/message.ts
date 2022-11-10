@@ -198,7 +198,6 @@ function removeDmMessage(token: string, dmId: number, messageId: number, uId: nu
  * @param {string, number, string}
  * @returns { object | Error}
  */
-
 export function messageEditV1(token: string, messageId: number, message: string): object | Error {
   isValidToken(token);
   isValidMessageId(messageId);
@@ -210,48 +209,63 @@ export function messageEditV1(token: string, messageId: number, message: string)
   const channelId: number = messageLoc.channelId;
   const dmId: number = messageLoc.dmId;
   if (channelId !== null) {
-    if (!isTokenMemberOfChannel(token, channelId)) {
-      throw HTTPError(403, 'Not a channel memeber');
-    }
-    if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
-      throw HTTPError(403, 'Dont have channel owner permissions');
-    }
-    const channelStore: ChannelStore = getChannelStoreFromId(channelId);
-    let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
-    const messageStore: Message = channelStore.messages[index];
-    const data: DataStore = getData();
-    messageStore.message = message;
-    if (message === '') {
-      channelStore.messages.splice(index, 1);
-      data.messageIds.splice(index, 1);
-    }
-    index = data.channels.findIndex(a => a.channelId === channelId);
-    data.channels[index] = channelStore;
-    index = data.messageIds.findIndex(a => a.messageId === messageId);
-    setData(data);
+    editChannelMessage(token, messageId, message, channelId);
   }
-
   if (messageLoc.dmId !== null) {
-    if (!isTokenMemberOfDm(token, messageLoc.dmId)) {
-      throw HTTPError(403, 'Not a dm memeber');
-    }
-    if (!doesTokenHaveDmOwnerPermissions(token, messageLoc.dmId)) {
-      throw HTTPError(403, 'Dont have dm owner permissions');
-    }
-    const dmStore: DmStore = getDmStore(dmId);
-    let index: number = dmStore.messages.findIndex(a => a.messageId === messageId);
-    const messageStore: Message = dmStore.messages[index];
-    const data: DataStore = getData();
-    messageStore.message = message;
-    if (message === '') {
-      dmStore.messages.splice(index, 1);
-      data.messageIds.splice(index, 1);
-    }
-    index = data.dms.findIndex(a => a.dmId === dmId);
-    data.dms[index] = dmStore;
-    index = data.messageIds.findIndex(a => a.messageId === messageId);
-    setData(data);
+    editDmMessage(token, messageId, message, dmId);
   }
-
   return {};
+}
+
+/**
+ * Edit channel messages
+ * @param {string, number, string, number}
+ */
+
+function editChannelMessage(token: string, messageId: number, message: string, channelId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(403, 'Not a channel memeber');
+  }
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+    throw HTTPError(403, 'Dont have channel owner permissions');
+  }
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  let index: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = channelStore.messages[index];
+  const data: DataStore = getData();
+  messageStore.message = message;
+  if (message === '') {
+    channelStore.messages.splice(index, 1);
+    data.messageIds.splice(index, 1);
+  }
+  index = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[index] = channelStore;
+  index = data.messageIds.findIndex(a => a.messageId === messageId);
+  setData(data);
+}
+/**
+ * edit dm messages
+ * @param {string, number, string, number}
+ */
+
+function editDmMessage(token: string, messageId: number, message: string, dmId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(403, 'Not a dm memeber');
+  }
+  if (!doesTokenHaveDmOwnerPermissions(token, dmId)) {
+    throw HTTPError(403, 'Dont have dm owner permissions');
+  }
+  const dmStore: DmStore = getDmStore(dmId);
+  let index: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = dmStore.messages[index];
+  const data: DataStore = getData();
+  messageStore.message = message;
+  if (message === '') {
+    dmStore.messages.splice(index, 1);
+    data.messageIds.splice(index, 1);
+  }
+  index = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index] = dmStore;
+  index = data.messageIds.findIndex(a => a.messageId === messageId);
+  setData(data);
 }
