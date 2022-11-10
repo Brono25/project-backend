@@ -3,28 +3,15 @@ import * as h from './test.helper';
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup: Create 3 users.
-let authUser0: any;
-let authUser2: any;
+
 let token0: string;
-let token2: string;
-
+let token1: string;
+let tmp: any;
 beforeEach(() => {
-  authUser0 = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-
-  authUser2 = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-
-  token0 = authUser0.token;
-  token2 = authUser2.token;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
+  token0 = tmp.token;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  token1 = tmp.token;
 });
 // Tear down
 afterEach(() => {
@@ -35,33 +22,21 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid email', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
-      token: token2,
-      email: h.invalidEmail,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Email' });
+    const data = { email: h.invalidEmail };
+    h.testErrorThrown(h.USER_PROF_SET_EMAIL_URL, 'PUT', 400, data, token1);
   });
   test('Email address already in use', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
-      token: token0,
-      email: h.email2,
-    });
-    expect(data).toStrictEqual({ error: 'Email is already taken' });
+    const data = { email: h.email1 };
+    h.testErrorThrown(h.USER_PROF_SET_EMAIL_URL, 'PUT', 400, data, token0);
   });
   test('Attempt to assign uppercase email when lower case email is already taken', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
-      token: token0,
-      email: h.email0AltCase,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    const data = { email: h.email0AltCase };
+    h.testErrorThrown(h.USER_PROF_SET_EMAIL_URL, 'PUT', 400, data, token0);
   });
 
   test('Invalid token', () => {
-    const data = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
-      token: h.invalidToken,
-      email: h.email1,
-    });
-    expect(data).toStrictEqual({ error: 'token is invalid!' });
+    const data = { email: h.email1 };
+    h.testErrorThrown(h.USER_PROF_SET_EMAIL_URL, 'PUT', 403, data, h.invalidToken);
   });
 });
 
@@ -70,13 +45,10 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('change email', () => {
     let data: any = h.putRequest(h.USER_PROF_SET_EMAIL_URL, {
-      token: token0,
       email: 'email_new_@gmail.com',
-    });
+    }, token0);
     expect(data).toStrictEqual({});
-    data = h.getRequest(h.USER_ALL_URL, {
-      token: token0,
-    });
+    data = h.getRequest(h.USER_ALL_URL, undefined, token0);
     expect(data.users[0].email).toStrictEqual('email_new_@gmail.com');
   });
 });
