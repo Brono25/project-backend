@@ -27,7 +27,7 @@ beforeEach(() => {
   invalidMId = Math.abs(mId0 + 10);
   tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [] }, token1);
   const dmId0 = parseInt(tmp.dmId);
-  tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message01 }, token1);
+  tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message1 }, token1);
   mId1 = parseInt(tmp.messageId);
 });
 // Tear down

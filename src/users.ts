@@ -1,6 +1,6 @@
 import HTTPError from 'http-errors';
 import validator from 'validator';
-import { isEmailUsed } from './auth';
+
 import {
   DataStore,
   Error,
@@ -14,7 +14,8 @@ import {
   getUIdFromToken,
   getUserStoreFromId,
   isValidToken,
-  isValidAuthUserId
+  isValidAuthUserId,
+  isEmailUsed
 } from './other';
 
 import {
@@ -38,13 +39,8 @@ import {
  */
 
 function userProfileV2(token: string, uId: number): {user: User} | Error {
-  if (!isValidAuthUserId(uId)) {
-    return { error: 'authUserId is invalid!' };
-  }
-
-  if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
-  }
+  isValidToken(token);
+  isValidAuthUserId(uId);
 
   const data: DataStore = getData();
 
@@ -74,9 +70,7 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
  */
 
 function usersAllv1(token: string): UsersAllReturn {
-  if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
-  }
+  isValidToken(token);
 
   const data: DataStore = getData();
   let userDetails: User;
@@ -104,16 +98,14 @@ function usersAllv1(token: string): UsersAllReturn {
  */
 
 function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string): object {
-  if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
-  }
+  isValidToken(token);
   const maxNameLength = 50;
   const minNameLength = 1;
   if (nameFirst.length < minNameLength || nameFirst.length > maxNameLength) {
-    return { error: 'First name must be between 1-50 characters long (inclusive)' };
+    throw HTTPError(400, 'First name must be between 1-50 characters long (inclusive)');
   }
   if (nameLast.length < minNameLength || nameLast.length > maxNameLength) {
-    return { error: 'Last name must be between 1-50 characters long (inclusive)' };
+    throw HTTPError(400, 'Last name must be between 1-50 characters long (inclusive)');
   }
 
   const data: DataStore = getData();
@@ -138,23 +130,18 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
  */
 
 function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHandleReturn {
-  if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
-  }
+  isValidToken(token);
 
   const maxHandleLength = 20;
   const minHandleLength = 3;
-
   if (handleStr.length < minHandleLength || handleStr.length > maxHandleLength) {
-    return { error: 'Handle must be between 3-20 characters long (inclusive)' };
+    throw HTTPError(400, 'Handle must be between 3-20 characters long (inclusive)');
   }
-
   if (!handleStr.match(/^[0-9a-zA-z]+$/)) {
-    return { error: 'handleStr contains characters that are not alphanumeric' };
+    throw HTTPError(400, 'handleStr contains characters that are not alphanumeric');
   }
-
   if (!isHandleStrUnique(handleStr)) {
-    return { error: 'Handle is already used by another user' };
+    throw HTTPError(400, 'Handle is already used by another user');
   }
 
   const data: DataStore = getData();
@@ -177,16 +164,10 @@ function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHa
  * @returns {}
  */
 function userProfileSetEmailV1(token: string, email: string): any {
+  isValidToken(token);
+  isEmailUsed(email);
   if (!validator.isEmail(email)) {
-    return { error: 'Invalid Email' };
-  }
-
-  if (isEmailUsed(email)) {
-    return { error: 'Email is already taken' };
-  }
-
-  if (!isValidToken(token)) {
-    return { error: 'token is invalid!' };
+    throw HTTPError(400, 'Invalid Email');
   }
 
   const data: DataStore = getData();
