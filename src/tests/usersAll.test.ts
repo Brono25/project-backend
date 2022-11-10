@@ -3,32 +3,22 @@ import * as h from './test.helper';
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup: Create 3 users.
-let authUser0: any;
-let authUser1: any;
-let authUser2: any;
-let authUserToken0: string;
-let authUserToken2: string;
+
+let token0: string;
+let token2: string;
+let uId0: number;
+let uId1: number;
+let uId2: number;
+let tmp: any;
 beforeEach(() => {
-  authUser0 = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  authUserToken0 = authUser0.token;
-  authUser1 = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  authUser2 = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-  authUserToken2 = authUser2.token;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
+  token0 = tmp.token;
+  uId0 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  uId1 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+  token2 = tmp.token;
+  uId2 = parseInt(tmp.authUserId);
 });
 
 // Tear down
@@ -40,10 +30,7 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Incorrect token', () => {
-    const data = h.getRequest(h.USER_ALL_URL, {
-      token: 'invalidToken',
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    h.testErrorThrown(h.USER_ALL_URL, 'GET', 403, undefined, h.invalidToken);
   });
 });
 
@@ -51,27 +38,25 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('List all three users using token of user0', () => {
-    const data = h.getRequest(h.USER_ALL_URL, {
-      token: authUserToken0,
-    });
+    const data = h.getRequest(h.USER_ALL_URL, undefined, token0);
     expect(data).toStrictEqual({
       users: [
         {
-          uId: authUser0.authUserId,
+          uId: uId0,
           email: h.email0,
           nameFirst: h.firstName0,
           nameLast: h.lastName0,
           handleStr: expect.any(String),
         },
         {
-          uId: authUser1.authUserId,
+          uId: uId1,
           email: h.email1,
           nameFirst: h.firstName1,
           nameLast: h.lastName1,
           handleStr: expect.any(String),
         },
         {
-          uId: authUser2.authUserId,
+          uId: uId2,
           email: h.email2,
           nameFirst: h.firstName2,
           nameLast: h.lastName2,
@@ -82,27 +67,25 @@ describe('Function Testing', () => {
   });
 
   test('List all three users using token of user2', () => {
-    const data = h.getRequest(h.USER_ALL_URL, {
-      token: authUserToken2,
-    });
+    const data = h.getRequest(h.USER_ALL_URL, undefined, token2);
     expect(data).toStrictEqual({
       users: [
         {
-          uId: authUser0.authUserId,
+          uId: uId0,
           email: h.email0,
           nameFirst: h.firstName0,
           nameLast: h.lastName0,
           handleStr: expect.any(String),
         },
         {
-          uId: authUser1.authUserId,
+          uId: uId1,
           email: h.email1,
           nameFirst: h.firstName1,
           nameLast: h.lastName1,
           handleStr: expect.any(String),
         },
         {
-          uId: authUser2.authUserId,
+          uId: uId2,
           email: h.email2,
           nameFirst: h.firstName2,
           nameLast: h.lastName2,

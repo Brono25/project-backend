@@ -4,28 +4,17 @@ h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
 let token0: string;
-let token2: string;
+let token1: string;
 let handleStr2: string;
 let temp: any;
-
+let tmp: any;
 beforeEach(() => {
-  temp = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  token0 = temp.token;
-
-  temp = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-  token2 = temp.token;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
+  token0 = tmp.token;
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  token1 = tmp.token;
   temp = h.getRequest(h.USER_ALL_URL, {
-    token: token2,
+    token: token1,
   });
   handleStr2 = temp.users[1].handleStr;
 });
