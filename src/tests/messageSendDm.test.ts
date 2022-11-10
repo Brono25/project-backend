@@ -1,8 +1,4 @@
 import * as h from './test.helper';
-
-import {
-  dmCreateV1,
-} from '../dm';
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup: Create 3 users.
@@ -10,34 +6,21 @@ let uId1: number;
 let token0: string;
 let token1: string;
 let token2: string;
-let dmId: number;
+let dmId0: number;
 let invalidDmId: number;
+let tmp: any;
 beforeEach(() => {
-  let tmp: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
   uId1 = parseInt(tmp.authUserId);
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = tmp.token;
-  tmp = dmCreateV1(token0, [uId1]);
-  dmId = tmp.dmId;
-  invalidDmId = dmId + 10;
+
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
+  dmId0 = parseInt(tmp.dmId);
+  invalidDmId = dmId0 + 10;
 });
 
 // Tear down
@@ -49,44 +32,39 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid DmId', () => {
-    const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token0,
+    const data = {
       dmId: invalidDmId,
       message: h.message0,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid DM ID' });
+    };
+    h.testErrorThrown(h.MSG_SEND_DM_URL, 'POST', 400, data, token0);
   });
   test('Message less than length 1', () => {
-    const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token0,
-      dmId: dmId,
+    const data = {
+      dmId: dmId0,
       message: h.invalidShortMessage,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid message length' });
+    };
+    h.testErrorThrown(h.MSG_SEND_DM_URL, 'POST', 400, data, token0);
   });
   test('Message more than length 1000', () => {
-    const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token0,
-      dmId: dmId,
+    const data = {
+      dmId: dmId0,
       message: h.invalidLongMessage,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid message length' });
+    };
+    h.testErrorThrown(h.MSG_SEND_DM_URL, 'POST', 400, data, token0);
   });
   test('User is not a member', () => {
-    const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token2,
-      dmId: dmId,
+    const data = {
+      dmId: dmId0,
       message: h.message0,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Member' });
+    };
+    h.testErrorThrown(h.MSG_SEND_DM_URL, 'POST', 403, data, token2);
   });
   test('Invalid token', () => {
-    const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: h.invalidToken,
-      dmId: dmId,
+    const data = {
+      dmId: dmId0,
       message: h.message0,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid token' });
+    };
+    h.testErrorThrown(h.MSG_SEND_DM_URL, 'POST', 403, data, h.invalidToken);
   });
 });
 
@@ -95,18 +73,16 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Owner Send  DM message', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token0,
-      dmId: dmId,
+      dmId: dmId0,
       message: h.message0,
-    });
+    }, token0);
     expect(data).toStrictEqual({ messageId: expect.any(Number) });
   });
   test('Member Send DM message', () => {
     const data = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token1,
-      dmId: dmId,
+      dmId: dmId0,
       message: h.message0,
-    });
+    }, token1);
     expect(data).toStrictEqual({ messageId: expect.any(Number) });
   });
 });
