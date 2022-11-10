@@ -1,7 +1,4 @@
 import * as h from './test.helper';
-import {
-  dmCreateV1,
-} from '../dm';
 
 h.deleteRequest(h.CLEAR_URL, {});
 
@@ -10,47 +7,28 @@ let uId1: number;
 let uId2: number;
 let token0: string;
 let token1: string;
-let dm0: any;
-let dm1: any;
-let dm2: any;
 let dmId0: number;
 let dmId1: number;
 let dmId2: number;
 let input: any;
-let invalidInput: any;
+let tmp: any;
 // SETUP
 beforeEach(() => {
-  // Create users 0, 1, 2
-  const user0: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  token0 = user0.token;
-  uId0 = parseInt(user0.authUserId);
-  const user1: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  token1 = user1.token;
-  uId1 = parseInt(user1.authUserId);
-  const user2: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-  uId2 = parseInt(user2.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
+  token0 = tmp.token;
+  uId0 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  token1 = tmp.token;
+  uId1 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+  uId2 = parseInt(tmp.authUserId);
   // Create DMs
-  dm0 = dmCreateV1(token0, [uId1, uId2]);
-  dmId0 = parseInt(dm0.dmId);
-  dm1 = dmCreateV1(token1, [uId0]);
-  dmId1 = parseInt(dm1.dmId);
-  dm2 = dmCreateV1(token0, []);
-  dmId2 = parseInt(dm2.dmId);
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1, uId2] }, token0);
+  dmId0 = parseInt(tmp.dmId);
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId0] }, token1);
+  dmId1 = parseInt(tmp.dmId);
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [] }, token0);
+  dmId2 = parseInt(tmp.dmId);
 });
 
 // TEARDOWN
@@ -62,10 +40,7 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid Token', () => {
-    invalidInput = h.getRequest(h.DM_LIST_URL, {
-      token: h.invalidToken,
-    });
-    expect(invalidInput).toStrictEqual({ error: 'Invalid Token' });
+    h.testErrorThrown(h.DM_LIST_URL, 'GET', 403, undefined, h.invalidToken);
   });
 });
 
@@ -73,9 +48,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('For an owner or member of multiple DMs', () => {
-    input = h.getRequest(h.DM_LIST_URL, {
-      token: token0,
-    });
+    input = h.getRequest(h.DM_LIST_URL, undefined, token0);
     expect(input).toStrictEqual(
       {
         dms: [

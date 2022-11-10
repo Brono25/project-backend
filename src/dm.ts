@@ -171,7 +171,6 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
  * @param {number, number, number} - token, dmId, start
  * @returns {PageMessages | Error} - { messages, start, end }
  */
-
 export function dmMessagesV1(
   token: string,
   dmId: number,

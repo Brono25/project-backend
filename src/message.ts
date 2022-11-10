@@ -86,17 +86,14 @@ export function messageSendV1(
 export function messageSendDmV1(
   token: string, dmId: number, message: string
 ): MessageId | Error {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
-  if (!isValidDmId(dmId)) {
-    return { error: 'Invalid DM ID' };
-  }
+  isValidToken(token);
+  isValidDmId(dmId);
+
   if (message.length < MIN_MSG_LEN || message.length > MAX_MSG_LEN) {
-    return { error: 'Invalid message length' };
+    throw HTTPError(400, 'Invalid message length');
   }
   if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'Invalid Member' };
+    throw HTTPError(403, 'User not a member');
   }
   const messageId: number = generateMessageId();
   const uId: number = getUIdFromToken(token);
@@ -129,12 +126,10 @@ export function messageSendDmV1(
  * @returns { object | Error}
  */
 export function messageRemoveV1(token: string, messageId: number): object | Error {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
+  isValidToken(token);
   const messageLoc: MessageTracking = getMessageLocation(messageId);
   if (messageLoc === null) {
-    return { error: 'Message doesnt exist' };
+    throw HTTPError(400, 'Invalid message id');
   }
   if (messageLoc.channelId !== null) {
     const channelId: number = messageLoc.channelId;
@@ -153,11 +148,11 @@ export function messageRemoveV1(token: string, messageId: number): object | Erro
  */
 function removeChannelMessage(token: string, channelId: number, messageId: number, uId: number) {
   if (!isTokenMemberOfChannel(token, channelId)) {
-    return { error: 'Invalid message Id' };
+    throw HTTPError(403, 'User doesnt have permission');
   }
   const isUsersOwnMessage = <boolean> (getUIdFromToken(token) === uId);
   if (!doesTokenHaveChanOwnerPermissions(token, channelId) && !isUsersOwnMessage) {
-    return { error: 'Token doesnt have permission' };
+    throw HTTPError(403, 'User doesnt have permission');
   }
   const data: DataStore = getData();
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
@@ -177,11 +172,11 @@ function removeChannelMessage(token: string, channelId: number, messageId: numbe
  */
 function removeDmMessage(token: string, dmId: number, messageId: number, uId: number) {
   if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'Invalid message Id' };
+    throw HTTPError(403, 'User doesnt have permission');
   }
   const isUsersOwnMessage = <boolean> (getUIdFromToken(token) === uId);
   if (!doesTokenHaveDmOwnerPermissions(token, dmId) && !isUsersOwnMessage) {
-    return { error: 'Token doesnt have permission' };
+    throw HTTPError(403, 'User doesnt have permission');
   }
   const data: DataStore = getData();
   const dmStore: DmStore = getDmStore(dmId);

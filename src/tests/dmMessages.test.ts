@@ -17,30 +17,16 @@ let dmId0: number;
 let invalidDmId: number;
 let start = 0;
 const invalidStart = MSG_PER_PAGE + 10;
+let tmp: any;
 beforeEach(() => {
-  h.deleteRequest(h.CLEAR_URL, {});
-  let tmp: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
 
-  tmp = h.postRequest(h.DM_CREATE_URL, {
-    token: token0,
-    uIds: [],
-  });
-  dmId0 = tmp.dmId;
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [] }, token0);
+  dmId0 = parseInt(tmp.dmId);
+
   invalidDmId = Math.abs(dmId0) + 10;
 
   h.postRequest(h.MSG_SEND_DM_URL, {
