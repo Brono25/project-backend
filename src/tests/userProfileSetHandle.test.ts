@@ -13,9 +13,7 @@ beforeEach(() => {
   token0 = tmp.token;
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
-  temp = h.getRequest(h.USER_ALL_URL, {
-    token: token1,
-  });
+  temp = h.getRequest(h.USER_ALL_URL, undefined, token1);
   handleStr2 = temp.users[1].handleStr;
 });
 // Tear down
@@ -27,33 +25,21 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('long handleStr', () => {
-    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
-      token: token0,
-      handleStr: 'longhandleStr123456789',
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    const data = { handleStr: h.invalidLongMessage };
+    h.testErrorThrown(h.USER_PROF_SET_HANDLE_URL, 'PUT', 400, data, token0);
   });
   test('not alphanumeric handleStr', () => {
-    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
-      token: token0,
-      handleStr: 'h@ndleStr',
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    const data = { handleStr: '@-/*' };
+    h.testErrorThrown(h.USER_PROF_SET_HANDLE_URL, 'PUT', 400, data, token0);
   });
   test('handleStr already being used', () => {
-    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
-      token: token0,
-      handleStr: handleStr2,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    const data = { handleStr: handleStr2 };
+    h.testErrorThrown(h.USER_PROF_SET_HANDLE_URL, 'PUT', 400, data, token0);
   });
 
   test('Invalid token', () => {
-    const data = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
-      token: h.invalidToken,
-      handleStr: 'firstnameLastname',
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    const data = { handleStr: 'handle' };
+    h.testErrorThrown(h.USER_PROF_SET_HANDLE_URL, 'PUT', 403, data, h.invalidToken);
   });
 });
 
@@ -62,13 +48,10 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('change handle', () => {
     let data: any = h.putRequest(h.USER_PROF_SET_HANDLE_URL, {
-      token: token0,
       handleStr: 'firstnameLastname',
-    });
+    }, token0);
     expect(data).toStrictEqual({});
-    data = h.getRequest(h.USER_ALL_URL, {
-      token: token0,
-    });
+    data = h.getRequest(h.USER_ALL_URL, undefined, token0);
     expect(data.users[0].handleStr).toStrictEqual('firstnameLastname');
   });
 });
