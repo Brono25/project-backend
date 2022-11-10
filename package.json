@@ -8,7 +8,8 @@
         "ts-node-coverage": "nyc --reporter=text --reporter=json-summary ts-node -T src/server.ts",
         "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1",
         "pipeline-coverage-check": "node ./utilities/pipeline-coverage-check.js",
-        "test-suite": "./utilities/test-suite.sh"
+        "test-suite": "./utilities/test-suite.sh",
+        "dev-start": "nodemon server.ts"
     },
     "dependencies": {
         "cors": "^2.8.5",

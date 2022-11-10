@@ -5,61 +5,29 @@ h.deleteRequest(h.CLEAR_URL, {});
 // Setup
 let token0: string;
 let token1 : string;
-let tmp: any;
+let uId0: number;
+let uId1: number;
 let mId0: number;
 let mId1: number;
 let invalidMId: number;
 let channelId0: number;
-let uId0: number;
-let uId1: number;
+let tmp: any;
 beforeEach(() => {
-  h.deleteRequest(h.CLEAR_URL, {});
-  // tokens 0,1 and 2
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  uId0 = tmp.authUserId;
-
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
+  uId0 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
-  uId1 = tmp.authUserId;
+  uId1 = parseInt(tmp.authUserId);
 
-  // Channels
-  tmp = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
+  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(tmp.channelId);
-
-  tmp = h.postRequest(h.MSG_SEND_URL, {
-    token: token0,
-    channelId: channelId0,
-    message: 'First message channel'
-  });
+  tmp = h.postRequest(h.MSG_SEND_URL, { channelId: channelId0, message: h.message0 }, token0);
   mId0 = parseInt(tmp.messageId);
   invalidMId = Math.abs(mId0 + 10);
-
-  // Create DM
-  tmp = h.postRequest(h.DM_CREATE_URL, {
-    token: token1,
-    uIds: []
-  });
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [] }, token1);
   const dmId0 = parseInt(tmp.dmId);
-  tmp = h.postRequest(h.MSG_SEND_DM_URL, {
-    token: token1,
-    dmId: dmId0,
-    message: 'First message DM'
-  });
+  tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message1 }, token1);
   mId1 = parseInt(tmp.messageId);
 });
 // Tear down
@@ -70,74 +38,64 @@ afterEach(() => {
 // ------------------Error Testing------------------///
 describe('Error Handling', () => {
   test('Invalid token', () => {
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: h.invalidToken,
+    const data = {
       messageId: mId0,
       message: 'Edited message',
-    });
-    expect(data).toStrictEqual({ error: 'Invalid token' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 403, data, h.invalidToken);
   });
   test('Message too long', () => {
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
+    const data = {
       messageId: mId0,
       message: h.invalidLongMessage,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid message' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 400, data, token0);
   });
   test('Invalid message ID', () => {
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token1,
+    const data = {
       messageId: invalidMId,
       message: h.message0,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid message ID' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 400, data, token1);
   });
   test('User is not a member of channel which has the message', () => {
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token1,
+    const data = {
       messageId: mId0,
       message: h.message0,
-    });
-    expect(data).toStrictEqual({ error: 'Not a channel memeber' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 403, data, token1);
   });
   test('User is not a member of DM which has the message', () => {
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
+    const data = {
       messageId: mId1,
       message: h.message0,
-    });
-    expect(data).toStrictEqual({ error: 'Not a dm memeber' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 403, data, token0);
   });
   test('Is channel member but doesnt have owner permissions', () => {
     h.postRequest(h.CHAN_JOIN_URL, {
-      token: token1,
       channelId: channelId0,
-    });
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token1,
+    }, token1);
+    const data = {
       messageId: mId0,
       message: 'edit',
-    });
-    expect(data).toStrictEqual({ error: 'Dont have channel owner permissions' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 403, data, token1);
   });
   test('Is DM member but doesnt have owner permissions', () => {
     tmp = h.postRequest(h.DM_CREATE_URL, {
-      token: token1,
       uIds: [uId0]
-    });
+    }, token1);
     tmp = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token1,
       dmId: tmp.dmId,
       message: 'Another DM'
-    });
+    }, token1);
     const mId = tmp.messageId;
-    const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
+    const data = {
       messageId: mId,
       message: 'edit',
-    });
-    expect(data).toStrictEqual({ error: 'Dont have dm owner permissions' });
+    };
+    h.testErrorThrown(h.MSG_EDIT_URL, 'PUT', 403, data, token0);
   });
 });
 
@@ -146,101 +104,86 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Edit own channel message', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
       messageId: mId0,
       message: 'Edited message Channel',
-    });
+    }, token0);
     expect(data).toStrictEqual({});
   });
   test('Edit own channel message to empty', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
       messageId: mId0,
       message: '',
-    });
+    }, token0);
     expect(data).toStrictEqual({});
   });
   test('Edit own DM message', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token1,
       messageId: mId1,
       message: 'Edited message DM',
-    });
+    }, token1);
     expect(data).toStrictEqual({});
   });
   test('Edit own DM message to empty', () => {
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token1,
       messageId: mId1,
       message: '',
-    });
+    }, token1);
     expect(data).toStrictEqual({});
   });
   test('Owner edits members DM message', () => {
     tmp = h.postRequest(h.DM_CREATE_URL, {
-      token: token1,
       uIds: [uId0]
-    });
+    }, token1);
     tmp = h.postRequest(h.MSG_SEND_DM_URL, {
-      token: token0,
       dmId: tmp.dmId,
       message: 'Another DM'
-    });
+    }, token0);
     const mId = tmp.messageId;
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token1,
       messageId: mId,
       message: 'Edited by owner message DM',
-    });
+    }, token1);
     expect(data).toStrictEqual({});
   });
   test('Owner edits members channel message', () => {
     tmp = h.postRequest(h.CHAN_JOIN_URL, {
-      token: token1,
       channelId: channelId0,
-    });
+    }, token1);
 
     tmp = h.postRequest(h.MSG_SEND_URL, {
-      token: token1,
       channelId: channelId0,
       message: 'Member just joined'
-    });
+    }, token1);
     const mId = tmp.messageId;
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
       messageId: mId,
       message: 'Edited by owner message channel',
-    });
+    }, token0);
     expect(data).toStrictEqual({});
   });
   test('Gloabal Owner (not owner member) edits members channel message', () => {
     tmp = h.postRequest(h.CHAN_JOIN_URL, {
-      token: token1,
       channelId: channelId0,
-    });
+    }, token1);
 
     tmp = h.postRequest(h.MSG_SEND_URL, {
-      token: token1,
       channelId: channelId0,
       message: 'Member just joined'
-    });
+    }, token1);
     const mId = tmp.messageId;
     h.postRequest(h.CHAN_ADD_OWNER_URL, {
-      token: token0,
       channelId: channelId0,
       uId: uId1,
-    });
+    }, token0);
     h.postRequest(h.CHAN_RMV_OWNER_URL, {
-      token: token0,
       channelId: channelId0,
       uId: uId0,
-    });
+    }, token0);
 
     const data = h.putRequest(h.MSG_EDIT_URL, {
-      token: token0,
       messageId: mId,
       message: 'Edited by global owner message channel',
-    });
+    }, token0);
     expect(data).toStrictEqual({});
   });
 });

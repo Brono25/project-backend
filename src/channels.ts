@@ -1,4 +1,4 @@
-
+import HTTPError from 'http-errors';
 import {
   setData,
   getData,
@@ -33,14 +33,14 @@ export function channelsCreateV2(
   name: string,
   isPublic: boolean
 ): ChanCreateReturn {
+  isValidToken(token);
+
   const maxChars = 20;
   const minChars = 1;
   if (name.length > maxChars || name.length < minChars) {
-    return { error: 'Channels name must be between 1-20 characters (inclusive)' };
+    throw HTTPError(400, 'Channels name must be between 1-20 characters (inclusive)');
   }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+
   const authUserId = getUIdFromToken(token);
   const userId: UserId = { uId: authUserId };
   const channelId: ChannelId = generateChannelId();
@@ -78,9 +78,7 @@ type ChannelsListReturn = {
 } | Error;
 
 export function channelsListAllV2(token: string): ChannelsListReturn {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+  isValidToken(token);
 
   // check all created channels
   const channels: Channel[] = [];
@@ -103,9 +101,8 @@ export function channelsListAllV2(token: string): ChannelsListReturn {
  */
 
 export function channelsListV2(token: string): ChannelsListReturn {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+  isValidToken(token);
+
   const data: DataStore = getData();
   const usersChannels: Channel[] = [];
   const uId: number = getUIdFromToken(token);

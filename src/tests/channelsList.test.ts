@@ -1,3 +1,4 @@
+
 import { Channel } from '../data.types';
 import * as h from './test.helper';
 
@@ -12,67 +13,27 @@ let channelId0: number;
 let channelId1: number;
 let channelId2: number;
 let channelId3: number;
-let invalidToken: string;
 // SETUP
 beforeEach(() => {
   // Create users 0, 1, 2
-  user = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  user = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = user.token;
-  user = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
+  user = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = user.token;
-  user = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  user = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = user.token;
   // Create channels 0,1,2
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName0,
-    isPublic: h.isPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName1,
-    isPublic: h.isNotPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, false), token0);
   channelId1 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token0,
-    name: h.channelName2,
-    isPublic: h.isPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(2, true), token0);
   channelId2 = parseInt(channel.channelId);
-  channel = h.postRequest(h.CHAN_CREATE_URL, {
-    token: token1,
-    name: h.channelName3,
-    isPublic: h.isNotPublic,
-  });
+  channel = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(3, false), token1);
   channelId3 = parseInt(channel.channelId);
   // User 1 joins Channel 0 and Channel 1
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token1,
-    channelId: channelId0,
-  });
-  h.postRequest(h.CHAN_JOIN_URL, {
-    token: token1,
-    channelId: channelId2,
-  });
-  // Error cases
-  invalidToken = h.invalidToken;
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token1);
+  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId2 }, token1);
 });
 // Tear down
 afterEach(() => {
@@ -83,10 +44,7 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid Token', () => {
-    const invalidInput: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: invalidToken,
-    });
-    expect(invalidInput).toStrictEqual({ error: expect.any(String) });
+    h.testErrorThrown(h.CHAN_LIST_URL, 'GET', 403, {}, h.invalidToken);
   });
 });
 
@@ -94,9 +52,7 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('For Owner: List users channels with mix of public and private channels', () => {
-    const input: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: token0,
-    });
+    const input: any = h.getRequest(h.CHAN_LIST_URL, {}, token0);
     expect(input).toStrictEqual({
       channels: <Channel[]>[
         {
@@ -115,9 +71,7 @@ describe('Function Testing', () => {
     });
   });
   test('For Member: List channels with mix of public and private channels', () => {
-    const input: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: token1,
-    });
+    const input: any = h.getRequest(h.CHAN_LIST_URL, {}, token1);
     expect(input).toStrictEqual({
       channels: <Channel[]>[
         {
@@ -136,9 +90,7 @@ describe('Function Testing', () => {
     });
   });
   test('For user who has no channels', () => {
-    const input: any = h.getRequest(h.CHAN_LIST_URL, {
-      token: token2,
-    });
+    const input: any = h.getRequest(h.CHAN_LIST_URL, {}, token2);
     expect(input).toStrictEqual({
       channels: <Channel[]>[]
     });

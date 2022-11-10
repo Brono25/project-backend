@@ -8,25 +8,10 @@ h.deleteRequest(h.CLEAR_URL, {});
 let authUserId0: any;
 let authUserId2: any;
 beforeEach(() => {
-  authUserId0 = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  authUserId0 = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   authUserId0 = parseInt(authUserId0.authUserId);
-  h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  authUserId2 = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  authUserId2 = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   authUserId2 = parseInt(authUserId2.authUserId);
 });
 
@@ -39,18 +24,18 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Incorrect email', () => {
-    const data = h.postRequest(h.LOGIN_URL, {
+    const user0Login = {
       email: h.wrongEmail,
-      password: h.password0,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+      password: h.password0
+    };
+    h.testErrorThrown(h.LOGIN_URL, 'POST', 400, user0Login);
   });
   test('Incorrect password', () => {
-    const data = h.postRequest(h.LOGIN_URL, {
+    const user0Login = {
       email: h.email0,
-      password: h.wrongPassword,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+      password: h.wrongPassword
+    };
+    h.testErrorThrown(h.LOGIN_URL, 'POST', 400, user0Login);
   });
 });
 
@@ -58,20 +43,14 @@ describe('Error Handling', () => {
 
 describe('Function Testing', () => {
   test('Authorise login for first user in database', () => {
-    const data = h.postRequest(h.LOGIN_URL, {
-      email: h.email0,
-      password: h.password0,
-    });
+    const data = h.postRequest(h.LOGIN_URL, h.generateUserLoginArgs(0));
     expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
       token: expect.any(String),
     });
   });
   test('Authorise login for last user in database', () => {
-    const data = h.postRequest(h.LOGIN_URL, {
-      email: h.email2,
-      password: h.password2,
-    });
+    const data = h.postRequest(h.LOGIN_URL, h.generateUserLoginArgs(2));
     expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId2,
       token: expect.any(String),
@@ -80,7 +59,7 @@ describe('Function Testing', () => {
   test('Authorise Login using upper case email matching lowercase', () => {
     const data = h.postRequest(h.LOGIN_URL, {
       email: h.email0AltCase,
-      password: h.password0,
+      password: h.password,
     });
     expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
@@ -88,18 +67,12 @@ describe('Function Testing', () => {
     });
   });
   test('Login twice with the same user', () => {
-    let data = h.postRequest(h.LOGIN_URL, {
-      email: h.email0AltCase,
-      password: h.password0,
-    });
+    let data = h.postRequest(h.LOGIN_URL, h.generateUserLoginArgs(0));
     expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
       token: expect.any(String),
     });
-    data = h.postRequest(h.LOGIN_URL, {
-      email: h.email0AltCase,
-      password: h.password0,
-    });
+    data = h.postRequest(h.LOGIN_URL, h.generateUserLoginArgs(0));
     expect(data).toStrictEqual(<AuthLoginReturn>{
       authUserId: authUserId0,
       token: expect.any(String),

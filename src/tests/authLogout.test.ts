@@ -8,25 +8,10 @@ let authUser2: any;
 let authUserToken0: string;
 let authUserToken2: string;
 beforeEach(() => {
-  authUser0 = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  authUser0 = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   authUserToken0 = authUser0.token;
-  h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  authUser2 = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  authUser2 = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   authUserToken2 = authUser2.token;
 });
 
@@ -38,27 +23,20 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-  test('Incorrect token', () => {
-    const data = h.postRequest(h.LOGOUT_URL, {
-      token: 'invalidToken',
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+  test('Invalid token', () => {
+    h.testErrorThrown(h.LOGOUT_URL, 'POST', 403, undefined, h.invalidToken);
   });
 });
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
   test('Authorise logout for first user in database', () => {
-    const data = h.postRequest(h.LOGOUT_URL, {
-      token: authUserToken0,
-    });
+    const data = h.postRequest(h.LOGOUT_URL, {}, authUserToken0);
     expect(data).toStrictEqual({});
   });
 
   test('Authorise logout for last user in database', () => {
-    const data = h.postRequest(h.LOGOUT_URL, {
-      token: authUserToken2,
-    });
+    const data = h.postRequest(h.LOGOUT_URL, {}, authUserToken2);
     expect(data).toStrictEqual({});
   });
 });

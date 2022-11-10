@@ -6,12 +6,7 @@ h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup
 beforeEach(() => {
-  h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
 });
 
 // Tear down
@@ -23,90 +18,85 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid email', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.invalidEmail,
       password: h.password1,
       nameFirst: h.firstName1,
       nameLast: h.lastName1,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
   test('Email address already in use', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email0,
       password: h.password1,
       nameFirst: h.firstName1,
       nameLast: h.lastName1,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
   test('Attempt to assign uppercase email when lower case email is already taken', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email0AltCase,
       password: h.password1,
       nameFirst: h.firstName1,
       nameLast: h.lastName1,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
 
   test('Invalid password (less than 6 characters)', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email1,
       password: h.invalidShortPassword,
       nameFirst: h.firstName1,
       nameLast: h.lastName1,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
 
   test('Invalid first name (greater than 50 characters)', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email1,
       password: h.password1,
       nameFirst: h.invalidLongFirstName,
       nameLast: h.lastName1,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
 
   test('Invalid last name (greater than 50 characters)', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email1,
       password: h.password1,
       nameFirst: h.firstName1,
       nameLast: h.invalidLongLastName,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
   test('Invalid empty first name', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email1,
       password: h.password1,
       nameFirst: h.invalidEmptyName,
       nameLast: h.lastName1,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
   test('Invalid empty last name', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
+    const data = {
       email: h.email1,
       password: h.password1,
       nameFirst: h.firstName1,
       nameLast: h.invalidEmptyName,
-    });
-    expect(data).toStrictEqual({ error: expect.any(String) });
+    };
+    h.testErrorThrown(h.REGISTER_URL, 'POST', 400, data);
   });
 });
 
 describe('Function Testing', () => {
   test('Create new user and get a number user ID and token', () => {
-    const data = h.postRequest(h.REGISTER_URL, {
-      email: h.email1,
-      password: h.password1,
-      nameFirst: h.firstName1,
-      nameLast: h.lastName1,
-    });
+    const data = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
     expect(data).toStrictEqual(<AuthRegistorReturn>{
       authUserId: expect.any(Number),
       token: expect.any(String),

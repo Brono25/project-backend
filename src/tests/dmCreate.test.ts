@@ -10,29 +10,15 @@ let invalidUid: number;
 let token0: string;
 let token1: string;
 let token2: string;
+let tmp: any;
 beforeEach(() => {
-  let tmp: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
   uId0 = parseInt(tmp.authUserId);
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
   uId1 = parseInt(tmp.authUserId);
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = tmp.token;
   uId2 = parseInt(tmp.authUserId);
   invalidUid = Math.abs(uId0) + Math.abs(uId1) + Math.abs(uId2) + 10;
@@ -47,32 +33,28 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Atleast one invalid Uid', () => {
-    const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token0,
+    const data = {
       uIds: [uId1, uId2, invalidUid],
-    });
-    expect(data).toStrictEqual({ error: 'Invalid User ID' });
+    };
+    h.testErrorThrown(h.DM_CREATE_URL, 'POST', 400, data, token0);
   });
   test('Duplicate User IDs in uIds', () => {
-    const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token1,
+    const data = {
       uIds: [uId1, uId2, uId1],
-    });
-    expect(data).toStrictEqual({ error: 'Duplicate uId' });
+    };
+    h.testErrorThrown(h.DM_CREATE_URL, 'POST', 400, data, token1);
   });
   test('Creator among uIds', () => {
-    const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token2,
+    const data = {
       uIds: [uId1, uId2, uId0],
-    });
-    expect(data).toStrictEqual({ error: 'Dm creator can not include themselves' });
+    };
+    h.testErrorThrown(h.DM_CREATE_URL, 'POST', 400, data, token2);
   });
   test('Invalid Token', () => {
-    const data = h.postRequest(h.DM_CREATE_URL, {
-      token: h.invalidToken,
+    const data = {
       uIds: [uId1, uId2],
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Token' });
+    };
+    h.testErrorThrown(h.DM_CREATE_URL, 'POST', 403, data, h.invalidToken);
   });
 });
 
@@ -81,16 +63,14 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Create DM with two other users', () => {
     const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token0,
       uIds: [uId1, uId2],
-    });
+    }, token0);
     expect(data).toStrictEqual({ dmId: expect.any(Number) });
   });
   test('Create DM with only creator', () => {
     const data = h.postRequest(h.DM_CREATE_URL, {
-      token: token0,
       uIds: [],
-    });
+    }, token0);
     expect(data).toStrictEqual({ dmId: expect.any(Number) });
   });
   test('Create 100 dms and get 100 unique ID\'s', () => {
@@ -98,9 +78,8 @@ describe('Function Testing', () => {
     const dmIdList = new Set();
     for (let n = 0; n < numberOfDms; n++) {
       const data = h.postRequest(h.DM_CREATE_URL, {
-        token: token0,
         uIds: [uId1, uId2],
-      });
+      }, token0);
       dmIdList.add(data);
     }
     expect(dmIdList.size === numberOfDms).toStrictEqual(true);

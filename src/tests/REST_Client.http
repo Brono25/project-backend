@@ -12,21 +12,19 @@ content-type: application/json
 }
 ###
 // Login
-POST http://localhost:3500/auth/login/v2/
+POST http://localhost:3500/auth/login/v3/
 content-type: application/json
 
 {
-    "email": "b@gmail.com",
+    "email": "ba@gmail.com",
     "password": "123456"
 }
 ###
 // Logout
 POST http://localhost:3500/auth/logout/v1/
 content-type: application/json
+token: {"token":"Dpi4rfBDZ9"}
 
-{   
-    "token": "A11TW/IUXu"
-}
 ###
 // Channel Create
 POST http://localhost:3500/channels/create/v2

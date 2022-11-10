@@ -17,37 +17,16 @@ let dmId0: number;
 let invalidDmId: number;
 let start = 0;
 const invalidStart = MSG_PER_PAGE + 10;
+let tmp: any;
 beforeEach(() => {
-  h.deleteRequest(h.CLEAR_URL, {});
-  let tmp: any = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  tmp = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
-
-  tmp = h.postRequest(h.DM_CREATE_URL, {
-    token: token0,
-    uIds: [],
-  });
-  dmId0 = tmp.dmId;
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [] }, token0);
+  dmId0 = parseInt(tmp.dmId);
   invalidDmId = Math.abs(dmId0) + 10;
-
-  h.postRequest(h.MSG_SEND_DM_URL, {
-    token: token0,
-    dmId: dmId0,
-    message: 'Setup message',
-  });
+  h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message0 }, token0);
 });
 
 // Tear down
@@ -59,57 +38,48 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid Token', () => {
-    const data = h.getRequest(h.DM_MSG_URL, {
-      token: h.invalidToken,
+    const data = {
       dmId: dmId0,
       start: start,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid Token' });
+    };
+    h.testErrorThrown(h.DM_MSG_URL, 'GET', 403, data, h.invalidToken);
   });
 
   test('Invalid dmId', () => {
-    const data = h.getRequest(h.DM_MSG_URL, {
-      token: token0,
+    const data = {
       dmId: invalidDmId,
       start: start,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid dmId' });
+    };
+    h.testErrorThrown(h.DM_MSG_URL, 'GET', 400, data, token0);
   });
   test('Valid dmId, token not a member', () => {
-    const data = h.getRequest(h.DM_MSG_URL, {
-      token: token1,
+    const data = {
       dmId: dmId0,
       start: start,
-    });
-    expect(data).toStrictEqual({ error: 'User is not a member of the dm' });
+    };
+    h.testErrorThrown(h.DM_MSG_URL, 'GET', 403, data, token1);
   });
 
   test('start greater than num messages', () => {
-    const data = h.getRequest(h.DM_MSG_URL, {
-      token: token0,
+    const data = {
       dmId: dmId0,
       start: invalidStart,
-    });
-    expect(data).toStrictEqual({ error: 'Messages start too high' });
+    };
+    h.testErrorThrown(h.DM_MSG_URL, 'GET', 400, data, token0);
   });
 });
 
 // ------------------Function Testing------------------//
 describe('Function Testing', () => {
   test('Return list of 4 messages', () => {
-    const NUM_MSG = 3;
-    for (let i = 0; i < NUM_MSG; i++) {
-      h.postRequest(h.MSG_SEND_DM_URL, {
-        token: token0,
-        dmId: dmId0,
-        message: `${MSG} ${i}`
-      });
-    }
+    h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message1 }, token0);
+    h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message2 }, token0);
+    h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message3 }, token0);
+
     const data = h.getRequest(h.DM_MSG_URL, {
-      token: token0,
       dmId: dmId0,
       start: start,
-    });
+    }, token0);
     expect(data).toStrictEqual(
       <PageMessages>{
         start: start,
@@ -118,25 +88,25 @@ describe('Function Testing', () => {
           {
             messageId: expect.any(Number),
             uId: expect.any(Number),
-            message: `${MSG} 2`,
+            message: h.message3,
             timeSent: expect.any(Number)
           },
           {
             messageId: expect.any(Number),
             uId: expect.any(Number),
-            message: `${MSG} 1`,
+            message: h.message2,
             timeSent: expect.any(Number)
           },
           {
             messageId: expect.any(Number),
             uId: expect.any(Number),
-            message: `${MSG} 0`,
+            message: h.message1,
             timeSent: expect.any(Number)
           },
           {
             messageId: expect.any(Number),
             uId: expect.any(Number),
-            message: 'Setup message',
+            message: h.message0,
             timeSent: expect.any(Number)
           },
         ]
@@ -147,16 +117,14 @@ describe('Function Testing', () => {
     start = 3;
     for (let i = 0; i < NUM_MSG; i++) {
       h.postRequest(h.MSG_SEND_DM_URL, {
-        token: token0,
         dmId: dmId0,
         message: `${MSG} ${i}`
-      });
+      }, token0);
     }
     const data = <PageMessages> h.getRequest(h.DM_MSG_URL, {
-      token: token0,
       dmId: dmId0,
       start: start,
-    });
+    }, token0);
     expect(data).toStrictEqual(
       <PageMessages>{
         start: start,
@@ -171,16 +139,14 @@ describe('Function Testing', () => {
     start = NUM_MSG + 1;
     for (let i = 0; i < NUM_MSG; i++) {
       h.postRequest(h.MSG_SEND_DM_URL, {
-        token: token0,
         dmId: dmId0,
         message: `${MSG} ${i}`
-      });
+      }, token0);
     }
     const data = <PageMessages> h.getRequest(h.DM_MSG_URL, {
-      token: token0,
       dmId: dmId0,
       start: start,
-    });
+    }, token0);
     expect(data).toStrictEqual(
       <PageMessages>{
         start: start,

@@ -1,3 +1,4 @@
+import HTTPError from 'http-errors';
 import {
   DataStore,
   User,
@@ -43,20 +44,20 @@ import {
  * @returns {number}
  */
 export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
+  isValidToken(token);
+
   if (uIds.find(a => isValidAuthUserId(a) === false)) {
-    return { error: 'Invalid User ID' };
+    throw HTTPError(400, 'Invalid User ID');
   }
   const numUniqueIds: number = new Set(uIds).size;
   if (numUniqueIds !== uIds.length) {
-    return { error: 'Duplicate uId' };
+    throw HTTPError(400, 'Duplicate uId');
   }
   const ownerId = getUIdFromToken(token);
   if (uIds.includes(ownerId)) {
-    return { error: 'Dm creator can not include themselves' };
+    throw HTTPError(400, 'Dm creator can not include themselves');
   }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+
   uIds.unshift(ownerId);
 
   const dmId: number = generateDmId();
@@ -83,9 +84,7 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
  * @returns {array} - dms[{dmId: , name: }]
  */
 export function dmListV1(token: string): dmListReturn {
-  if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
-  }
+  isValidToken(token);
   const uId: number = getUIdFromToken(token);
   const data: DataStore = getData();
   const dms: Dm[] = [];
@@ -106,14 +105,11 @@ export function dmListV1(token: string): dmListReturn {
  * @returns {number}
  */
 export function dmDetailsv1(token: string, dmId: number): dmDetailsReturn {
-  if (!isValidDmId(dmId)) {
-    return { error: 'Invalid dmId' };
-  }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
+  isValidToken(token);
+  isValidDmId(dmId);
+
   if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'Token owner is not a member of the dm' };
+    throw HTTPError(403, 'Token owner is not a member of the dm');
   }
 
   const dmDetails: DmStore = getDmStore(dmId);
@@ -146,14 +142,10 @@ export function dmDetailsv1(token: string, dmId: number): dmDetailsReturn {
  * @returns {number}
  */
 export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
-  if (!isValidDmId(dmId)) {
-    return { error: 'Invalid dmId' };
-  }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
+  isValidToken(token);
+  isValidDmId(dmId);
   if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'Token owner is not a member of the dm' };
+    throw HTTPError(403, 'Token owner is not a member of the dm');
   }
 
   const uId: number = getUIdFromToken(token);
@@ -179,25 +171,21 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
  * @param {number, number, number} - token, dmId, start
  * @returns {PageMessages | Error} - { messages, start, end }
  */
-
 export function dmMessagesV1(
   token: string,
   dmId: number,
   start: number
 ): PageMessages | Error {
-  if (!isValidDmId(dmId)) {
-    return { error: 'Invalid dmId' };
-  }
+  isValidToken(token);
+  isValidDmId(dmId);
   const dmStore: DmStore = getDmStore(dmId);
   const messages: Message[] = dmStore.messages;
   const numMessages = messages.length;
 
   if (start > numMessages) {
-    return { error: 'Messages start too high' };
-  } else if (!isValidToken(token)) {
-    return { error: 'Invalid Token' };
+    throw HTTPError(400, 'Messages start too high');
   } else if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'User is not a member of the dm' };
+    throw HTTPError(403, 'User is not a member of the dm');
   } else if (start === numMessages) {
     return <PageMessages>{
       messages: [],
@@ -228,17 +216,14 @@ export function dmMessagesV1(
  */
 
 export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
-  if (!isValidDmId(dmId)) {
-    return { error: 'Invalid dmId' };
-  }
-  if (!isValidToken(token)) {
-    return { error: 'Invalid token' };
-  }
+  isValidToken(token);
+  isValidDmId(dmId);
+
   if (!doesTokenHaveDmOwnerPermissions(token, dmId)) {
-    return { error: 'Token is not the owner' };
+    throw HTTPError(403, 'Token is not the owner');
   }
   if (!isTokenMemberOfDm(token, dmId)) {
-    return { error: 'Token is not a member' };
+    throw HTTPError(403, 'Token is not a member');
   }
   const data: DataStore = getData();
   const index: number = data.dms.findIndex(a => a.dmId === dmId);
