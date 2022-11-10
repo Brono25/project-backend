@@ -110,7 +110,7 @@ export function isValidDmId(dmId: number) {
   if (data.dms.find(a => a.dmId === dmId)) {
     return true;
   }
-  return false;
+  throw HTTPError(400, 'Invalid dm id');
 }
 /**
  * Set data back to initial state.
@@ -145,7 +145,7 @@ export function isValidMessageId(mId: number) {
   if (dataStore.messageIds.find(a => a.messageId === mId)) {
     return true;
   }
-  return false;
+  throw HTTPError(400, 'Invalid message id');
 }
 
 // ////////////////////////////////////////////////////// //

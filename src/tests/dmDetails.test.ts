@@ -3,55 +3,33 @@ import * as h from './test.helper';
 h.deleteRequest(h.CLEAR_URL, {});
 
 // Setup: Create 3 users.
-let authUser0: any;
-let authUser1: any;
-let authUser2: any;
-let authUserId0: number;
-let authUserId1: number;
-let authUserId2: number;
-let authUserToken0: string;
-let authUserToken1: string;
-let dm1: any;
-let dm2: any;
+let token0: string;
+let token1 : string;
+let token2 : string;
+let uId0: number;
+let uId1: number;
+let uId2: number;
+let invalidDmId: number;
+let dmId0: number;
 let dmId1: number;
-let dmId2: number;
+let tmp: any;
 beforeEach(() => {
-  authUser0 = h.postRequest(h.REGISTER_URL, {
-    email: h.email0,
-    password: h.password0,
-    nameFirst: h.firstName0,
-    nameLast: h.lastName0,
-  });
-  authUserId0 = parseInt(authUser0.authUserId);
-  authUserToken0 = authUser0.token;
-  authUser1 = h.postRequest(h.REGISTER_URL, {
-    email: h.email1,
-    password: h.password1,
-    nameFirst: h.firstName1,
-    nameLast: h.lastName1,
-  });
-  authUserId1 = parseInt(authUser1.authUserId);
-  authUserToken1 = authUser1.token;
-  authUser2 = h.postRequest(h.REGISTER_URL, {
-    email: h.email2,
-    password: h.password2,
-    nameFirst: h.firstName2,
-    nameLast: h.lastName2,
-  });
-  authUserId2 = parseInt(authUser2.authUserId);
-  // create a dm (members: user0, user1, user2)
-  dm1 = h.postRequest(h.DM_CREATE_URL, {
-    token: authUserToken0,
-    uIds: [authUserId1, authUserId2],
-  });
-  dmId1 = parseInt(dm1.dmId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
+  token0 = tmp.token;
+  uId0 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
+  token1 = tmp.token;
+  uId1 = parseInt(tmp.authUserId);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+  token2 = tmp.token;
+  uId2 = parseInt(tmp.authUserId);
 
-  // create a dm with only one creator (members: user0)
-  dm2 = h.postRequest(h.DM_CREATE_URL, {
-    token: authUserToken0,
-    uIds: [],
-  });
-  dmId2 = parseInt(dm2.dmId);
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1, uId2] }, token0);
+  dmId0 = parseInt(tmp.dmId);
+
+  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [] }, token0);
+  dmId1 = parseInt(tmp.dmId);
+  invalidDmId = dmId0 + dmId1 + 10;
 });
 
 // Tear down
@@ -63,25 +41,16 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid dmId', () => {
-    const data = h.getRequest(h.DM_DETAILS_URL, {
-      token: authUserToken0,
-      dmId: 0,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid dmId' });
+    const data = {dmId: invalidDmId};
+    h.testErrorThrown(h.DM_DETAILS_URL, 'GET', 400, data, token0);
   });
   test('Token owner is not a member of the dm', () => {
-    const data = h.getRequest(h.DM_DETAILS_URL, {
-      token: authUserToken1,
-      dmId: dmId2,
-    });
-    expect(data).toStrictEqual({ error: 'Token owner is not a member of the dm' });
+    const data = {dmId: dmId1 };
+    h.testErrorThrown(h.DM_DETAILS_URL, 'GET', 403, data, token1);
   });
   test('Invalid Token', () => {
-    const data = h.getRequest(h.DM_DETAILS_URL, {
-      token: h.invalidToken,
-      dmId: dmId2,
-    });
-    expect(data).toStrictEqual({ error: 'Invalid token' });
+    const data = { dmId: dmId1 };
+    h.testErrorThrown(h.DM_DETAILS_URL, 'GET', 403, data, h.invalidToken);
   });
 });
 
@@ -90,28 +59,27 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('Details of dm1', () => {
     const data = h.getRequest(h.DM_DETAILS_URL, {
-      token: authUserToken0,
-      dmId: dmId1,
-    });
+      dmId: dmId0,
+    }, token0);
     expect(data).toStrictEqual({
       name: expect.any(String),
       members: [
         {
-          uId: authUserId0,
+          uId: uId0,
           email: h.email0,
           nameFirst: h.firstName0,
           nameLast: h.lastName0,
           handleStr: expect.any(String),
         },
         {
-          uId: authUserId1,
+          uId: uId1,
           email: h.email1,
           nameFirst: h.firstName1,
           nameLast: h.lastName1,
           handleStr: expect.any(String),
         },
         {
-          uId: authUserId2,
+          uId: uId2,
           email: h.email2,
           nameFirst: h.firstName2,
           nameLast: h.lastName2,
