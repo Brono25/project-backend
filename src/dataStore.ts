@@ -1,4 +1,4 @@
-import HTTPError from 'http-errors';
+
 import { DataStore } from './data.types';
 import fs from 'fs';
 

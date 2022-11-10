@@ -11,7 +11,6 @@ import {
   DataStore,
   ChannelStore,
   UserStore,
-  ID_ERROR,
   MessageId,
   DmStore,
   MessageTracking,
@@ -83,7 +82,7 @@ export function isValidAuthUserId(authUserId: number): boolean {
       return true;
     }
   }
-  throw HTTPError(400, 'User is not a member');
+  return false;
 }
 /**
  * @param {number} - channel id
@@ -234,9 +233,6 @@ export function getUIdFromToken(token: string): number {
   const data: DataStore = getData();
   const hash: string = generateTokenHash(token);
   const session: TokenHash = data.activeTokens.find(a => a.hash === hash);
-  if (session === undefined) {
-    return ID_ERROR;
-  }
   return session.uId;
 }
 /**

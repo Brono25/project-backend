@@ -98,8 +98,8 @@ describe('Function Testing', () => {
     }, token1);
     expect(data).toStrictEqual({});
     const ret: any = h.getRequest(h.CHAN_MSG_URL, { channelId: channelId0, start: 0 }, token0);
-    expect(ret.messages.some(a => a.message === h.message1)).toStrictEqual(false);
-    expect(ret.messages.some(a => a.message === h.message0)).toStrictEqual(true);
+    expect(ret.messages.some((a: any) => a.message === h.message1)).toStrictEqual(false);
+    expect(ret.messages.some((a: any) => a.message === h.message0)).toStrictEqual(true);
   });
   test('Member but global owner deletes members message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
@@ -107,7 +107,7 @@ describe('Function Testing', () => {
     }, token0);
     expect(data).toStrictEqual({});
     const ret: any = h.getRequest(h.CHAN_MSG_URL, { channelId: channelId1, start: 1 }, token0);
-    expect(ret.messages.some(a => a.message === h.message3)).toStrictEqual(false);
+    expect(ret.messages.some((a: any) => a.message === h.message3)).toStrictEqual(false);
   });
   test('Member but global owner deletes own message', () => {
     const data = h.deleteRequest(h.MSG_RMV_URL, {
@@ -115,8 +115,8 @@ describe('Function Testing', () => {
     }, token0);
     expect(data).toStrictEqual({});
     const ret: any = h.getRequest(h.CHAN_MSG_URL, { channelId: channelId1, start: 0 }, token1);
-    expect(ret.messages.some(a => a.message === h.message4)).toStrictEqual(false);
-    expect(ret.messages.some(a => a.message === h.message3)).toStrictEqual(true);
-    expect(ret.messages.some(a => a.message === h.message2)).toStrictEqual(true);
+    expect(ret.messages.some((a: any) => a.message === h.message4)).toStrictEqual(false);
+    expect(ret.messages.some((a: any) => a.message === h.message3)).toStrictEqual(true);
+    expect(ret.messages.some((a: any) => a.message === h.message2)).toStrictEqual(true);
   });
 });

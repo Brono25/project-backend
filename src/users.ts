@@ -40,8 +40,9 @@ import {
 
 function userProfileV2(token: string, uId: number): {user: User} | Error {
   isValidToken(token);
-  isValidAuthUserId(uId);
-
+  if (!isValidAuthUserId(uId)) {
+    throw HTTPError(400, 'User is not autherised');
+  }
   const data: DataStore = getData();
 
   for (const user of data.users) {

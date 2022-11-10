@@ -13,7 +13,6 @@ let channelId0: number;
 let channelId1: number;
 let channelId2: number;
 let channelId3: number;
-let invalidToken: string;
 // SETUP
 beforeEach(() => {
   // Create users 0, 1, 2
@@ -35,7 +34,6 @@ beforeEach(() => {
   // User 1 joins Channel 0 and Channel 1
   h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token1);
   h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId2 }, token1);
-  invalidToken = h.invalidToken;
 });
 // Tear down
 afterEach(() => {

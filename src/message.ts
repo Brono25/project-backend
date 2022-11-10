@@ -201,12 +201,10 @@ function removeDmMessage(token: string, dmId: number, messageId: number, uId: nu
 
 export function messageEditV1(token: string, messageId: number, message: string): object | Error {
   isValidToken(token);
+  isValidMessageId(messageId);
   const MAX_MSG_LEN = 1000;
   if (message.length > MAX_MSG_LEN) {
     throw HTTPError(400, 'Invalid message');
-  }
-  if (!isValidMessageId(messageId)) {
-    throw HTTPError(400, 'Invalid message ID');
   }
   const messageLoc: MessageTracking = getMessageLocation(messageId);
   const channelId: number = messageLoc.channelId;

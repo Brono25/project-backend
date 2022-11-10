@@ -141,10 +141,11 @@ export function channelLeaveV1(
 export function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
   isValidToken(token);
   isValidChannelId(channelId);
-  isValidAuthUserId(uId);
   const authUserId: number = getUIdFromToken(token);
 
-  if (isAuthUserMember(uId, channelId)) {
+  if (!isValidAuthUserId(uId)) {
+    throw HTTPError(400, 'User is not autherised');
+  } else if (isAuthUserMember(uId, channelId)) {
     throw HTTPError(400, 'User is already a member of the channel');
   } else if (!isAuthUserMember(authUserId, channelId) && !isGlobalOwner(authUserId)) {
     throw HTTPError(403, 'User is not a member of the channel');
@@ -218,8 +219,10 @@ export function channelMessagesV1(
 export function channelRemoveOwnerV1(token: string, channelId: number, uId: number): object | Error {
   isValidToken(token);
   isValidChannelId(channelId);
-  isValidAuthUserId(uId);
 
+  if (!isValidAuthUserId(uId)) {
+    throw HTTPError(400, 'User is not autherised');
+  }
   if (!isUIdOwnerOfChannel(uId, channelId)) {
     throw HTTPError(400, 'User is not a channel owner');
   }
@@ -252,8 +255,9 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
 export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChanAddOwnerReturn {
   isValidToken(token);
   isValidChannelId(channelId);
-  isValidAuthUserId(uId);
-
+  if (!isValidAuthUserId(uId)) {
+    throw HTTPError(400, 'User is not autherised');
+  }
   if (!isAuthUserMember(uId, channelId)) {
     throw HTTPError(400, 'User is not a member');
   }
