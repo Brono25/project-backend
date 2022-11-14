@@ -29,6 +29,7 @@ export type User = {
   nameFirst: string;
   nameLast: string;
   handleStr: string;
+  profileImgUrl?: string;
 }
 
 export type Channel = {
@@ -36,11 +37,19 @@ export type Channel = {
   name: string;
 }
 
+export type React = {
+  reactId: number,
+  uIds: number[];
+  isThisUserReacted: boolean;
+}
+
 export type Message = {
   messageId: number;
   uId: number;
   message: string;
   timeSent: number;
+  reacts?: React[];
+  isPinned?: boolean;
 }
 
 export type ChannelDetails = {
@@ -118,6 +127,7 @@ export type UserStore = {
   handleStr: string;
   globalPermission: GlobalPermision;
   password: string;
+  profileImgUrl?: string;
 }
 export type DmStore = {
   dmId: number;
