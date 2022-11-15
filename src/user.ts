@@ -7,6 +7,7 @@ import {
   User,
   UserStore,
   userProfSetHandleReturn,
+  UserStats
 } from './data.types';
 
 import {
@@ -14,7 +15,8 @@ import {
   getUserStoreFromId,
   isValidToken,
   isValidAuthUserId,
-  isEmailUsed
+  isEmailUsed,
+  getTimeInSecs
 } from './other';
 
 import {
@@ -163,5 +165,9 @@ export function userProfileSetEmailV1(token: string, email: string): any {
  */
 export function userStatsV1(token: string): any {
   isValidToken(token);
-  return {};
+  const uId: number = getUIdFromToken(token);
+  const userStore : UserStore = getUserStoreFromId(uId);
+  const userStats: UserStats = userStore.userStats;
+  return userStats;
 }
+

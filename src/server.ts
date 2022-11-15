@@ -87,6 +87,7 @@ app.use(morgan('dev'));
 
 function getTokenFromHeader(req: Request) {
   const token = req.header('token');
+  console.log(token);
   // const obj = JSON.parse(json);
   return token;
 }

@@ -23,23 +23,6 @@ beforeEach(() => {
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
   uId1 = parseInt(tmp.authUserId);
-  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
-  token2 = tmp.token;
-  uId2 = parseInt(tmp.authUserId);
-
-  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token1);
-  channelId0 = parseInt(tmp.channelId);
-  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, false), token1);
-  channelId1 = parseInt(tmp.channelId);
-  tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(2, true), token2);
-  channelId2 = parseInt(tmp.channelId);
-
-  tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1, uId2] }, token0);
-  dmId0 = parseInt(tmp.dmId);
-
-  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token0);
-  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId0 }, token2);
-  h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId2 }, token0);
 });
 
 // Tear down
@@ -58,7 +41,44 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
-  test('A', () => {
+  test('User just registered, initial stats', () => {
+    const tmp: any = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+    token2 = tmp.token;
+    const data: any = h.getRequest(h.USER_STATS, undefined, token2);
 
+    expect(data).toStrictEqual({
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+      dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+      involvementRate: 0
+    });
+  });
+  test('Create 2 channels join 1 channel leave 1 channel join 1 channel', () => {
+    let tmp: any;
+    tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token1);
+    tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, true), token1);
+    tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
+    const channelId2 = parseInt(tmp.channelId);
+    tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, true), token0);
+    const channelId3 = parseInt(tmp.channelId);
+
+    h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId2 }, token1);
+    h.postRequest(h.CHAN_LEAVE_URL, { channelId: channelId2 }, token1);
+    h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId3 }, token1);
+
+    const data: any = h.getRequest(h.USER_STATS, undefined, token1);
+    expect(data).toStrictEqual({
+      channelsJoined: [
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 2, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 3, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 2, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 3, timeStamp: expect.any(Number) },
+      ],
+      dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+      involvementRate: 0
+    });
   });
 });

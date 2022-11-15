@@ -8,6 +8,7 @@ import {
   isAuthUserMember,
   getUIdFromToken,
   isValidToken,
+  updateUserChannelsJoinedStat,
 } from './other';
 import {
   ChannelStore,
@@ -17,6 +18,8 @@ import {
   UserId,
   ChanCreateReturn,
   Error,
+  JOIN,
+  LEAVE,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -56,7 +59,7 @@ export function channelsCreateV2(
   const data: DataStore = getData();
   data.channels.push(channel);
   setData(data);
-
+  updateUserChannelsJoinedStat(authUserId, JOIN);
   return channelId;
 }
 

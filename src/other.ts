@@ -16,6 +16,12 @@ import {
   MessageTracking,
   TokenHash,
   TOKEN_SECRET,
+  LEAVE, 
+  JOIN,
+  LeaveOrJoin,
+  ChannelStat,
+  DmsStat,
+  MessageStat,
 } from './data.types';
 
 /**
@@ -384,6 +390,51 @@ export function generateTokenHash(token: string): string {
   const key = token.concat(TOKEN_SECRET);
   const hash = crypto.createHash('sha256').update(key).digest('hex');
   return hash;
+}
+
+// ////////////////////////////////////////////////////// //
+//                     Update Stats                       //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {number}
+ */
+export function updateUserChannelsJoinedStat(uId: number, leftOrJoined: LeaveOrJoin) {
+  const data: DataStore = getData();
+  const index: number = data.users.findIndex(a => a.uId === uId);
+  const timeStamp: number = getTimeInSecs();
+  const lastElement: number = data.users[index].userStats.channelsJoined.length - 1;
+
+  let newChannelStat: ChannelStat;
+  const currChannelCount: number = data.users[index].userStats.channelsJoined[lastElement].numChannelsJoined;
+  if (leftOrJoined === JOIN) {
+    newChannelStat = { numChannelsJoined: currChannelCount + 1, timeStamp: timeStamp };
+  } else if (leftOrJoined === LEAVE) {
+    newChannelStat = { numChannelsJoined: currChannelCount - 1, timeStamp: timeStamp };
+  }
+  data.users[index].userStats.channelsJoined.push(newChannelStat);
+  setData(data);
+}
+/**
+ *
+ * @param {number}
+ */
+export function updateUserDmsJoinedStat(uId: number) {
+
+}
+/**
+ *
+ * @param {number}
+ */
+export function updateUserMessagesSentStat(uId: number) {
+
+}
+/**
+ *
+ * @param {number}
+ */
+export function updateUserInvolvementStat(uId: number) {
+
 }
 
 // ////////////////////////////////////////////////////// //

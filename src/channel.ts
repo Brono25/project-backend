@@ -17,6 +17,7 @@ import {
   isUIdOwnerOfChannel,
   isTokenOwnerOfChannel,
   doesTokenHaveChanOwnerPermissions,
+  updateUserChannelsJoinedStat,
 } from './other';
 
 import {
@@ -34,6 +35,8 @@ import {
   PAGE_SIZE,
   NO_MORE_PAGES,
   ChannelLeaveReturn,
+  LEAVE,
+  JOIN,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //
@@ -92,6 +95,7 @@ export function channelJoinV2(
   const index = data.channels.findIndex(a => a.channelId === channelId);
   data.channels[index].allMembers.push({ uId: authUserId });
   setData(data);
+  updateUserChannelsJoinedStat(authUserId, JOIN);
   return {};
 }
 // ////////////////////////////////////////////////////// //
@@ -127,6 +131,7 @@ export function channelLeaveV1(
   }
   data.channels[indexOfChannel] = channelStore;
   setData(data);
+  updateUserChannelsJoinedStat(authUserId, LEAVE);
   return {};
 }
 
