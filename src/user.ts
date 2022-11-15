@@ -37,7 +37,7 @@ import {
  * @returns {user} -Object containing uId, email, nameFirst, nameLast, handleStr
  */
 
-function userProfileV2(token: string, uId: number): {user: User} | Error {
+export function userProfileV2(token: string, uId: number): {user: User} | Error {
   isValidToken(token);
   if (!isValidAuthUserId(uId)) {
     throw HTTPError(400, 'User is not autherised');
@@ -69,7 +69,7 @@ function userProfileV2(token: string, uId: number): {user: User} | Error {
  * @returns {}
  */
 
-function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string): object {
+export function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string): object {
   isValidToken(token);
   const maxNameLength = 50;
   const minNameLength = 1;
@@ -101,7 +101,7 @@ function userProfileSetNameV1(token: string, nameFirst: string, nameLast: string
  * @returns {}
  */
 
-function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHandleReturn {
+export function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHandleReturn {
   isValidToken(token);
 
   const maxHandleLength = 20;
@@ -135,7 +135,7 @@ function userProfileSetHandleV1(token: string, handleStr: string): userProfSetHa
  * @param {string, string} - token and email to update for a user
  * @returns {}
  */
-function userProfileSetEmailV1(token: string, email: string): any {
+export function userProfileSetEmailV1(token: string, email: string): any {
   isValidToken(token);
   isEmailUsed(email);
   if (!validator.isEmail(email)) {
@@ -152,9 +152,16 @@ function userProfileSetEmailV1(token: string, email: string): any {
   return {};
 }
 
-export {
-  userProfileV2,
-  userProfileSetNameV1,
-  userProfileSetHandleV1,
-  userProfileSetEmailV1,
-};
+// ////////////////////////////////////////////////////// //
+//                       user/stats/v1                    //
+// ////////////////////////////////////////////////////// //
+/**
+ * Fetches the required statistics about users use of Beans
+ *
+ * @param {} - token and email to update for a user
+ * @returns {}
+ */
+export function userStatsV1(token: string): any {
+  isValidToken(token);
+  return {};
+}

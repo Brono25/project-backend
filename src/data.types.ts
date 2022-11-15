@@ -88,6 +88,13 @@ export type PageMessages = {
   end: number;
 };
 
+export type UserStats = {
+  channelsJoined: [{numChannelsJoined: number, timeStamp: number}];
+  dmsJoined: [{numDmsJoined: number, timeStamp: number}];
+  messagesSent: [{numMessagesSent: number, timeStamp: number}];
+  involvementRate: number;
+}
+
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
 export type DmCreateReturn = { dmId: number } | Error;
@@ -128,6 +135,7 @@ export type UserStore = {
   globalPermission: GlobalPermision;
   password: string;
   profileImgUrl?: string;
+  userStats: UserStats;
 }
 export type DmStore = {
   dmId: number;

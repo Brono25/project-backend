@@ -35,6 +35,7 @@ import {
   userProfileV2,
   userProfileSetEmailV1,
   userProfileSetHandleV1,
+  userStatsV1,
 } from './user';
 
 import {
@@ -246,6 +247,10 @@ app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
   const { email } = req.body;
   const token = getTokenFromHeader(req);
   res.json(userProfileSetEmailV1(token, email));
+});
+app.get('/user/stats/v1', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  res.json(userStatsV1(token));
 });
 // ------------- USERS --------------
 
