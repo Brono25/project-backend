@@ -27,12 +27,15 @@ import {
 } from './channel';
 
 import {
+  usersAllv1,
+} from './users';
+
+import {
   userProfileSetNameV1,
   userProfileV2,
-  usersAllv1,
   userProfileSetEmailV1,
   userProfileSetHandleV1,
-} from './users';
+} from './user';
 
 import {
   channelJoinV2,
@@ -90,6 +93,8 @@ function getTokenFromHeader(req: Request) {
 // ////////////////////////////////////////////////////// //
 //                    Interface Wrappers                  //
 // ////////////////////////////////////////////////////// //
+
+// ------------- AUTH --------------
 app.post('/auth/login/v3', (req: Request, res: Response) => {
   const { email, password } = req.body;
   res.json(authLoginV1(email, password));
@@ -105,6 +110,7 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
   res.json(AuthLogoutV1(token));
 });
 
+// ------------- CHANNELS --------------
 app.post('/channels/create/v3', (req: Request, res: Response) => {
   const { name, isPublic } = req.body;
   const token = getTokenFromHeader(req);
@@ -115,6 +121,12 @@ app.get('/channels/list/v3', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(channelsListV2(token));
 });
+app.get('/channels/listAll/v3', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  res.json(channelsListAllV2(token));
+});
+
+// ------------- CHANNEL --------------
 
 app.post('/channel/invite/v3', (req: Request, res: Response) => {
   const { channelId, uId } = req.body;
@@ -137,12 +149,45 @@ app.post('/channel/join/v3', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(channelJoinV2(token, parseInt(channelId)));
 });
+app.get('/channel/messages/v3', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  const channelId = req.query.channelId as string;
+  const start = req.query.start as string;
+  res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
+});
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const { channelId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(channelLeaveV1(token, parseInt(channelId)));
+});
 
+app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
+  const { channelId, uId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
+});
+// ------------- MESSAGE --------------
 app.post('/message/send/v2', (req: Request, res: Response) => {
   const { channelId, message } = req.body;
   const token = getTokenFromHeader(req);
   res.json(messageSendV1(token, parseInt(channelId), message));
 });
+app.delete('/message/remove/v2', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  const messageId = req.query.messageId as string;
+  res.json(messageRemoveV1(token, parseInt(messageId)));
+});
+app.put('/message/edit/v2', (req: Request, res: Response) => {
+  const { messageId, message } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageEditV1(token, parseInt(messageId), message));
+});
+app.post('/message/senddm/v2', (req: Request, res: Response) => {
+  const { dmId, message } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageSendDmV1(token, parseInt(dmId), message));
+});
+// ------------- DM --------------
 app.post('/dm/create/v2', (req: Request, res: Response) => {
   const { uIds } = req.body;
   const token = getTokenFromHeader(req);
@@ -177,35 +222,14 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   const start = req.query.start as string;
   res.json(dmMessagesV1(token, parseInt(dmId), parseInt(start)));
 });
-app.get('/channel/messages/v3', (req: Request, res: Response) => {
-  const token = getTokenFromHeader(req);
-  const channelId = req.query.channelId as string;
-  const start = req.query.start as string;
-  res.json(channelMessagesV1(token, parseInt(channelId), parseInt(start)));
-});
 
-app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const { dmId, message } = req.body;
-  const token = getTokenFromHeader(req);
-  res.json(messageSendDmV1(token, parseInt(dmId), message));
-});
-
+// ------------- USER --------------
 app.get('/user/profile/v3', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   const uId = req.query.uId as string;
   res.json(userProfileV2(token, parseInt(uId)));
 });
 
-app.get('/users/all/v2', (req: Request, res: Response) => {
-  const token = getTokenFromHeader(req);
-  res.json(usersAllv1(token));
-});
-
-app.put('/message/edit/v2', (req: Request, res: Response) => {
-  const { messageId, message } = req.body;
-  const token = getTokenFromHeader(req);
-  res.json(messageEditV1(token, parseInt(messageId), message));
-});
 app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
   const { nameFirst, nameLast } = req.body;
   const token = getTokenFromHeader(req);
@@ -223,26 +247,11 @@ app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(userProfileSetEmailV1(token, email));
 });
+// ------------- USERS --------------
 
-app.post('/channel/leave/v2', (req: Request, res: Response) => {
-  const { channelId } = req.body;
+app.get('/users/all/v2', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
-  res.json(channelLeaveV1(token, parseInt(channelId)));
-});
-
-app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
-  const { channelId, uId } = req.body;
-  const token = getTokenFromHeader(req);
-  res.json(channelRemoveOwnerV1(token, parseInt(channelId), parseInt(uId)));
-});
-app.get('/channels/listAll/v3', (req: Request, res: Response) => {
-  const token = getTokenFromHeader(req);
-  res.json(channelsListAllV2(token));
-});
-app.delete('/message/remove/v2', (req: Request, res: Response) => {
-  const token = getTokenFromHeader(req);
-  const messageId = req.query.messageId as string;
-  res.json(messageRemoveV1(token, parseInt(messageId)));
+  res.json(usersAllv1(token));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
