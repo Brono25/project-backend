@@ -5,21 +5,12 @@ import * as h from './test.helper';
 let token0: string;
 let token1 : string;
 let token2 : string;
-let uId0: number;
 let uId1: number;
-let uId2: number;
-
-let channelId0: number;
-let channelId1: number;
-let channelId2: number;
-
-let dmId0: number;
 let tmp: any;
 
 beforeEach(() => {
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  uId0 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
   uId1 = parseInt(tmp.authUserId);
@@ -78,7 +69,87 @@ describe('Function Testing', () => {
       ],
       dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
       messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: 0
+      involvementRate: expect.any(Number)
+    });
+  });
+
+  test('Create 1 dm', () => {
+    h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
+    const data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    expect(data).toStrictEqual({
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
+      ],
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+      involvementRate: expect.any(Number)
+    });
+  });
+  test('Create 1 dm then leave dm', () => {
+    const tmp: any = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
+    h.postRequest(h.DM_LEAVE_URL, { dmId: tmp.dmId }, token0);
+    const data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    expect(data).toStrictEqual({
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+      ],
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+      involvementRate: expect.any(Number)
+    });
+  });
+  test('Create 1 with 1 other memeber and then remove dm', () => {
+    const tmp: any = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
+    h.deleteRequest(h.DM_RMV_URL, { dmId: tmp.dmId }, token0);
+    let data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    expect(data).toStrictEqual({
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+      ],
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+      involvementRate: expect.any(Number)
+    });
+    data = h.getRequest(h.USER_STATS, undefined, token1);
+    expect(data).toStrictEqual({
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+      ],
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+      involvementRate: expect.any(Number)
+    });
+  });
+
+  test('Send a DM and a Message on a channel', () => {
+    let tmp: any = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
+    h.postRequest(h.MSG_SEND_DM_URL, { dmId: tmp.dmId, message: h.message0 }, token0);
+    tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
+    h.postRequest(h.MSG_SEND_URL, { channelId: tmp.channelId, message: h.message1 }, token0);
+
+    const data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    expect(data).toStrictEqual({
+      dmsJoined: [
+        { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        { numDmsJoined: 1, timeStamp: expect.any(Number) },
+      ],
+      channelsJoined: [
+        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+        { numChannelsJoined: 1, timeStamp: expect.any(Number) }
+      ],
+      messagesSent: [
+        { numMessagesSent: 0, timeStamp: expect.any(Number) },
+        { numMessagesSent: 1, timeStamp: expect.any(Number) },
+        { numMessagesSent: 2, timeStamp: expect.any(Number) }
+      ],
+      involvementRate: expect.any(Number)
     });
   });
 });

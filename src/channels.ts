@@ -19,7 +19,6 @@ import {
   ChanCreateReturn,
   Error,
   JOIN,
-  LEAVE,
 } from './data.types';
 
 // ////////////////////////////////////////////////////// //

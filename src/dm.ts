@@ -15,6 +15,8 @@ import {
   dmDetailsReturn,
   dmLeaveReturn,
   dmRemoveReturn,
+  LEAVE,
+  JOIN
 } from './data.types';
 
 import {
@@ -33,6 +35,7 @@ import {
   generateDmId,
   getUIdFromToken,
   doesTokenHaveDmOwnerPermissions,
+  updateUserDmsJoinedStat,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -72,6 +75,12 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   const data: DataStore = getData();
   data.dms.push(dmStore);
   setData(data);
+
+  const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  for (const uId of data.dms[index].allMembersId) {
+    updateUserDmsJoinedStat(uId, JOIN);
+  }
+
   return { dmId: dmId };
 }
 
@@ -159,6 +168,7 @@ export function dmLeavev1(token: string, dmId: number): dmLeaveReturn {
   const index: number = data.dms.findIndex(a => a.dmId === dmId);
   data.dms[index] = dmDetails;
   setData(data);
+  updateUserDmsJoinedStat(uId, LEAVE);
   return {};
 }
 
@@ -225,8 +235,14 @@ export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
   if (!isTokenMemberOfDm(token, dmId)) {
     throw HTTPError(403, 'Token is not a member');
   }
-  const data: DataStore = getData();
+  let data: DataStore = getData();
   const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  // Update amalytics
+  for (const uId of data.dms[index].allMembersId) {
+    updateUserDmsJoinedStat(uId, LEAVE);
+  }
+  // make sure dm is removed after analytics is updated
+  data = getData();
   data.dms[index].allMembersId.length = 0;
   setData(data);
   return {};

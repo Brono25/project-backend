@@ -16,7 +16,7 @@ import {
   isValidToken,
   isValidAuthUserId,
   isEmailUsed,
-  getTimeInSecs
+  updateUserInvolvement
 } from './other';
 
 import {
@@ -166,8 +166,8 @@ export function userProfileSetEmailV1(token: string, email: string): any {
 export function userStatsV1(token: string): any {
   isValidToken(token);
   const uId: number = getUIdFromToken(token);
+  updateUserInvolvement(uId);
   const userStore : UserStore = getUserStoreFromId(uId);
   const userStats: UserStats = userStore.userStats;
   return userStats;
 }
-

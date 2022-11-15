@@ -1,14 +1,14 @@
 
 
-@token0 = 7Fq2RJshDK
-@token1 = zqNJV23PIu
+@token0 = opHMvgHjCb
+@token1 = gmcJGpiiyW
 ###
 // Register
 POST http://localhost:3500/auth/register/v3/
 content-type: application/json
 
 {
-    "email": "ab@gmail.com",
+    "email": "as@gmail.com",
     "password": "123456",
     "nameFirst": "First Name 0",
     "nameLast": "Last Name 0"
@@ -48,14 +48,19 @@ token: {{token1}}
     "channelId": 0
 }
 ###
+// User stats
+GET http://localhost:3500/user/stats/v1
+token: {{token0}}
+
+     
+###
 // Dm Create
-POST http://localhost:3500/dm/create/v1
+POST http://localhost:3500/dm/create/v2
 content-type: application/json
 token: {{token0}}
 
 {   
-    "token": "kJ2RT5EALB",
-    "uIds": []
+    "uIds": [1]
 }
 
 ###
@@ -86,12 +91,25 @@ GET http://localhost:3500/dm/details/v1
 // dm list
 GET http://localhost:3500/dm/list/v1
     ?token=kJ2RT5EALB
+
     
 ###
 // DM remove 
-DELETE http://localhost:3500/dm/remove/v1
-    ?token=kJ2RT5EALB
-    &dmId=4158043789
+DELETE http://localhost:3500/dm/remove/v2
+    ?dmId=1903126940
+token: {{token0}}
+
+###
+// Dm leave
+POST http://localhost:3500/message/senddm/v1
+content-type: application/json
+token: {{token0}}
+
+{   
+    "dmId": 3419783552,
+}
+
+
 
 
 
