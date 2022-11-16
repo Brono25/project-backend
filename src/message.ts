@@ -400,9 +400,10 @@ function unreactChannelMessage(token: string, messageId: number, reactId: number
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
   const messageStore: Message = channelStore.messages[indexOfMessage];
+  /* for cases when there are more reactIds
   if (messageStore.reacts === undefined) {
     throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
-  }
+  } */
   const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
   const data: DataStore = getData();
 
@@ -410,9 +411,9 @@ function unreactChannelMessage(token: string, messageId: number, reactId: number
     throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
   } else {
     const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
-    if (indexOfUser === -1) {
+    /* if (indexOfUser === -1) {
       throw HTTPError(400, 'the message does not contains a react from the authorised user');
-    }
+    } */
     messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
   }
 
@@ -441,9 +442,9 @@ function unreactDmMessage(token: string, messageId: number, reactId: number, dmI
     throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
   } else {
     const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
-    if (indexOfUser === -1) {
+    /* if (indexOfUser === -1) {
       throw HTTPError(400, 'the message does not contains a react from the authorised user');
-    }
+    } */
     messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
   }
 
