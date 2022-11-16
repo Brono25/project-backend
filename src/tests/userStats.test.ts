@@ -38,10 +38,12 @@ describe('Function Testing', () => {
     const data: any = h.getRequest(h.USER_STATS, undefined, token2);
 
     expect(data).toStrictEqual({
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
-      dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: 0
+      userStats: {
+        channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+        dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+        involvementRate: 0,
+      }
     });
   });
   test('Create 2 channels join 1 channel leave 1 channel join 1 channel', () => {
@@ -59,17 +61,19 @@ describe('Function Testing', () => {
 
     const data: any = h.getRequest(h.USER_STATS, undefined, token1);
     expect(data).toStrictEqual({
-      channelsJoined: [
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 1, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 2, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 3, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 2, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 3, timeStamp: expect.any(Number) },
-      ],
-      dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: expect.any(Number)
+      userStats: {
+        channelsJoined: [
+          { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 1, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 2, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 3, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 2, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 3, timeStamp: expect.any(Number) },
+        ],
+        dmsJoined: [{ numDmsJoined: 0, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      }
     });
   });
 
@@ -77,13 +81,15 @@ describe('Function Testing', () => {
     h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
     const data: any = h.getRequest(h.USER_STATS, undefined, token0);
     expect(data).toStrictEqual({
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-      ],
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: expect.any(Number)
+      userStats: {
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        ],
+        channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      }
     });
   });
   test('Create 1 dm then leave dm', () => {
@@ -91,14 +97,16 @@ describe('Function Testing', () => {
     h.postRequest(h.DM_LEAVE_URL, { dmId: tmp.dmId }, token0);
     const data: any = h.getRequest(h.USER_STATS, undefined, token0);
     expect(data).toStrictEqual({
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-      ],
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: expect.any(Number)
+      userStats: {
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        ],
+        channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      }
     });
   });
   test('Create 1 with 1 other memeber and then remove dm', () => {
@@ -106,25 +114,29 @@ describe('Function Testing', () => {
     h.deleteRequest(h.DM_RMV_URL, { dmId: tmp.dmId }, token0);
     let data: any = h.getRequest(h.USER_STATS, undefined, token0);
     expect(data).toStrictEqual({
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-      ],
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: expect.any(Number)
+      userStats: {
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        ],
+        channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      }
     });
     data = h.getRequest(h.USER_STATS, undefined, token1);
     expect(data).toStrictEqual({
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-      ],
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
-      involvementRate: expect.any(Number)
+      userStats: {
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+        ],
+        channelsJoined: [{ numChannelsJoined: 0, timeStamp: expect.any(Number) }],
+        messagesSent: [{ numMessagesSent: 0, timeStamp: expect.any(Number) }],
+        involvementRate: expect.any(Number)
+      }
     });
   });
 
@@ -136,20 +148,22 @@ describe('Function Testing', () => {
 
     const data: any = h.getRequest(h.USER_STATS, undefined, token0);
     expect(data).toStrictEqual({
-      dmsJoined: [
-        { numDmsJoined: 0, timeStamp: expect.any(Number) },
-        { numDmsJoined: 1, timeStamp: expect.any(Number) },
-      ],
-      channelsJoined: [
-        { numChannelsJoined: 0, timeStamp: expect.any(Number) },
-        { numChannelsJoined: 1, timeStamp: expect.any(Number) }
-      ],
-      messagesSent: [
-        { numMessagesSent: 0, timeStamp: expect.any(Number) },
-        { numMessagesSent: 1, timeStamp: expect.any(Number) },
-        { numMessagesSent: 2, timeStamp: expect.any(Number) }
-      ],
-      involvementRate: expect.any(Number)
+      userStats: {
+        dmsJoined: [
+          { numDmsJoined: 0, timeStamp: expect.any(Number) },
+          { numDmsJoined: 1, timeStamp: expect.any(Number) },
+        ],
+        channelsJoined: [
+          { numChannelsJoined: 0, timeStamp: expect.any(Number) },
+          { numChannelsJoined: 1, timeStamp: expect.any(Number) }
+        ],
+        messagesSent: [
+          { numMessagesSent: 0, timeStamp: expect.any(Number) },
+          { numMessagesSent: 1, timeStamp: expect.any(Number) },
+          { numMessagesSent: 2, timeStamp: expect.any(Number) }
+        ],
+        involvementRate: expect.any(Number)
+      }
     });
   });
 });
