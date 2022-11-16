@@ -3,6 +3,7 @@ import {
   DataStore,
   User,
   UsersAllReturn,
+  WorkspaceStats,
 } from './data.types';
 
 import {
@@ -42,7 +43,6 @@ export function usersAllv1(token: string): UsersAllReturn {
   return { users: usersList };
 }
 
-
 // ////////////////////////////////////////////////////// //
 //              usersStats (Workspace stats)              //
 // ////////////////////////////////////////////////////// //
@@ -52,9 +52,14 @@ export function usersAllv1(token: string): UsersAllReturn {
  * @param {} - token and email to update for a user
  * @returns {}
  */
-export function useStatsV1(token: string): {userStats: UserStats} {
+export function useStatsV1(token: string): {workspaceStats: WorkspaceStats} {
   isValidToken(token);
 
-
-  return { usersStats: userStats };
+  const workspaceStats = {
+    channelsExist: [{ numChannelsExist: -1, timeStamp: -1 }],
+    dmsExist: [{ numDmsExist: -1, timeStamp: -1 }],
+    messagesExist: [{ numMessagesExist: -1, timeStamp: -1 }],
+    utilizationRate = 0
+  };
+  return { workspaceStats: workspaceStats };
 }
