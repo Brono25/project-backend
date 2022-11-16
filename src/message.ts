@@ -31,6 +31,7 @@ import {
   updateUserMessagesSentStat,
   updateNumMessagesExistStat,
   isValidReactId,
+  isThisUserReacted,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -277,6 +278,7 @@ function editDmMessage(token: string, messageId: number, message: string, dmId: 
   index = data.messageIds.findIndex(a => a.messageId === messageId);
   setData(data);
 }
+
 // ////////////////////////////////////////////////////// //
 //                      messageReact                      //
 // ////////////////////////////////////////////////////// //
@@ -285,7 +287,7 @@ function editDmMessage(token: string, messageId: number, message: string, dmId: 
  * @param {number, number}
  * @returns { {} | Error}
  */
-export function messageReactV1(token: string, messageId: number, reactId: number) {
+ export function messageReactV1(token: string, messageId: number, reactId: number) {
   isValidToken(token);
   isValidMessageId(messageId);
   isValidReactId(reactId);
@@ -306,31 +308,27 @@ function reactChannelMessage(token: string, messageId: number, reactId: number, 
     throw HTTPError(400, 'Not a channel memeber');
   }
 
-  const uId = getUIdFromToken(token);
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
   const messageStore: Message = channelStore.messages[indexOfMessage];
-  if (messageStore.reacts === undefined) {
-    messageStore.reacts = [];
-  }
-  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
-
   const data: DataStore = getData();
   const react: React = {
     reactId: reactId,
-    uIds: [uId],
+    uIds: [],
     isThisUserReacted: null,
   };
 
-  if (indexOfReact !== -1) {
-    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
-    messageStore.reacts[indexOfReact].uIds.push(uId);
-    if (indexOfUser !== -1) {
-      throw HTTPError(400, 'the message already contains a react from the authorised user');
-    }
-  } else {
+  if (messageStore.reacts === undefined || messageStore.reacts === null) {
+    messageStore.reacts = [];
     messageStore.reacts.push(react);
   }
+
+  if (isThisUserReacted(messageStore, reactId, token)) {
+    throw HTTPError(400, 'the message already contains a react from the authorised user');
+  }
+  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
+  messageStore.reacts[indexOfReact].uIds.push(getUIdFromToken(token));
+  messageStore.reacts[indexOfReact].isThisUserReacted = true;
   const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
   data.channels[indexOfChannel].messages[indexOfMessage] = messageStore;
   setData(data);
@@ -340,31 +338,27 @@ function reactDmMessage(token: string, messageId: number, reactId: number, dmId:
   if (!isTokenMemberOfDm(token, dmId)) {
     throw HTTPError(400, 'Not a dm memeber');
   }
-  const uId = getUIdFromToken(token);
   const dmStore: DmStore = getDmStore(dmId);
   const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
   const messageStore: Message = dmStore.messages[indexOfMessage];
-  if (messageStore.reacts === undefined) {
-    messageStore.reacts = [];
-  }
-  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
-
   const data: DataStore = getData();
   const react: React = {
     reactId: reactId,
-    uIds: [uId],
+    uIds: [],
     isThisUserReacted: null,
   };
 
-  if (indexOfReact !== -1) {
-    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
-    messageStore.reacts[indexOfReact].uIds.push(uId);
-    if (indexOfUser !== -1) {
-      throw HTTPError(400, 'the message already contains a react from the authorised user');
-    }
-  } else {
+  if (messageStore.reacts === undefined || messageStore.reacts === null) {
+    messageStore.reacts = [];
     messageStore.reacts.push(react);
   }
+
+  if (isThisUserReacted(messageStore, reactId, token)) {
+    throw HTTPError(400, 'the message already contains a react from the authorised user');
+  }
+  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
+  messageStore.reacts[indexOfReact].uIds.push(getUIdFromToken(token));
+  messageStore.reacts[indexOfReact].isThisUserReacted = true;
   const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
   data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
   setData(data);
@@ -403,28 +397,18 @@ function unreactChannelMessage(token: string, messageId: number, reactId: number
   const channelStore: ChannelStore = getChannelStoreFromId(channelId);
   const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
   const messageStore: Message = channelStore.messages[indexOfMessage];
-  /* for cases when there are more reactIds
-  if (messageStore.reacts === undefined) {
-    throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
-  } */
   const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
   const data: DataStore = getData();
 
-  if (indexOfReact === -1) {
+  if (!isThisUserReacted(messageStore, reactId, token)) {
     throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
-  } else {
-    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
-    /* if (indexOfUser === -1) {
-      throw HTTPError(400, 'the message does not contains a react from the authorised user');
-    } */
-    messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
   }
+  const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+  messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
 
-  if (messageStore.reacts[indexOfReact].uIds.length === 0) {
-    messageStore.reacts.splice(indexOfReact, 1);
-  }
   const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
   data.channels[indexOfChannel].messages[indexOfMessage] = messageStore;
+  messageStore.reacts[indexOfReact].isThisUserReacted = false;
   setData(data);
 }
 function unreactDmMessage(token: string, messageId: number, reactId: number, dmId: number) {
@@ -435,31 +419,19 @@ function unreactDmMessage(token: string, messageId: number, reactId: number, dmI
   const dmStore: DmStore = getDmStore(dmId);
   const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
   const messageStore: Message = dmStore.messages[indexOfMessage];
-  if (messageStore.reacts === undefined) {
-    throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
-  }
   const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
   const data: DataStore = getData();
 
-  if (indexOfReact === -1) {
+  if (!isThisUserReacted(messageStore, reactId, token)) {
     throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
-  } else {
-    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
-    /* if (indexOfUser === -1) {
-      throw HTTPError(400, 'the message does not contains a react from the authorised user');
-    } */
-    messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
   }
-
-  if (messageStore.reacts[indexOfReact].uIds.length === 0) {
-    messageStore.reacts.splice(indexOfReact, 1);
-  }
-
+  const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+  messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
+  messageStore.reacts[indexOfReact].isThisUserReacted = false;
   const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
   data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
   setData(data);
 }
-
 // ////////////////////////////////////////////////////// //
 //                      messagePin                        //
 // ////////////////////////////////////////////////////// //
