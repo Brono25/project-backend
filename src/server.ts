@@ -28,7 +28,7 @@ import {
 
 import {
   usersAllv1,
-  usersStatsv1,
+  usersStatsV1,
 } from './users';
 
 import {
@@ -262,7 +262,7 @@ app.get('/users/all/v2', (req: Request, res: Response) => {
 });
 app.get('/users/stats/v1', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
-  res.json(usersStatsv1(token));
+  res.json(usersStatsV1(token));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {

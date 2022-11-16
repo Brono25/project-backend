@@ -52,14 +52,14 @@ export function usersAllv1(token: string): UsersAllReturn {
  * @param {} - token and email to update for a user
  * @returns {}
  */
-export function useStatsV1(token: string): {workspaceStats: WorkspaceStats} {
+export function usersStatsV1(token: string): {workspaceStats: WorkspaceStats} {
   isValidToken(token);
 
-  const workspaceStats = {
+  const workspaceStats = <WorkspaceStats>{
     channelsExist: [{ numChannelsExist: -1, timeStamp: -1 }],
     dmsExist: [{ numDmsExist: -1, timeStamp: -1 }],
     messagesExist: [{ numMessagesExist: -1, timeStamp: -1 }],
-    utilizationRate = 0
+    utilizationRate: 0
   };
   return { workspaceStats: workspaceStats };
 }
