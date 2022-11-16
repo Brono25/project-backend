@@ -1,26 +1,24 @@
 
 import { DataStore, WorkspaceStats } from './data.types';
 import fs from 'fs';
-import { getTimeInSecs } from './other';
+
 const DIR = './DataStorage';
 const DATA_PATH = DIR + '/database.JSON';
-
+// Check data store directory exists
 if (!fs.existsSync(DIR)) {
   fs.mkdirSync(DIR);
 }
+// Check dataStore.json exists
 
-let data: DataStore;
 if (!fs.existsSync(DATA_PATH)) {
   const jsonstr = JSON.stringify(null);
   fs.writeFileSync(DATA_PATH, jsonstr);
 }
 
-const dbstr = fs.readFileSync(DATA_PATH);
-data = JSON.parse(String(dbstr));
+let data: DataStore = null;
 
-if (data === null) {
-  const timeStamp: number = getTimeInSecs();
-  data = {
+export function initialiseBeans(timeStamp: number) {
+  const initData: DataStore = {
     users: [],
     channels: [],
     activeTokens: [],
@@ -33,7 +31,7 @@ if (data === null) {
       utilizationRate: 0
     }
   };
-  const jsonstr = JSON.stringify(data, null, 2);
+  const jsonstr = JSON.stringify(initData, null, 2);
   fs.writeFileSync(DATA_PATH, jsonstr);
 }
 

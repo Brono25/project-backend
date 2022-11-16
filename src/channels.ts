@@ -9,6 +9,7 @@ import {
   getUIdFromToken,
   isValidToken,
   updateUserChannelsJoinedStat,
+  updateNumChannelsExistStat,
 } from './other';
 import {
   ChannelStore,
@@ -58,7 +59,9 @@ export function channelsCreateV2(
   const data: DataStore = getData();
   data.channels.push(channel);
   setData(data);
+
   updateUserChannelsJoinedStat(authUserId, JOIN);
+  updateNumChannelsExistStat();
   return channelId;
 }
 
