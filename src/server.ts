@@ -49,6 +49,7 @@ import {
   messageRemoveV1,
   messageEditV1,
   messageReactV1,
+  messageUnreactV1,
 } from './message';
 
 import {
@@ -194,6 +195,11 @@ app.post('/message/react/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   const token = getTokenFromHeader(req);
   res.json(messageReactV1(token, parseInt(messageId), parseInt(reactId)));
+});
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageUnreactV1(token, parseInt(messageId), parseInt(reactId)));
 });
 // ------------- DM --------------
 app.post('/dm/create/v2', (req: Request, res: Response) => {
