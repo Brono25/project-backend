@@ -11,7 +11,7 @@ import {
 } from './other';
 
 import {
-  getData,
+  getData, setData,
 } from './dataStore';
 
 // ////////////////////////////////////////////////////// //
@@ -50,11 +50,27 @@ export function usersAllv1(token: string): UsersAllReturn {
  * Fetches the required statistics about users use of Beans
  *
  * @param {} - token and email to update for a user
- * @returns {}
+ * @returns {{workspaceStats: WorkspaceStats} }
  */
 export function usersStatsV1(token: string): {workspaceStats: WorkspaceStats} {
   isValidToken(token);
   const data: DataStore = getData();
+  const numActiveUsers: number = getNumberOfUsersWhoBelongToAtleastOneChannelOrDm(data);
+  const totalUsers: number = data.users.length;
   const workspaceStats: WorkspaceStats = data.workspaceStats;
+  workspaceStats.utilizationRate = numActiveUsers / totalUsers;
+  data.workspaceStats = workspaceStats;
+  setData(data);
   return { workspaceStats: workspaceStats };
+}
+
+function getNumberOfUsersWhoBelongToAtleastOneChannelOrDm(data: DataStore) {
+  const userCount = new Set();
+  for (const channel of data.channels) {
+    channel.allMembers.map(a => userCount.add(a.uId));
+  }
+  for (const dm of data.dms) {
+    dm.allMembersId.map(a => userCount.add(a));
+  }
+  return userCount.size;
 }
