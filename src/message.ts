@@ -9,7 +9,8 @@ import {
   Error,
   ChannelStore,
   MessageTracking,
-  DmStore
+  DmStore,
+  React
 } from './data.types';
 
 import {
@@ -28,6 +29,7 @@ import {
   getDmStore,
   isValidMessageId,
   updateUserMessagesSentStat,
+  isValidReactId,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -270,5 +272,97 @@ function editDmMessage(token: string, messageId: number, message: string, dmId: 
   index = data.dms.findIndex(a => a.dmId === dmId);
   data.dms[index] = dmStore;
   index = data.messageIds.findIndex(a => a.messageId === messageId);
+  setData(data);
+}
+// ////////////////////////////////////////////////////// //
+//                      messageReact                      //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a message within a channel or DM the authorised user is part of, adds a "react" to that particular message.
+ * @param {number, number}
+ * @returns { {} | Error}
+ */
+export function messageReactV1(token: string, messageId: number, reactId: number) {
+  isValidToken(token);
+  isValidMessageId(messageId);
+  isValidReactId(reactId);
+  const messageLoc: MessageTracking = getMessageLocation(messageId);
+  const channelId: number = messageLoc.channelId;
+  const dmId: number = messageLoc.dmId;
+  if (channelId !== null) {
+    reactChannelMessage(token, messageId, reactId, channelId);
+  }
+  if (messageLoc.dmId !== null) {
+    reactDmMessage(token, messageId, reactId, dmId);
+  }
+  return {};
+}
+
+function reactChannelMessage(token: string, messageId: number, reactId: number, channelId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(400, 'Not a channel memeber');
+  }
+
+  const uId = getUIdFromToken(token);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = channelStore.messages[indexOfMessage];
+  if (messageStore.reacts === undefined) {
+    messageStore.reacts = [];
+  }
+  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
+
+  const data: DataStore = getData();
+  const react: React = {
+    reactId: reactId,
+    uIds: [uId],
+    isThisUserReacted: null,
+  };
+
+  if (indexOfReact !== -1) {
+    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+    messageStore.reacts[indexOfReact].uIds.push(uId);
+    if (indexOfUser !== -1) {
+      throw HTTPError(400, 'the message already contains a react from the authorised user');
+    }
+  } else {
+    messageStore.reacts.push(react);
+  }
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[indexOfChannel].messages[indexOfMessage] = messageStore;
+  setData(data);
+}
+
+function reactDmMessage(token: string, messageId: number, reactId: number, dmId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(400, 'Not a dm memeber');
+  }
+  const uId = getUIdFromToken(token);
+  const dmStore: DmStore = getDmStore(dmId);
+  const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = dmStore.messages[indexOfMessage];
+  if (messageStore.reacts === undefined) {
+    messageStore.reacts = [];
+  }
+  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
+
+  const data: DataStore = getData();
+  const react: React = {
+    reactId: reactId,
+    uIds: [uId],
+    isThisUserReacted: null,
+  };
+
+  if (indexOfReact !== -1) {
+    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+    messageStore.reacts[indexOfReact].uIds.push(uId);
+    if (indexOfUser !== -1) {
+      throw HTTPError(400, 'the message already contains a react from the authorised user');
+    }
+  } else {
+    messageStore.reacts.push(react);
+  }
+  const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
   setData(data);
 }
