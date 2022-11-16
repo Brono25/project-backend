@@ -287,7 +287,7 @@ function editDmMessage(token: string, messageId: number, message: string, dmId: 
  * @param {number, number}
  * @returns { {} | Error}
  */
- export function messageReactV1(token: string, messageId: number, reactId: number) {
+export function messageReactV1(token: string, messageId: number, reactId: number) {
   isValidToken(token);
   isValidMessageId(messageId);
   isValidReactId(reactId);

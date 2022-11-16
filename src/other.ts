@@ -179,7 +179,6 @@ export function isThisUserReacted(message: Message, reactId: number, token: stri
       return false;
     }
   }
-  return false;
 }
 
 // ////////////////////////////////////////////////////// //
