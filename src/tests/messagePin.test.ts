@@ -16,9 +16,9 @@ let channelId0: number;
 let tmp: any;
 
 beforeEach(() => {
-  //tokens 0,1,2 and uId 2
+  // tokens 0,1,2 and uId 2
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
-  token0 = tmp.token; 
+  token0 = tmp.token;
 
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
@@ -27,31 +27,28 @@ beforeEach(() => {
   token2 = tmp.token;
   uId2 = parseInt(tmp.authUserId);
 
-
-  //channel 0
+  // channel 0
   tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
   channelId0 = parseInt(tmp.channelId);
 
-  //adding member to channel
-   h.postRequest(h.CHAN_JOIN_URL, {
+  // adding member to channel
+  h.postRequest(h.CHAN_JOIN_URL, {
     channelId: channelId0,
   }, token2);
 
-  //messages 0 (to channel) and invalid
+  // messages 0 (to channel) and invalid
   tmp = h.postRequest(h.MSG_SEND_URL, { channelId: channelId0, message: h.message0 }, token0);
   mId0 = parseInt(tmp.messageId);
 
   invalidMId = Math.abs(mId0 + 10);
 
-  //dm 0
+  // dm 0
   tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId2] }, token1);
   const dmId0 = parseInt(tmp.dmId);
 
-  //message 1 (to dm)
+  // message 1 (to dm)
   tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message1 }, token1);
   mId1 = parseInt(tmp.messageId);
-
-
 });
 // Tear down
 afterEach(() => {
@@ -60,15 +57,14 @@ afterEach(() => {
 
 // ------------------Error Testing------------------///
 describe('Error Handling', () => {
-
   test('Invalid token', () => {
     const data = {
-    messageId: mId0,
-    reactId: 1,
+      messageId: mId0,
+      reactId: 1,
     };
     h.testErrorThrown(h.MSG_PIN_URL, 'POST', 403, data, h.invalidToken);
   });
-    
+
   test('Invalid message ID', () => {
     const data = {
       messageId: invalidMId,
@@ -89,7 +85,7 @@ describe('Error Handling', () => {
     };
     h.testErrorThrown(h.MSG_PIN_URL, 'POST', 400, data, token0);
   });
-  
+
   test('the message is already pinned (in channel)', () => {
     const a = h.postRequest(h.MSG_PIN_URL, {
       messageId: mId0,
@@ -125,7 +121,6 @@ describe('Error Handling', () => {
     };
     h.testErrorThrown(h.MSG_PIN_URL, 'POST', 403, data, token2);
   });
-
 });
 
 // ------------------Function Testing------------------//
