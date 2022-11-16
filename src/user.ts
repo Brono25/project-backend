@@ -169,5 +169,5 @@ export function userStatsV1(token: string): any {
   updateUserInvolvement(uId);
   const userStore : UserStore = getUserStoreFromId(uId);
   const userStats: UserStats = userStore.userStats;
-  return userStats;
+  return {userStats: userStats};
 }
