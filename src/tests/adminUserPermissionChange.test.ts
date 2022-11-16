@@ -64,20 +64,19 @@ describe('Error Handling', () => {
 
   test('invalid permissionId (numeric but neither 1 or 2)', () => {
     const data = {
-        uId: uId1,
-        permissionId: 22,
-      };
-      h.testErrorThrown(h.ADMIN_USER_PERM_CHANGE, 'POST', 400, data, token0);
-    });
+      uId: uId1,
+      permissionId: 22,
+    };
+    h.testErrorThrown(h.ADMIN_USER_PERM_CHANGE, 'POST', 400, data, token0);
+  });
 
   test('the user already has the permissions level of permissionId', () => {
     const data = {
       uId: uId1,
       permissionId: 2,
-      };
+    };
     h.testErrorThrown(h.ADMIN_USER_PERM_CHANGE, 'POST', 400, data, token0);
   });
-  
 
   test('the authorised user is not a global owner', () => {
     const data = {
@@ -86,7 +85,6 @@ describe('Error Handling', () => {
     };
     h.testErrorThrown(h.ADMIN_USER_PERM_CHANGE, 'POST', 403, data, token1);
   });
-
 });
 
 // ------------------Function Testing------------------//
@@ -94,23 +92,22 @@ describe('Error Handling', () => {
 describe('Function Testing', () => {
   test('change permission of a member to owner', () => {
     const a: any = h.postRequest(h.ADMIN_USER_PERM_CHANGE, {
-        uId: uId1,
-        permissionId: 1,
+      uId: uId1,
+      permissionId: 1,
     }, token0);
     expect(a).toStrictEqual({});
   });
 
   test('change permission of an owner to member', () => {
     const a: any = h.postRequest(h.ADMIN_USER_PERM_CHANGE, {
-        uId: uId1,
-        permissionId: 1,
+      uId: uId1,
+      permissionId: 1,
     }, token0);
     expect(a).toStrictEqual({});
     const b: any = h.postRequest(h.ADMIN_USER_PERM_CHANGE, {
-        uId: uId0,
-        permissionId: 2,
+      uId: uId0,
+      permissionId: 2,
     }, token1);
-    expect(a).toStrictEqual({});
+    expect(b).toStrictEqual({});
   });
-  
 });

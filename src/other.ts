@@ -92,7 +92,7 @@ export function isValidAuthUserId(authUserId: number): boolean {
       return true;
     }
   }
-  return false;
+  throw HTTPError(400, 'Invalid user id');
 }
 /**
  * @param {number} - channel id
@@ -179,6 +179,21 @@ export function isThisUserReacted(message: Message, reactId: number, token: stri
       return false;
     }
   }
+}
+/**
+ * @param {number} - permissionId
+ * @returns {boolean} - does exist true/false
+ */
+export function isValidPermId(permissionId: number) {
+  if (permissionId === 1) {
+    return true;
+  }
+
+  if (permissionId === 2) {
+    return true;
+  }
+
+  throw HTTPError(400, 'Invalid permission id');
 }
 
 // ////////////////////////////////////////////////////// //
