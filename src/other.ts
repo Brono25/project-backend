@@ -22,6 +22,7 @@ import {
   ChannelStat,
   DmsStat,
   MessageStat,
+  WorkspaceStats
 } from './data.types';
 
 /**
@@ -31,12 +32,19 @@ import {
  */
 export function clearV1(): any {
   let data: DataStore = getData();
+  const timeStamp: number = getTimeInSecs();
   data = {
     users: [],
     channels: [],
     activeTokens: [],
     messageIds: [],
     dms: [],
+    workspaceStats: <WorkspaceStats> {
+      channelsExist: [{ numChannelsExist: 0, timeStamp: timeStamp }],
+      dmsExist: [{ numDmsExist: 0, timeStamp: timeStamp }],
+      messagesExist: [{ numMessagesExist: 0, timeStamp: timeStamp }],
+      utilizationRate: 0
+    }
   };
   setData(data);
   return {};
