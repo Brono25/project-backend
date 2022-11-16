@@ -1,18 +1,80 @@
 
 
-@token0 = M/29FZTETO
-@token1 = gmcJGpiiyW
+@token0 = HYOzA03/WQ
+@token1 =6tdFMyOGxR
+@dmId = 3701256410
+@MsgId = 1544964936
+@cid = 0
+
+
+###
+//Clear
+DELETE http://localhost:3500/clear/v1/
+content-type: application/json
+
+
 ###
 // Register
 POST http://localhost:3500/auth/register/v3/
 content-type: application/json
 
 {
-    "email": "as@gmail.com",
+    "email": "awees@gmail.com",
     "password": "123456",
     "nameFirst": "First Name 0",
     "nameLast": "Last Name 0"
 }
+###
+// Dm Create
+POST http://localhost:3500/dm/create/v2
+content-type: application/json
+token: {{token0}}
+
+{   
+    "uIds": []
+}
+###
+// Dm send message
+POST http://localhost:3500/message/senddm/v2
+content-type: application/json
+token: {{token0}}
+
+{   
+    "dmId": {{ dmId }},
+    "message": "Here is a message"
+}
+###
+// DM remove 
+DELETE http://localhost:3500/dm/remove/v2
+    ?dmId={{dmId}}
+token: {{token0}}
+
+###
+// Channel Create
+POST http://localhost:3500/channels/create/v3
+content-type: application/json
+token: {{token0}}
+
+{   
+    "name": "Channel 2",
+    "isPublic": true
+}
+###
+// Message send
+POST http://localhost:3500/message/send/v2/
+content-type: application/json
+token: {{token0}}
+
+{   
+    "channelId": 0,
+    "message": "message 1"
+}
+###
+// remove message
+DELETE http://localhost:3500/message/remove/v2
+    ?messageId={{MsgId}}
+token: {{token0}}
+
 ###
 // Login
 POST http://localhost:3500/auth/login/v3/
@@ -28,16 +90,7 @@ POST http://localhost:3500/auth/logout/v1/
 content-type: application/json
 token: {{token0}}
 
-###
-// Channel Create
-POST http://localhost:3500/channels/create/v3
-content-type: application/json
-token: {{token0}}
 
-{   
-    "name": "Channel 2",
-    "isPublic": true
-}
 ###
 // Channel Join
 POST http://localhost:3500/channel/join/v3
@@ -53,26 +106,7 @@ GET http://localhost:3500/user/stats/v1
 token: {{token0}}
 
      
-###
-// Dm Create
-POST http://localhost:3500/dm/create/v2
-content-type: application/json
-token: {{token0}}
 
-{   
-    "uIds": [1]
-}
-
-###
-// Dm send message
-POST http://localhost:3500/message/senddm/v1
-content-type: application/json
-
-{   
-    "token": "rgbprd/1Hq",
-    "dmId": 3419783552,
-    "message": "Here is a message"
-}
 
 ###
 // Get DM messages
@@ -93,11 +127,6 @@ GET http://localhost:3500/dm/list/v1
     ?token=kJ2RT5EALB
 
     
-###
-// DM remove 
-DELETE http://localhost:3500/dm/remove/v2
-    ?dmId=1903126940
-token: {{token0}}
 
 ###
 // Dm leave
@@ -114,21 +143,7 @@ token: {{token0}}
 
 
 
-###
-// Message send
-POST http://localhost:3500/message/send/v1/
-content-type: application/json
 
-{   
-    "token": "token",
-    "channelId": 0,
-    "message": "message 1"
-}
-###
-// remove message
-DELETE http://localhost:3500/message/remove/v1
-    ?token=token
-    &messageId=0
 
 ### Edit message
 PUT http://localhost:3500/message/edit/v1
@@ -194,10 +209,4 @@ content-type: application/json
 
 
 
-
-
-###
-//Clear
-DELETE http://localhost:3500/clear/v1/
-content-type: application/json
 

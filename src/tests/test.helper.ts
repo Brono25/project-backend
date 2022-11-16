@@ -33,9 +33,9 @@ export const MSG_SEND_URL = `${url}:${port}/message/send/v2`;
 export const MSG_EDIT_URL = `${url}:${port}/message/edit/v2`;
 export const MSG_RMV_URL = `${url}:${port}/message/remove/v2`;
 export const MSG_SEND_DM_URL = `${url}:${port}/message/senddm/v2`;
+export const MSG_REACT_URL = `${url}:${port}/message/react/v1`;
 export const MSG_PIN_URL = `${url}:${port}/message/pin/v1`;
 export const MSG_UNPIN_URL = `${url}:${port}/message/unpin/v1`;
-export const MSG_REACT_URL = `${url}:${port}/message/react/v1`;
 export const MSG_UNREACT_URL = `${url}:${port}/message/unreact/v1`;
 
 export const USER_PROF_URL = `${url}:${port}/user/profile/v3`;
@@ -43,7 +43,9 @@ export const USER_ALL_URL = `${url}:${port}/users/all/v2`;
 export const USER_PROF_SET_NAME_URL = `${url}:${port}/user/profile/setname/v2`;
 export const USER_PROF_SET_EMAIL_URL = `${url}:${port}/user/profile/setemail/v2`;
 export const USER_PROF_SET_HANDLE_URL = `${url}:${port}/user/profile/sethandle/v2`;
-export const USER_STATS = `${url}:${port}/user/stats/v1`;
+export const USER_STATS_URL = `${url}:${port}/user/stats/v1`;
+
+export const USERS_STATS_URL = `${url}:${port}/users/stats/v1`;
 
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];

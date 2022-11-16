@@ -29,6 +29,7 @@ import {
   getDmStore,
   isValidMessageId,
   updateUserMessagesSentStat,
+  updateNumMessagesExistStat,
   isValidReactId,
 } from './other';
 
@@ -76,6 +77,7 @@ export function messageSendV1(
   data.messageIds.unshift(messageLoc);
   setData(data);
   updateUserMessagesSentStat(uId);
+  updateNumMessagesExistStat();
   return <MessageId>{ messageId: messageId };
 }
 
@@ -119,6 +121,7 @@ export function messageSendDmV1(
   data.messageIds.unshift(messageLoc);
   setData(data);
   updateUserMessagesSentStat(uId);
+  updateNumMessagesExistStat();
   return <MessageId>{ messageId: messageId };
 }
 
@@ -138,13 +141,15 @@ export function messageRemoveV1(token: string, messageId: number): object | Erro
   }
   if (messageLoc.channelId !== null) {
     const channelId: number = messageLoc.channelId;
-    return removeChannelMessage(token, channelId, messageId, messageLoc.uId);
+    removeChannelMessage(token, channelId, messageId, messageLoc.uId);
   }
 
   if (messageLoc.dmId !== null) {
     const dmId: number = messageLoc.dmId;
-    return removeDmMessage(token, dmId, messageId, messageLoc.uId);
+    removeDmMessage(token, dmId, messageId, messageLoc.uId);
   }
+  updateNumMessagesExistStat();
+  return {};
 }
 
 /**
@@ -168,7 +173,6 @@ function removeChannelMessage(token: string, channelId: number, messageId: numbe
   index = data.messageIds.findIndex(a => a.messageId === messageId);
   data.messageIds.splice(index, 1);
   setData(data);
-  return {};
 }
 
 /**
@@ -192,7 +196,6 @@ function removeDmMessage(token: string, dmId: number, messageId: number, uId: nu
   index = data.messageIds.findIndex(a => a.messageId === messageId);
   data.messageIds.splice(index, 1);
   setData(data);
-  return {};
 }
 
 // ////////////////////////////////////////////////////// //

@@ -26,6 +26,8 @@ import {
   TokenHash,
 } from './data.types';
 
+import { initialiseBeans } from './dataStore';
+
 // ////////////////////////////////////////////////////// //
 //                        AuthLoginV1                     //
 // ////////////////////////////////////////////////////// //
@@ -110,7 +112,11 @@ function authRegisterV1(
     }
   };
 
-  const data: DataStore = getData();
+  let data: DataStore = getData();
+  if (data === null) {
+    initialiseBeans(timeStamp);
+    data = getData();
+  }
 
   data.activeTokens.push(tokenHash);
   data.users.push(userStore);
@@ -148,7 +154,7 @@ function AuthLogoutV1(token: string): any {
 export function isHandleStrUnique(handleStr: string) {
   const data: DataStore = getData();
 
-  if (!data.users.length) {
+  if (data === null || !data.users.length) {
     return true;
   }
   for (const user of data.users) {
@@ -197,7 +203,11 @@ function generateHandleStr(nameFirst: string, nameLast: string) {
  */
 function generateAuthUserId(): AuthUserId {
   const data: DataStore = getData();
-  const id: number = data.users.length;
+  let numUsers = 0;
+  if (data !== null) {
+    numUsers = data.users.length;
+  }
+  const id: number = numUsers;
   return { authUserId: id };
 }
 
@@ -207,6 +217,7 @@ function generateAuthUserId(): AuthUserId {
  */
 function isPasswordCorrect(email: string, password: string) {
   const data: DataStore = getData();
+
   for (const user of data.users) {
     if (email.toLowerCase() === user.email.toLowerCase()) {
       if (password === user.password) {

@@ -22,6 +22,9 @@ import {
   ChannelStat,
   DmsStat,
   MessageStat,
+  NumChannelsExist,
+  DmsExist,
+  MessagesExist
 } from './data.types';
 
 /**
@@ -30,14 +33,7 @@ import {
  * @returns {}
  */
 export function clearV1(): any {
-  let data: DataStore = getData();
-  data = {
-    users: [],
-    channels: [],
-    activeTokens: [],
-    messageIds: [],
-    dms: [],
-  };
+  const data: any = null;
   setData(data);
   return {};
 }
@@ -52,6 +48,10 @@ export function clearV1(): any {
  */
 export function isEmailUsed(email: string) {
   const data: DataStore = getData();
+
+  if (data === null) {
+    return;
+  }
   for (const user of data.users) {
     if (user.email.toLowerCase() === email.toLowerCase()) {
       throw HTTPError(400, 'Email in use');
@@ -60,6 +60,9 @@ export function isEmailUsed(email: string) {
 }
 export function isEmailFound(email: string) {
   const data: DataStore = getData();
+  if (data === null) {
+    throw HTTPError(400, 'Email not found');
+  }
   for (const user of data.users) {
     if (user.email.toLowerCase() === email.toLowerCase()) {
       return true;
@@ -494,6 +497,41 @@ export function updateUserInvolvement(uId: number) {
     involvementRate = 1;
   }
   data.users[index].userStats.involvementRate = involvementRate;
+  setData(data);
+}
+/**
+ * Count how many channels exist and update the stat
+ */
+export function updateNumChannelsExistStat() {
+  const data: DataStore = getData();
+  const timeStamp: number = getTimeInSecs();
+  const numChannels: number = data.channels.length;
+  const newStat: NumChannelsExist = { numChannelsExist: numChannels, timeStamp: timeStamp };
+  data.workspaceStats.channelsExist.push(newStat);
+  setData(data);
+}
+
+/**
+ * Count how many dms exist and update the stat
+ */
+export function updateNumDmsExistStat() {
+  const data: DataStore = getData();
+  const timeStamp: number = getTimeInSecs();
+  const numDms: number = data.dms.length;
+  const newStat: DmsExist = { numDmsExist: numDms, timeStamp: timeStamp };
+  data.workspaceStats.dmsExist.push(newStat);
+  setData(data);
+}
+
+/**
+ * Count how many dms exist and update the stat
+ */
+export function updateNumMessagesExistStat() {
+  const data: DataStore = getData();
+  const timeStamp: number = getTimeInSecs();
+  const numMessages: number = data.messageIds.length;
+  const newStat: MessagesExist = { numMessagesExist: numMessages, timeStamp: timeStamp };
+  data.workspaceStats.messagesExist.push(newStat);
   setData(data);
 }
 

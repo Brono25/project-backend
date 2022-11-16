@@ -101,6 +101,16 @@ export type UserStats = {
   involvementRate: number;
 }
 
+export type NumChannelsExist = { numChannelsExist: number, timeStamp: number };
+export type DmsExist = { numDmsExist: number, timeStamp: number };
+export type MessagesExist = { numMessagesExist: number, timeStamp: number };
+export type WorkspaceStats = {
+    channelsExist: NumChannelsExist[],
+    dmsExist: DmsExist[],
+    messagesExist: MessagesExist[],
+    utilizationRate: number;
+}
+
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;
 export type DmCreateReturn = { dmId: number } | Error;
@@ -156,6 +166,7 @@ export type DataStore = {
   activeTokens: TokenHash[];
   messageIds: MessageTracking[];
   dms: DmStore[];
+  workspaceStats: WorkspaceStats;
 }
 
 export const TOKEN_SECRET = 'xaThoo6xuagah9bahj9ooC1Aeng2aezai9Pei7zelahxoh5ak8oonoo3phifooR3';

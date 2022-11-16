@@ -27,7 +27,7 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid token', () => {
-    h.testErrorThrown(h.USER_STATS, 'GET', 403, undefined, h.invalidToken);
+    h.testErrorThrown(h.USER_STATS_URL, 'GET', 403, undefined, h.invalidToken);
   });
 });
 
@@ -37,7 +37,7 @@ describe('Function Testing', () => {
   test('User just registered, initial stats', () => {
     const tmp: any = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
     token2 = tmp.token;
-    const data: any = h.getRequest(h.USER_STATS, undefined, token2);
+    const data: any = h.getRequest(h.USER_STATS_URL, undefined, token2);
 
     expect(data).toStrictEqual({
       userStats: {
@@ -61,7 +61,7 @@ describe('Function Testing', () => {
     h.postRequest(h.CHAN_LEAVE_URL, { channelId: channelId2 }, token1);
     h.postRequest(h.CHAN_JOIN_URL, { channelId: channelId3 }, token1);
 
-    const data: any = h.getRequest(h.USER_STATS, undefined, token1);
+    const data: any = h.getRequest(h.USER_STATS_URL, undefined, token1);
     expect(data).toStrictEqual({
       userStats: {
         channelsJoined: [
@@ -81,7 +81,7 @@ describe('Function Testing', () => {
 
   test('Create 1 dm', () => {
     h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
-    const data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    const data: any = h.getRequest(h.USER_STATS_URL, undefined, token0);
     expect(data).toStrictEqual({
       userStats: {
         dmsJoined: [
@@ -97,7 +97,7 @@ describe('Function Testing', () => {
   test('Create 1 dm then leave dm', () => {
     const tmp: any = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
     h.postRequest(h.DM_LEAVE_URL, { dmId: tmp.dmId }, token0);
-    const data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    const data: any = h.getRequest(h.USER_STATS_URL, undefined, token0);
     expect(data).toStrictEqual({
       userStats: {
         dmsJoined: [
@@ -114,7 +114,7 @@ describe('Function Testing', () => {
   test('Create 1 with 1 other memeber and then remove dm', () => {
     const tmp: any = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
     h.deleteRequest(h.DM_RMV_URL, { dmId: tmp.dmId }, token0);
-    let data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    let data: any = h.getRequest(h.USER_STATS_URL, undefined, token0);
     expect(data).toStrictEqual({
       userStats: {
         dmsJoined: [
@@ -127,7 +127,7 @@ describe('Function Testing', () => {
         involvementRate: expect.any(Number)
       }
     });
-    data = h.getRequest(h.USER_STATS, undefined, token1);
+    data = h.getRequest(h.USER_STATS_URL, undefined, token1);
     expect(data).toStrictEqual({
       userStats: {
         dmsJoined: [
@@ -148,7 +148,7 @@ describe('Function Testing', () => {
     tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(0, true), token0);
     h.postRequest(h.MSG_SEND_URL, { channelId: tmp.channelId, message: h.message1 }, token0);
 
-    const data: any = h.getRequest(h.USER_STATS, undefined, token0);
+    const data: any = h.getRequest(h.USER_STATS_URL, undefined, token0);
     expect(data).toStrictEqual({
       userStats: {
         dmsJoined: [

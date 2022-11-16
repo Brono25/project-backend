@@ -36,6 +36,8 @@ import {
   getUIdFromToken,
   doesTokenHaveDmOwnerPermissions,
   updateUserDmsJoinedStat,
+  updateNumDmsExistStat,
+  updateNumMessagesExistStat,
 } from './other';
 
 // ////////////////////////////////////////////////////// //
@@ -76,10 +78,12 @@ export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   data.dms.push(dmStore);
   setData(data);
 
+  // Analytics
   const index: number = data.dms.findIndex(a => a.dmId === dmId);
   for (const uId of data.dms[index].allMembersId) {
     updateUserDmsJoinedStat(uId, JOIN);
   }
+  updateNumDmsExistStat();
 
   return { dmId: dmId };
 }
@@ -237,13 +241,29 @@ export function dmRemoveV1 (token: string, dmId: number): dmRemoveReturn {
   }
   let data: DataStore = getData();
   const index: number = data.dms.findIndex(a => a.dmId === dmId);
-  // Update amalytics
+  // Update analytics
   for (const uId of data.dms[index].allMembersId) {
     updateUserDmsJoinedStat(uId, LEAVE);
   }
+  removeDmMessages(dmId);
   // make sure dm is removed after analytics is updated
   data = getData();
-  data.dms[index].allMembersId.length = 0;
+  data.dms.splice(index, 1);
   setData(data);
+  updateNumDmsExistStat();
   return {};
+}
+
+function removeDmMessages(dmId: number) {
+  let data: DataStore = getData();
+  const index: number = data.dms.findIndex(a => a.dmId === dmId);
+  const dmStore: DmStore = data.dms[index];
+
+  for (const message of dmStore.messages) {
+    const index = data.messageIds.findIndex(a => a.messageId === message.messageId);
+    data.messageIds.splice(index, 1);
+    setData(data);
+    updateNumMessagesExistStat();
+    data = getData();
+  }
 }

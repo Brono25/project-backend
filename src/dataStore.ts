@@ -1,27 +1,37 @@
 
-import { DataStore } from './data.types';
+import { DataStore, WorkspaceStats } from './data.types';
 import fs from 'fs';
 
 const DIR = './DataStorage';
 const DATA_PATH = DIR + '/database.JSON';
-
+// Check data store directory exists
 if (!fs.existsSync(DIR)) {
   fs.mkdirSync(DIR);
 }
+// Check dataStore.json exists
 
-let data: DataStore;
-if (fs.existsSync(DATA_PATH)) {
-  const dbstr = fs.readFileSync(DATA_PATH);
-  data = JSON.parse(String(dbstr));
-} else {
-  data = {
+if (!fs.existsSync(DATA_PATH)) {
+  const jsonstr = JSON.stringify(null);
+  fs.writeFileSync(DATA_PATH, jsonstr);
+}
+
+let data: DataStore = null;
+
+export function initialiseBeans(timeStamp: number) {
+  const initData: DataStore = {
     users: [],
     channels: [],
     activeTokens: [],
     messageIds: [],
     dms: [],
+    workspaceStats: <WorkspaceStats> {
+      channelsExist: [{ numChannelsExist: 0, timeStamp: timeStamp }],
+      dmsExist: [{ numDmsExist: 0, timeStamp: timeStamp }],
+      messagesExist: [{ numMessagesExist: 0, timeStamp: timeStamp }],
+      utilizationRate: 0
+    }
   };
-  const jsonstr = JSON.stringify(data, null, 2);
+  const jsonstr = JSON.stringify(initData, null, 2);
   fs.writeFileSync(DATA_PATH, jsonstr);
 }
 

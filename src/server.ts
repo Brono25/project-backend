@@ -28,6 +28,7 @@ import {
 
 import {
   usersAllv1,
+  usersStatsV1,
 } from './users';
 
 import {
@@ -48,9 +49,9 @@ import {
   messageSendDmV1,
   messageRemoveV1,
   messageEditV1,
+  messageReactV1,
   messagePinV1,
   messageUnpinV1,
-  messageReactV1,
   messageUnreactV1,
 } from './message';
 
@@ -91,8 +92,6 @@ app.use(morgan('dev'));
 
 function getTokenFromHeader(req: Request) {
   const token = req.header('token');
-  console.log(token);
-  // const obj = JSON.parse(json);
   return token;
 }
 
@@ -285,6 +284,10 @@ app.get('/user/stats/v1', (req: Request, res: Response) => {
 app.get('/users/all/v2', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(usersAllv1(token));
+});
+app.get('/users/stats/v1', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  res.json(usersStatsV1(token));
 });
 
 app.delete('/clear/v1', (req: Request, res: Response) => {

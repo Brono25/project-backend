@@ -3,6 +3,7 @@ import {
   DataStore,
   User,
   UsersAllReturn,
+  WorkspaceStats,
 } from './data.types';
 
 import {
@@ -10,7 +11,7 @@ import {
 } from './other';
 
 import {
-  getData,
+  getData, setData,
 } from './dataStore';
 
 // ////////////////////////////////////////////////////// //
@@ -23,7 +24,7 @@ import {
  * @returns {users} - An array of all users
  */
 
-function usersAllv1(token: string): UsersAllReturn {
+export function usersAllv1(token: string): UsersAllReturn {
   isValidToken(token);
 
   const data: DataStore = getData();
@@ -42,6 +43,34 @@ function usersAllv1(token: string): UsersAllReturn {
   return { users: usersList };
 }
 
-export {
-  usersAllv1,
-};
+// ////////////////////////////////////////////////////// //
+//              usersStats (Workspace stats)              //
+// ////////////////////////////////////////////////////// //
+/**
+ * Fetches the required statistics about users use of Beans
+ *
+ * @param {} - token and email to update for a user
+ * @returns {{workspaceStats: WorkspaceStats} }
+ */
+export function usersStatsV1(token: string): {workspaceStats: WorkspaceStats} {
+  isValidToken(token);
+  const data: DataStore = getData();
+  const numActiveUsers: number = getNumberOfUsersWhoBelongToAtleastOneChannelOrDm(data);
+  const totalUsers: number = data.users.length;
+  const workspaceStats: WorkspaceStats = data.workspaceStats;
+  workspaceStats.utilizationRate = numActiveUsers / totalUsers;
+  data.workspaceStats = workspaceStats;
+  setData(data);
+  return { workspaceStats: workspaceStats };
+}
+
+function getNumberOfUsersWhoBelongToAtleastOneChannelOrDm(data: DataStore) {
+  const userCount = new Set();
+  for (const channel of data.channels) {
+    channel.allMembers.map(a => userCount.add(a.uId));
+  }
+  for (const dm of data.dms) {
+    dm.allMembersId.map(a => userCount.add(a));
+  }
+  return userCount.size;
+}
