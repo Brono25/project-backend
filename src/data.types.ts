@@ -100,6 +100,13 @@ export type UserStats = {
   messagesSent: MessageStat[];
   involvementRate: number;
 }
+export type UsersStats = {
+  channelsJoined: ChannelStat[];
+  dmsJoined: DmsStat[];
+  messagesSent: MessageStat[];
+  involvementRate: number;
+}
+
 
 export type MessageSendReturn = MessageId | Error;
 export type ChannelJoinReturn = object | Error;

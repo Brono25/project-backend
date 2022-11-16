@@ -163,7 +163,7 @@ export function userProfileSetEmailV1(token: string, email: string): any {
  * @param {} - token and email to update for a user
  * @returns {}
  */
-export function userStatsV1(token: string): any {
+export function userStatsV1(token: string): {userStats: UserStats} {
   isValidToken(token);
   const uId: number = getUIdFromToken(token);
   updateUserInvolvement(uId);

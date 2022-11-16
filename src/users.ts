@@ -23,7 +23,7 @@ import {
  * @returns {users} - An array of all users
  */
 
-function usersAllv1(token: string): UsersAllReturn {
+export function usersAllv1(token: string): UsersAllReturn {
   isValidToken(token);
 
   const data: DataStore = getData();
@@ -42,6 +42,19 @@ function usersAllv1(token: string): UsersAllReturn {
   return { users: usersList };
 }
 
-export {
-  usersAllv1,
-};
+
+// ////////////////////////////////////////////////////// //
+//              usersStats (Workspace stats)              //
+// ////////////////////////////////////////////////////// //
+/**
+ * Fetches the required statistics about users use of Beans
+ *
+ * @param {} - token and email to update for a user
+ * @returns {}
+ */
+export function useStatsV1(token: string): {userStats: UserStats} {
+  isValidToken(token);
+
+
+  return { usersStats: userStats };
+}
