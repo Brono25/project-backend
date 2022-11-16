@@ -49,6 +49,7 @@ import {
   messageRemoveV1,
   messageEditV1,
   messagePinV1,
+  messageUnpinV1,
   messageReactV1,
   messageUnreactV1,
 } from './message';
@@ -197,6 +198,12 @@ app.post('/message/pin/v1', (req: Request, res: Response) => {
   const { messageId } = req.body;
   const token = getTokenFromHeader(req);
   res.json(messagePinV1(token, parseInt(messageId)));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageUnpinV1(token, parseInt(messageId)));
 });
 
 app.post('/message/react/v1', (req: Request, res: Response) => {
