@@ -153,6 +153,17 @@ export function isValidMessageId(mId: number) {
   throw HTTPError(400, 'Invalid message id');
 }
 
+/**
+ * @param {number} - reactId
+ * @returns {boolean} - does exist true/false
+ */
+export function isValidReactId(reactId: number) {
+  if (reactId !== 1) {
+    throw HTTPError(400, 'Invalid react id');
+  }
+  return true;
+}
+
 // ////////////////////////////////////////////////////// //
 //                        IS MEMBER                       //
 // ////////////////////////////////////////////////////// //
