@@ -49,6 +49,15 @@ beforeEach(() => {
   // message 1 (to dm)
   tmp = h.postRequest(h.MSG_SEND_DM_URL, { dmId: dmId0, message: h.message1 }, token1);
   mId1 = parseInt(tmp.messageId);
+
+  // pin messages
+  h.postRequest(h.MSG_PIN_URL, {
+    messageId: mId0,
+  }, token0);
+
+  h.postRequest(h.MSG_PIN_URL, {
+    messageId: mId1,
+  }, token1);
 });
 // Tear down
 afterEach(() => {
@@ -87,24 +96,25 @@ describe('Error Handling', () => {
   });
 
   test('the message is already not pinned (in channel)', () => {
-    const a = h.postRequest(h.MSG_PIN_URL, {
-        messageId: mId0,
-      }, token0);
-    const b = h.postRequest(h.MSG_UNPIN_URL, {
+    const a = h.postRequest(h.MSG_UNPIN_URL, {
       messageId: mId0,
     }, token0);
-    expect(b).toStrictEqual({});
-    const c = {
+    expect(a).toStrictEqual({});
+    const b = {
       messageId: mId0,
     };
-    h.testErrorThrown(h.MSG_UNPIN_URL, 'POST', 400, c, token0);
+    h.testErrorThrown(h.MSG_UNPIN_URL, 'POST', 400, b, token0);
   });
 
   test('the message is already not pinned (in dm)', () => {
-    const a = {
+    const a = h.postRequest(h.MSG_UNPIN_URL, {
+      messageId: mId1,
+    }, token1);
+    expect(a).toStrictEqual({});
+    const b = {
       messageId: mId1,
     };
-    h.testErrorThrown(h.MSG_UNPIN_URL, 'POST', 400, a, token1);
+    h.testErrorThrown(h.MSG_UNPIN_URL, 'POST', 400, b, token1);
   });
 
   test('User is a member of channel which has the message but does not have owner permissions', () => {
@@ -125,13 +135,13 @@ describe('Error Handling', () => {
 // ------------------Function Testing------------------//
 
 describe('Function Testing', () => {
-  test('pin a channel message', () => {
+  test('unpin a channel message', () => {
     const a: any = h.postRequest(h.MSG_UNPIN_URL, {
       messageId: mId0,
     }, token0);
     expect(a).toStrictEqual({});
   });
-  test('pin a dm message', () => {
+  test('unpin a dm message', () => {
     const a: any = h.postRequest(h.MSG_UNPIN_URL, {
       messageId: mId1,
     }, token1);
