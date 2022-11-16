@@ -369,3 +369,243 @@ function reactDmMessage(token: string, messageId: number, reactId: number, dmId:
   data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
   setData(data);
 }
+
+// ////////////////////////////////////////////////////// //
+//                      messageUnreact                    //
+// ////////////////////////////////////////////////////// //
+/**
+ * Given a message within a channel or DM the authorised user is part of, removes a "react" to that particular message.
+ * @param {string, number, number}
+ * @returns { {} | Error}
+ */
+
+export function messageUnreactV1(token: string, messageId: number, reactId: number) {
+  isValidToken(token);
+  isValidMessageId(messageId);
+  isValidReactId(reactId);
+  const messageLoc: MessageTracking = getMessageLocation(messageId);
+  const channelId: number = messageLoc.channelId;
+  const dmId: number = messageLoc.dmId;
+  if (channelId !== null) {
+    unreactChannelMessage(token, messageId, reactId, channelId);
+  }
+  if (messageLoc.dmId !== null) {
+    unreactDmMessage(token, messageId, reactId, dmId);
+  }
+  return {};
+}
+
+function unreactChannelMessage(token: string, messageId: number, reactId: number, channelId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(400, 'Not a channel memeber');
+  }
+  const uId = getUIdFromToken(token);
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = channelStore.messages[indexOfMessage];
+  /* for cases when there are more reactIds
+  if (messageStore.reacts === undefined) {
+    throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
+  } */
+  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
+  const data: DataStore = getData();
+
+  if (indexOfReact === -1) {
+    throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
+  } else {
+    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+    /* if (indexOfUser === -1) {
+      throw HTTPError(400, 'the message does not contains a react from the authorised user');
+    } */
+    messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
+  }
+
+  if (messageStore.reacts[indexOfReact].uIds.length === 0) {
+    messageStore.reacts.splice(indexOfReact, 1);
+  }
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[indexOfChannel].messages[indexOfMessage] = messageStore;
+  setData(data);
+}
+function unreactDmMessage(token: string, messageId: number, reactId: number, dmId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(400, 'Not a dm memeber');
+  }
+  const uId = getUIdFromToken(token);
+  const dmStore: DmStore = getDmStore(dmId);
+  const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = dmStore.messages[indexOfMessage];
+  if (messageStore.reacts === undefined) {
+    throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
+  }
+  const indexOfReact = messageStore.reacts.findIndex(a => a.reactId === reactId);
+  const data: DataStore = getData();
+
+  if (indexOfReact === -1) {
+    throw HTTPError(400, 'The authorised user has not reacted to this message with this reactId');
+  } else {
+    const indexOfUser = messageStore.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+    /* if (indexOfUser === -1) {
+      throw HTTPError(400, 'the message does not contains a react from the authorised user');
+    } */
+    messageStore.reacts[indexOfReact].uIds.splice(indexOfUser, 1);
+  }
+
+  if (messageStore.reacts[indexOfReact].uIds.length === 0) {
+    messageStore.reacts.splice(indexOfReact, 1);
+  }
+
+  const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
+  setData(data);
+}
+
+// ////////////////////////////////////////////////////// //
+//                      messagePin                        //
+// ////////////////////////////////////////////////////// //
+/**
+ * Pins a given message within a channel or DM the authorised user is part of
+ * @param {string, number}
+ * @returns { {} | Error}
+ */
+export function messagePinV1(token: string, messageId: number) {
+  isValidToken(token);
+  isValidMessageId(messageId);
+
+  const messageLoc: MessageTracking = getMessageLocation(messageId);
+  const channelId: number = messageLoc.channelId;
+  const dmId: number = messageLoc.dmId;
+
+  if (channelId !== null) {
+    pinChannelMessage(token, messageId, channelId);
+  }
+
+  if (dmId !== null) {
+    pinDmMessage(token, messageId, dmId);
+  }
+
+  return {};
+}
+
+function pinChannelMessage(token: string, messageId: number, channelId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(400, 'Not a channel member');
+  }
+
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+    throw HTTPError(403, 'authorised user does not have owner permissions in the channel');
+  }
+
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = channelStore.messages[indexOfMessage];
+  if (messageStore.isPinned !== true) {
+    messageStore.isPinned = true;
+  } else {
+    throw HTTPError(400, 'message is already pinned');
+  }
+
+  const data: DataStore = getData();
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[indexOfChannel].messages[indexOfMessage] = messageStore;
+  setData(data);
+}
+
+function pinDmMessage(token: string, messageId: number, dmId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(400, 'Not a dm member');
+  }
+
+  if (!doesTokenHaveDmOwnerPermissions(token, dmId)) {
+    throw HTTPError(403, 'authorised user does not have owner permissions in the dm');
+  }
+
+  const dmStore: DmStore = getDmStore(dmId);
+  const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = dmStore.messages[indexOfMessage];
+  if (messageStore.isPinned !== true) {
+    messageStore.isPinned = true;
+  } else {
+    throw HTTPError(400, 'message is already pinned');
+  }
+
+  const data: DataStore = getData();
+  const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
+  setData(data);
+}
+
+// ////////////////////////////////////////////////////// //
+//                      messageUnpin                      //
+// ////////////////////////////////////////////////////// //
+/**
+ * UnPins a given message within a channel or DM the authorised user is part of
+ * @param {string, number}
+ * @returns { {} | Error}
+ */
+export function messageUnpinV1(token: string, messageId: number) {
+  isValidToken(token);
+  isValidMessageId(messageId);
+
+  const messageLoc: MessageTracking = getMessageLocation(messageId);
+  const channelId: number = messageLoc.channelId;
+  const dmId: number = messageLoc.dmId;
+
+  if (channelId !== null) {
+    unpinChannelMessage(token, messageId, channelId);
+  }
+
+  if (dmId !== null) {
+    unpinDmMessage(token, messageId, dmId);
+  }
+
+  return {};
+}
+
+function unpinChannelMessage(token: string, messageId: number, channelId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(400, 'Not a channel member');
+  }
+
+  if (!doesTokenHaveChanOwnerPermissions(token, channelId)) {
+    throw HTTPError(403, 'authorised user does not have owner permissions in the channel');
+  }
+
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = channelStore.messages[indexOfMessage];
+  if (messageStore.isPinned !== false) {
+    messageStore.isPinned = false;
+  } else {
+    throw HTTPError(400, 'message is already not pinned');
+  }
+
+  const data: DataStore = getData();
+  const indexOfChannel = data.channels.findIndex(a => a.channelId === channelId);
+  data.channels[indexOfChannel].messages[indexOfMessage] = messageStore;
+  setData(data);
+}
+
+function unpinDmMessage(token: string, messageId: number, dmId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(400, 'Not a dm member');
+  }
+
+  if (!doesTokenHaveDmOwnerPermissions(token, dmId)) {
+    throw HTTPError(403, 'authorised user does not have owner permissions in the dm');
+  }
+
+  const dmStore: DmStore = getDmStore(dmId);
+  const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = dmStore.messages[indexOfMessage];
+  if (messageStore.isPinned !== false) {
+    messageStore.isPinned = false;
+  } else {
+    throw HTTPError(400, 'message is already not pinned');
+  }
+
+  const data: DataStore = getData();
+  const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
+  setData(data);
+}

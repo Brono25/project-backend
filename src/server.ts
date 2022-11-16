@@ -50,6 +50,9 @@ import {
   messageRemoveV1,
   messageEditV1,
   messageReactV1,
+  messagePinV1,
+  messageUnpinV1,
+  messageUnreactV1,
 } from './message';
 
 import {
@@ -191,10 +194,28 @@ app.post('/message/senddm/v2', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(messageSendDmV1(token, parseInt(dmId), message));
 });
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messagePinV1(token, parseInt(messageId)));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageUnpinV1(token, parseInt(messageId)));
+});
+
 app.post('/message/react/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   const token = getTokenFromHeader(req);
   res.json(messageReactV1(token, parseInt(messageId), parseInt(reactId)));
+});
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageUnreactV1(token, parseInt(messageId), parseInt(reactId)));
 });
 // ------------- DM --------------
 app.post('/dm/create/v2', (req: Request, res: Response) => {
