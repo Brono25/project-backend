@@ -33,6 +33,7 @@ export const MSG_SEND_URL = `${url}:${port}/message/send/v2`;
 export const MSG_EDIT_URL = `${url}:${port}/message/edit/v2`;
 export const MSG_RMV_URL = `${url}:${port}/message/remove/v2`;
 export const MSG_SEND_DM_URL = `${url}:${port}/message/senddm/v2`;
+export const MSG_PIN_URL = `${url}:${port}/message/pin/v1`;
 export const MSG_REACT_URL = `${url}:${port}/message/react/v1`;
 export const MSG_UNREACT_URL = `${url}:${port}/message/unreact/v1`;
 

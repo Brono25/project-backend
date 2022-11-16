@@ -48,6 +48,7 @@ import {
   messageSendDmV1,
   messageRemoveV1,
   messageEditV1,
+  messagePinV1,
   messageReactV1,
   messageUnreactV1,
 } from './message';
@@ -191,6 +192,13 @@ app.post('/message/senddm/v2', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(messageSendDmV1(token, parseInt(dmId), message));
 });
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const { messageId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messagePinV1(token, parseInt(messageId)));
+});
+
 app.post('/message/react/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   const token = getTokenFromHeader(req);
