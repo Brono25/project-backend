@@ -12,6 +12,7 @@ import {
   isValidEmail,
   isEmailUsed,
   isEmailFound,
+  getTimeInSecs,
 } from './other';
 
 import {
@@ -90,6 +91,7 @@ function authRegisterV1(
   if (authUserId.authUserId === GLOBAL_OWNER) {
     globalPermission = 'owner';
   }
+  const timeStamp: number = getTimeInSecs();
   const token: string = generateToken(email);
   const tokenHash: TokenHash = { uId: authUserId.authUserId, hash: generateTokenHash(token) };
   const userStore: UserStore = {
@@ -100,6 +102,12 @@ function authRegisterV1(
     password: password,
     handleStr: handleStr,
     globalPermission: globalPermission,
+    userStats: {
+      channelsJoined: [{ numChannelsJoined: 0, timeStamp: timeStamp }],
+      dmsJoined: [{ numDmsJoined: 0, timeStamp: timeStamp }],
+      messagesSent: [{ numMessagesSent: 0, timeStamp: timeStamp }],
+      involvementRate: 0,
+    }
   };
 
   const data: DataStore = getData();

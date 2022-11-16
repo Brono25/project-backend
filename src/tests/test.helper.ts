@@ -39,6 +39,7 @@ export const USER_ALL_URL = `${url}:${port}/users/all/v2`;
 export const USER_PROF_SET_NAME_URL = `${url}:${port}/user/profile/setname/v2`;
 export const USER_PROF_SET_EMAIL_URL = `${url}:${port}/user/profile/setemail/v2`;
 export const USER_PROF_SET_HANDLE_URL = `${url}:${port}/user/profile/sethandle/v2`;
+export const USER_STATS = `${url}:${port}/user/stats/v1`;
 
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];

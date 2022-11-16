@@ -27,6 +27,7 @@ import {
   doesTokenHaveDmOwnerPermissions,
   getDmStore,
   isValidMessageId,
+  updateUserMessagesSentStat,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -72,6 +73,7 @@ export function messageSendV1(
   data.channels[index].messages.unshift(messageDetails);
   data.messageIds.unshift(messageLoc);
   setData(data);
+  updateUserMessagesSentStat(uId);
   return <MessageId>{ messageId: messageId };
 }
 
@@ -114,6 +116,7 @@ export function messageSendDmV1(
   data.dms[index].messages.unshift(messageDetails);
   data.messageIds.unshift(messageLoc);
   setData(data);
+  updateUserMessagesSentStat(uId);
   return <MessageId>{ messageId: messageId };
 }
 

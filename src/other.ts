@@ -16,6 +16,12 @@ import {
   MessageTracking,
   TokenHash,
   TOKEN_SECRET,
+  LEAVE,
+  JOIN,
+  LeaveOrJoin,
+  ChannelStat,
+  DmsStat,
+  MessageStat,
 } from './data.types';
 
 /**
@@ -106,7 +112,7 @@ export function isValidChannelId(channelId: number): boolean {
  */
 export function isValidDmId(dmId: number) {
   const data: DataStore = getData();
-  if (data.dms.find(a => a.dmId === dmId)) {
+  if (data.dms.some(a => a.dmId === dmId)) {
     return true;
   }
   throw HTTPError(400, 'Invalid dm id');
@@ -384,6 +390,100 @@ export function generateTokenHash(token: string): string {
   const key = token.concat(TOKEN_SECRET);
   const hash = crypto.createHash('sha256').update(key).digest('hex');
   return hash;
+}
+
+// ////////////////////////////////////////////////////// //
+//                     Update Stats                       //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {number, number}
+ */
+export function updateUserChannelsJoinedStat(uId: number, leaveOrJoin: LeaveOrJoin) {
+  const data: DataStore = getData();
+  const index: number = data.users.findIndex(a => a.uId === uId);
+  const timeStamp: number = getTimeInSecs();
+  const lastElement: number = data.users[index].userStats.channelsJoined.length - 1;
+
+  let newChannelStat: ChannelStat;
+  const currChannelCount: number = data.users[index].userStats.channelsJoined[lastElement].numChannelsJoined;
+  if (leaveOrJoin === JOIN) {
+    newChannelStat = { numChannelsJoined: currChannelCount + 1, timeStamp: timeStamp };
+  } else if (leaveOrJoin === LEAVE) {
+    newChannelStat = { numChannelsJoined: currChannelCount - 1, timeStamp: timeStamp };
+  }
+  data.users[index].userStats.channelsJoined.push(newChannelStat);
+  setData(data);
+}
+/**
+ *
+ * @param {number, number}
+ */
+export function updateUserDmsJoinedStat(uId: number, leaveOrJoin: LeaveOrJoin) {
+  const data: DataStore = getData();
+  const index: number = data.users.findIndex(a => a.uId === uId);
+  const timeStamp: number = getTimeInSecs();
+  const lastElement: number = data.users[index].userStats.dmsJoined.length - 1;
+
+  let newDmStat: DmsStat;
+  const currDmCount: number = data.users[index].userStats.dmsJoined[lastElement].numDmsJoined;
+  if (leaveOrJoin === JOIN) {
+    newDmStat = { numDmsJoined: currDmCount + 1, timeStamp: timeStamp };
+  } else if (leaveOrJoin === LEAVE) {
+    newDmStat = { numDmsJoined: currDmCount - 1, timeStamp: timeStamp };
+  }
+  data.users[index].userStats.dmsJoined.push(newDmStat);
+  setData(data);
+}
+/**
+ *
+ * @param {number}
+ */
+export function updateUserMessagesSentStat(uId: number) {
+  const data: DataStore = getData();
+  const index: number = data.users.findIndex(a => a.uId === uId);
+  const timeStamp: number = getTimeInSecs();
+  const lastElement: number = data.users[index].userStats.messagesSent.length - 1;
+  const currMessageCount: number = data.users[index].userStats.messagesSent[lastElement].numMessagesSent;
+  const newMessageStat: MessageStat = { numMessagesSent: currMessageCount + 1, timeStamp: timeStamp };
+  data.users[index].userStats.messagesSent.push(newMessageStat);
+  setData(data);
+}
+/**
+ *
+ * @param {number}
+ */
+export function updateUserInvolvement(uId: number) {
+  const data: DataStore = getData();
+  const index: number = data.users.findIndex(a => a.uId === uId);
+  const userStore: UserStore = getUserStoreFromId(uId);
+
+  let i: number = userStore.userStats.channelsJoined.length - 1;
+  const numChannelsJoined: number = userStore.userStats.channelsJoined[i].numChannelsJoined;
+
+  i = userStore.userStats.dmsJoined.length - 1;
+  const numDmsJoined: number = userStore.userStats.dmsJoined[i].numDmsJoined;
+
+  i = userStore.userStats.messagesSent.length - 1;
+  const numMessagesSent: number = userStore.userStats.messagesSent[i].numMessagesSent;
+
+  const numChannels: number = data.channels.length;
+  const numDms: number = data.dms.length;
+  const numMessages: number = data.messageIds.length;
+
+  const numerator = (numChannelsJoined + numDmsJoined + numMessagesSent);
+  const denominator = (numChannels + numDms + numMessages);
+  let involvementRate: number;
+  if (denominator === 0) {
+    involvementRate = 0;
+  } else {
+    involvementRate = numerator / denominator;
+  }
+  if (involvementRate > 1) {
+    involvementRate = 1;
+  }
+  data.users[index].userStats.involvementRate = involvementRate;
+  setData(data);
 }
 
 // ////////////////////////////////////////////////////// //
