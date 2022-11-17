@@ -4,7 +4,11 @@ import {
   setData,
   getData
 } from './dataStore';
-import { isValidToken } from './other';
+import {
+  getUIdFromToken,
+  isValidToken,
+  isValidAuthUserId,
+} from './other';
 
 // ////////////////////////////////////////////////////// //
 //                   Admin User Remove                    //
@@ -17,6 +21,11 @@ import { isValidToken } from './other';
  */
 export function adminUserRemoveV1(token: string, uId: number) {
   isValidToken(token);
+
+  if (!isValidAuthUserId(uId)) {
+     throw HTTPError(400, 'Invalid user id');
+  }
+  
 
   return {};
 }

@@ -65,6 +65,7 @@ import {
   dmListV1,
 } from './dm';
 
+import { adminUserRemoveV1 } from './admin';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -304,7 +305,7 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
 app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   const uId = req.query.uId as string;
-  res.json(messageRemoveV1(token, parseInt(uId)));
+  res.json(adminUserRemoveV1(token, parseInt(uId)));
 });
 
 // ----------------------------------------------------------

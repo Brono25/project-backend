@@ -28,6 +28,8 @@ beforeEach(() => {
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = tmp.token;
   uId2 = parseInt(tmp.authUserId);
+  
+
 });
 
 // Tear down
@@ -40,7 +42,16 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid token', () => {
-    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 403, undefined, h.invalidToken);
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 403, uId0, h.invalidToken);
+  });
+  test('Invalid uId', () => {
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, invalidUserId, token0);
+  });
+  test('Only global owner', () => {
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, uId0, token0);
+  });
+  test('Auth user not global owner', () => {
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, uId0, token1);
   });
 });
 // ------------------Function Testing------------------//
