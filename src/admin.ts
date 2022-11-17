@@ -13,6 +13,8 @@ import {
 import {
   UserStore,
   DataStore,
+  GOLBALOWNER,
+  GLOBALMEMBER,
 } from './data.types';
 
 import {
@@ -59,14 +61,10 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
   }
 
   const userStore: UserStore = getUserStoreFromId(uId);
-  const permission: string = userStore.globalPermission;
+  const permission: number = userStore.globalPermission;
 
-  if (permission === 'owner' && permissionId === 1) {
-    throw HTTPError(400, 'user is already a global owner');
-  }
-
-  if (permission === 'member' && permissionId === 2) {
-    throw HTTPError(400, 'user is already a global member');
+  if (permission === permissionId && permissionId === 1) {
+    throw HTTPError(400, 'the user already has the permissions level');
   }
 
   if (isonlyGlobalOwner) {
@@ -77,9 +75,9 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
   const userIndex: number = data.users.findIndex(a => a.uId === uId);
 
   if (permissionId === 1) {
-    data.users[userIndex].globalPermission = 'owner';
+    data.users[userIndex].globalPermission = 1;
   } else {
-    data.users[userIndex].globalPermission = 'member';
+    data.users[userIndex].globalPermission = 2;
   }
 
   setData(data);
@@ -94,7 +92,7 @@ function isonlyGlobalOwner(uId: number) {
   let ownerNumber = 0;
 
   for (const user of users) {
-    if (user.globalPermission === 'owner') {
+    if (user.globalPermission === 1) {
       ownerNumber++;
     }
   }

@@ -130,8 +130,9 @@ export type dmRemoveReturn = object | Error;
 /*
  * Where all data is stored.
  */
-
-export type GlobalPermision = 'owner' | 'member';
+export type GOLBALOWNER = 1;
+export type GLOBALMEMBER = 2;
+export type GlobalPermision = 1 | 2;
 
 export type ChannelStore = {
   channelId: number;

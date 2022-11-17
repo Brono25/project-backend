@@ -337,7 +337,7 @@ export function getMessageLocation(messageId: number) {
  */
 export function isGlobalOwner (authUserId: number): boolean {
   const user: UserStore = getUserStoreFromId(authUserId);
-  if (user.globalPermission === 'owner') {
+  if (user.globalPermission === 1) {
     return true;
   }
   return false;
@@ -356,7 +356,7 @@ export function doesTokenHaveChanOwnerPermissions (token: string, channelId: num
     return true;
   }
   if (channelStore.allMembers.find(a => a.uId === uId)) {
-    if (userStore.globalPermission === 'owner') {
+    if (userStore.globalPermission === 1) {
       return true;
     }
   }

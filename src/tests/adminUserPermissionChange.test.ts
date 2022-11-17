@@ -21,7 +21,7 @@ beforeEach(() => {
   token1 = tmp.token;
   uId1 = tmp.uId;
 
-  invalidUId = Math.abs(uId0 + 10);
+  invalidUId = Math.abs(uId1 + 10);
 });
 // Tear down
 afterEach(() => {
