@@ -11,6 +11,7 @@ let dmId0: number;
 let invalidDmId: number;
 let pastTime: number;
 let time: number;
+let arr: string[];
 let tmp: any;
 beforeEach(() => {
   //tokens and uids
@@ -35,7 +36,7 @@ beforeEach(() => {
 
   //get time
   tmp = h.getRequest(h.USER_STATS_URL, undefined, token0);
-  pastTime= tmp.messagesSent[0].timeStamp;
+  pastTime= tmp.userStats.messagesSent[0].timeStamp;
 
   time = pastTime + 10;
 });
