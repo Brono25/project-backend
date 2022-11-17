@@ -22,9 +22,10 @@ import {
   ChannelStat,
   DmsStat,
   MessageStat,
+  Message,
   NumChannelsExist,
   DmsExist,
-  MessagesExist
+  MessagesExist,
 } from './data.types';
 
 /**
@@ -165,6 +166,19 @@ export function isValidReactId(reactId: number) {
     throw HTTPError(400, 'Invalid react id');
   }
   return true;
+}
+
+export function isThisUserReacted(message: Message, reactId: number, token: string) {
+  const uId = getUIdFromToken(token);
+  const indexOfReact = message.reacts.findIndex(a => a.reactId === reactId);
+  if (indexOfReact !== -1) {
+    const indexOfUser = message.reacts[indexOfReact].uIds.findIndex(a => a === uId);
+    if (indexOfUser !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 // ////////////////////////////////////////////////////// //
