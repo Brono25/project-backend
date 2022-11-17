@@ -13,8 +13,6 @@ import {
 import {
   UserStore,
   DataStore,
-  GOLBALOWNER,
-  GLOBALMEMBER,
 } from './data.types';
 
 import {
@@ -63,13 +61,16 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
   const userStore: UserStore = getUserStoreFromId(uId);
   const permission: number = userStore.globalPermission;
 
-  if (permission === permissionId && permissionId === 1) {
+  if (permission === permissionId) {
     throw HTTPError(400, 'the user already has the permissions level');
   }
 
-  if (isonlyGlobalOwner) {
-    throw HTTPError(400, 'uId refers to a user who is the only global owner and they are being demoted to a user');
+  if (uId === authUserID && permissionId === 2){
+    if (isonlyGlobalOwner(authUserID)) {
+      throw HTTPError(400, 'uId refers to a user who is the only global owner and they are being demoted to a user');
+    }
   }
+  
 
   const data: DataStore = getData();
   const userIndex: number = data.users.findIndex(a => a.uId === uId);
@@ -89,11 +90,11 @@ function isonlyGlobalOwner(uId: number) {
   const data: DataStore = getData();
   const users: UserStore[] = data.users;
 
-  let ownerNumber = 0;
+  let ownerNumber: number = 0;
 
   for (const user of users) {
     if (user.globalPermission === 1) {
-      ownerNumber++;
+      ownerNumber = ownerNumber + 1;
     }
   }
 
