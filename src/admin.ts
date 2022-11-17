@@ -10,10 +10,10 @@ import { isValidToken } from './other';
 //                   Admin User Remove                    //
 // ////////////////////////////////////////////////////// //
 /**
- * Given a registered user's email and password, returns their authUserId value.
+ * Remove user
  *
- * @param {string, string} - users and password
- * @returns {AuthLoginReturn} - authUserId
+ * @param {string, number} - token and user Id
+ * @returns {}
  */
 export function adminUserRemoveV1(token: string, uId: number) {
   isValidToken(token);

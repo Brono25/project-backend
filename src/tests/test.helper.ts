@@ -48,6 +48,8 @@ export const USER_STATS_URL = `${url}:${port}/user/stats/v1`;
 
 export const USERS_STATS_URL = `${url}:${port}/users/stats/v1`;
 
+export const ADMIN_USER_RMV_URL = `${url}:${port}/admin/user/remove/v1`;
+
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
 export type Args = AuthRegisterArgs | ChannelsCreateArgs;

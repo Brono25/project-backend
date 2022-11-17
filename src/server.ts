@@ -301,7 +301,7 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
 });
 
 // ------------- ADMIN --------------
-app.delete('admin/user/remove/v1', (req: Request, res: Response) => {
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   const uId = req.query.uId as string;
   res.json(messageRemoveV1(token, parseInt(uId)));
