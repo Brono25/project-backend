@@ -53,6 +53,7 @@ import {
   messagePinV1,
   messageUnpinV1,
   messageUnreactV1,
+  messageShareV1,
 } from './message';
 
 import {
@@ -214,6 +215,11 @@ app.post('/message/unreact/v1', (req: Request, res: Response) => {
   const { messageId, reactId } = req.body;
   const token = getTokenFromHeader(req);
   res.json(messageUnreactV1(token, parseInt(messageId), parseInt(reactId)));
+});
+app.post('/message/share/v1', (req: Request, res: Response) => {
+  const { ogMessageId, message, channelId, dmId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(messageShareV1(token, parseInt(ogMessageId), message, parseInt(channelId), parseInt(dmId)));
 });
 // ------------- DM --------------
 app.post('/dm/create/v2', (req: Request, res: Response) => {

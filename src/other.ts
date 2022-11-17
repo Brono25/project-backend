@@ -280,6 +280,20 @@ export function getDmStore(dmId: number): DmStore {
   return dmStore;
 }
 
+export function getMessageStoreFromChannel(messageId: number, channelId: number): Message {
+  const channelStore: ChannelStore = getChannelStoreFromId(channelId);
+  const indexOfMessage: number = channelStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = channelStore.messages[indexOfMessage];
+  return messageStore;
+}
+
+export function getMessageStoreFromDm(messageId: number, dmId: number): Message {
+  const dmStore: DmStore = getDmStore(dmId);
+  const indexOfMessage: number = dmStore.messages.findIndex(a => a.messageId === messageId);
+  const messageStore: Message = dmStore.messages[indexOfMessage];
+  return messageStore;
+}
+
 /**
  * Retrieve the channel or DM location of a message
  * @param {number} - message Id
