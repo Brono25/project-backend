@@ -59,7 +59,7 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
   if (!isGlobalOwner(authUserID)) {
     throw HTTPError(403, 'the authorised user is not a global owner');
   }
-
+ 
   const userStore: UserStore = getUserStoreFromId(uId);
   const permission: number = userStore.globalPermission;
 

@@ -15,11 +15,11 @@ let tmp: any;
 beforeEach(() => {
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
-  uId0 = tmp.uId;
+  uId0 = parseInt(tmp.authUserId);
 
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   token1 = tmp.token;
-  uId1 = tmp.uId;
+  uId1 = parseInt(tmp.authUserId);
 
   invalidUId = Math.abs(uId1 + 10);
 });
