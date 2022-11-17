@@ -37,6 +37,7 @@ export const MSG_REACT_URL = `${url}:${port}/message/react/v1`;
 export const MSG_PIN_URL = `${url}:${port}/message/pin/v1`;
 export const MSG_UNPIN_URL = `${url}:${port}/message/unpin/v1`;
 export const MSG_UNREACT_URL = `${url}:${port}/message/unreact/v1`;
+export const MSG_SHARE_URL = `${url}:${port}/message/share/v1`;
 
 export const USER_PROF_URL = `${url}:${port}/user/profile/v3`;
 export const USER_ALL_URL = `${url}:${port}/users/all/v2`;

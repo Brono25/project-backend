@@ -1,6 +1,5 @@
 import HTTPError from 'http-errors';
 import {
-  MessageSendReturn,
   MessageId,
   Message,
   DataStore,
@@ -32,6 +31,8 @@ import {
   updateNumMessagesExistStat,
   isValidReactId,
   isThisUserReacted,
+  getMessageStoreFromChannel,
+  getMessageStoreFromDm,
 } from './other';
 
 import { getData, setData } from './dataStore';
@@ -47,8 +48,7 @@ import { getData, setData } from './dataStore';
 export function messageSendV1(
   token: string,
   channelId: number,
-  message: string)
-  : MessageSendReturn {
+  message: string) {
   isValidToken(token);
   isValidChannelId(channelId);
 
@@ -92,7 +92,7 @@ export function messageSendV1(
  */
 export function messageSendDmV1(
   token: string, dmId: number, message: string
-): MessageId | Error {
+) {
   isValidToken(token);
   isValidDmId(dmId);
 
@@ -580,4 +580,76 @@ function unpinDmMessage(token: string, messageId: number, dmId: number) {
   const indexOfDm = data.dms.findIndex(a => a.dmId === dmId);
   data.dms[indexOfDm].messages[indexOfMessage] = messageStore;
   setData(data);
+}
+
+// ////////////////////////////////////////////////////// //
+//                      messageShare                      //
+// ////////////////////////////////////////////////////// //
+/**
+ * Shares an exisitng message to a channel or dm that the user is in
+ * @param {string, number}
+ * @returns { { sharedMessageId: number } | Error}
+ */
+export function messageShareV1 (token: string, ogMessageId: number, message: string, channelId: number, dmId: number) {
+  isValidToken(token);
+  isValidMessageId(ogMessageId);
+  if (channelId !== -1 && dmId !== -1) {
+    throw HTTPError(400, 'cannot share to channel and dm at the same time');
+  }
+  if (message.length > 1000) {
+    throw HTTPError(400, 'given message is too long (more than 1000 characters');
+  }
+  let newMessageId: number;
+  if (channelId === -1) {
+    isValidDmId(dmId);
+    newMessageId = shareToDm(token, ogMessageId, message, dmId).newMessageId;
+  } else if (dmId === -1) {
+    isValidChannelId(channelId);
+    newMessageId = shareToChannel(token, ogMessageId, message, channelId).newMessageId;
+  }
+  return { newMessageId: newMessageId };
+}
+function shareToDm(token: string, ogMessageId: number, message: string, dmId: number) {
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(403, 'the user is not a member of the dm');
+  }
+  const messageLoc: MessageTracking = getMessageLocation(ogMessageId);
+  const ogChannelId: number = messageLoc.channelId;
+  const ogDmId: number = messageLoc.dmId;
+  let messageStore: Message;
+  if (ogChannelId !== null) {
+    // message is from a channel
+    messageStore = getMessageStoreFromChannel(ogMessageId, ogChannelId);
+  }
+  if (ogDmId !== null) {
+    // message is from a dm
+    messageStore = getMessageStoreFromDm(ogMessageId, ogDmId);
+  }
+  const ogMessage = messageStore.message;
+  const newMessage: string = ogMessage + '\n' + message;
+  const newMessageId = messageSendDmV1(token, dmId, newMessage).messageId;
+
+  return { newMessageId: newMessageId };
+}
+
+function shareToChannel(token: string, ogMessageId: number, message: string, channelId: number) {
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(403, 'the user is not a member of the channel');
+  }
+  const messageLoc: MessageTracking = getMessageLocation(ogMessageId);
+  const ogChannelId: number = messageLoc.channelId;
+  const ogDmId: number = messageLoc.dmId;
+  let messageStore: Message;
+  if (ogChannelId !== null) {
+    // message is from a channel
+    messageStore = getMessageStoreFromChannel(ogMessageId, ogChannelId);
+  }
+  if (ogDmId !== null) {
+    // message is from a dm
+    messageStore = getMessageStoreFromDm(ogMessageId, ogDmId);
+  }
+  const ogMessage = messageStore.message;
+  const newMessage: string = ogMessage + '\n' + message;
+  const newMessageId = messageSendV1(token, channelId, newMessage).messageId;
+  return { newMessageId: newMessageId };
 }
