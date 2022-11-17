@@ -1,11 +1,6 @@
 
 import HTTPError from 'http-errors';
 import {
-  setData,
-  getData
-} from './dataStore';
-import {
-  getUIdFromToken,
   isValidToken,
   isValidAuthUserId,
 } from './other';
@@ -23,9 +18,8 @@ export function adminUserRemoveV1(token: string, uId: number) {
   isValidToken(token);
 
   if (!isValidAuthUserId(uId)) {
-     throw HTTPError(400, 'Invalid user id');
+    throw HTTPError(400, 'Invalid user id');
   }
-  
 
   return {};
 }
