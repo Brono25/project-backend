@@ -16,7 +16,7 @@ import {
  */
 export function adminUserRemoveV1(token: string, uId: number) {
   isValidToken(token);
-
+  console.log(uId);
   if (!isValidAuthUserId(uId)) {
     throw HTTPError(400, 'Invalid user id');
   }

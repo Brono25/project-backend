@@ -26,13 +26,13 @@ afterEach(() => {
 
 describe('Error Handling', () => {
   test('Invalid token', () => {
-    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 403, uId0, h.invalidToken);
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 403, { uId: uId0 }, h.invalidToken);
   });
   test('Invalid uId', () => {
-    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, invalidUserId, token0);
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, { uId: invalidUserId }, token0);
   });
   test('Only global owner', () => {
-    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, uId0, token0);
+    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, { uId: uId0 }, token0);
   });
 });
 // ------------------Function Testing------------------//
