@@ -8,7 +8,6 @@ let token0: string;
 let token1: string;
 let channelId0: number;
 let channelId1: number;
-const length = 20;
 let tmp: any;
 let InvalidChannelId: number;
 beforeEach(() => {

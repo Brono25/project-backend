@@ -44,8 +44,6 @@ export function standupActivetV1(token: string, channelId: number) {
   if (!isTokenMemberOfChannel(token, channelId)) {
     throw HTTPError(403, 'User not a member');
   }
-
-  return { isActive: true, timeFinish: -1 };
 }
 
 // ////////////////////////////////////////////////////// //
