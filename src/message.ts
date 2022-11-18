@@ -662,8 +662,8 @@ function shareToChannel(token: string, ogMessageId: number, message: string, cha
  * @param {string, number, string, number}
  * @returns { MessageId | Error}
  */
- export function messageSendLaterDmV1(
-  token: string, dmId: number, message: string, timeSent: number,
+export function messageSendLaterDmV1(
+  token: string, dmId: number, message: string, timeSent: number
 ) {
   isValidToken(token);
   isValidDmId(dmId);

@@ -195,7 +195,7 @@ app.post('/message/senddm/v2', (req: Request, res: Response) => {
   res.json(messageSendDmV1(token, parseInt(dmId), message));
 });
 
-app.post('message/sendlaterdm/v1', (req: Request, res: Response) => {
+app.post('/message/sendlaterdm/v1', (req: Request, res: Response) => {
   const { dmId, message, timeSent } = req.body;
   const token = getTokenFromHeader(req);
   res.json(messageSendLaterDmV1(token, parseInt(dmId), message, parseInt(timeSent)));

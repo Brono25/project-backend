@@ -1,4 +1,3 @@
-import { NumericLiteral } from 'typescript';
 import * as h from './test.helper';
 h.deleteRequest(h.CLEAR_URL, {});
 
@@ -11,10 +10,9 @@ let dmId0: number;
 let invalidDmId: number;
 let pastTime: number;
 let time: number;
-let arr: string[];
 let tmp: any;
 beforeEach(() => {
-  //tokens and uids
+  // tokens and uids
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
@@ -23,20 +21,20 @@ beforeEach(() => {
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
   token2 = tmp.token;
 
-  //dms
+  // dms
   tmp = h.postRequest(h.DM_CREATE_URL, { uIds: [uId1] }, token0);
   dmId0 = parseInt(tmp.dmId);
   invalidDmId = dmId0 + 10;
 
-  //send dm
+  // send dm
   tmp = h.postRequest(h.MSG_SEND_DM_URL, {
     dmId: dmId0,
     message: h.message0,
   }, token0);
 
-  //get time
+  // get time
   tmp = h.getRequest(h.USER_STATS_URL, undefined, token0);
-  pastTime= tmp.userStats.messagesSent[0].timeStamp;
+  pastTime = tmp.userStats.messagesSent[0].timeStamp;
 
   time = pastTime + 10;
 });
@@ -49,7 +47,6 @@ afterEach(() => {
 // ------------------Error Testing------------------//
 
 describe('Error Handling', () => {
-
   test('Invalid DmId', () => {
     const data = {
       dmId: invalidDmId,
@@ -103,7 +100,6 @@ describe('Error Handling', () => {
     };
     h.testErrorThrown(h.MSG_SEND_LATER_DM_URL, 'POST', 403, data, h.invalidToken);
   });
-
 });
 
 // ------------------Function Testing------------------//
@@ -117,7 +113,7 @@ describe('Function Testing', () => {
     }, token0);
     expect(data).toStrictEqual({ messageId: expect.any(Number) });
   });
-  
+
   test('Member Send DM message', () => {
     const data = h.postRequest(h.MSG_SEND_LATER_DM_URL, {
       dmId: dmId0,
