@@ -59,6 +59,13 @@ export function standupActivetV1(token: string, channelId: number) {
 
 export function standupSendV1(token: string, channelId: number, message: string) {
   isValidToken(token);
-  console.log('C-------------------------');
-  return {};
+  isValidChannelId(channelId);
+
+  if (message.length > 1000) {
+    throw HTTPError(400, 'invalid message');
+  }
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(403, 'User not a member');
+  }
+  throw HTTPError(400, 'Standup not currently active');
 }
