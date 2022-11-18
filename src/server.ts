@@ -66,6 +66,13 @@ import {
   dmListV1,
 } from './dm';
 
+import {
+  standupStartV1,
+  standupActivetV1,
+  standupSendV1
+} from './standup';
+
+import { adminUserRemoveV1 } from './admin';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -305,6 +312,30 @@ app.get('/users/stats/v1', (req: Request, res: Response) => {
 
 app.delete('/clear/v1', (req: Request, res: Response) => {
   res.json(clearV1());
+});
+
+// ------------- ADMIN --------------
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  const uId = req.query.uId as string;
+  res.json(adminUserRemoveV1(token, parseInt(uId)));
+});
+
+// ------------- STANDUP --------------
+app.post('/standup/start/v1', (req: Request, res: Response) => {
+  const { channelId, length } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(standupStartV1(token, parseInt(channelId), parseInt(length)));
+});
+app.get('/standup/active/v1', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  const channelId = req.query.channelId as string;
+  res.json(standupActivetV1(token, parseInt(channelId)));
+});
+app.post('/standup/send/v1', (req: Request, res: Response) => {
+  const { channelId, message } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(standupSendV1(token, parseInt(channelId), message));
 });
 
 // ----------------------------------------------------------
