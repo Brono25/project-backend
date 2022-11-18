@@ -186,13 +186,14 @@ export function userStatsV1(token: string): {userStats: UserStats} {
 export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
   isValidToken(token);
   if (xEnd <= xStart) {
-    throw HTTPError('400', 'xEnd cannot be less than or equal to xStart');
+    throw HTTPError(400, 'xEnd cannot be less than or equal to xStart');
   }
   if (yEnd <= yStart) {
-    throw HTTPError('400', 'yEnd cannot be less than or equal to yStart');
+    throw HTTPError(400, 'yEnd cannot be less than or equal to yStart');
   }
-  imgUrl = 'let imgUrl value be read';
-  /*
+}
+/*
+
   const res = request(
     'GET',
     imgUrl
@@ -202,6 +203,5 @@ export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart:
     return image
       .crop(xStart, yStart, xEnd, yEnd) // resize
   });
-  */
   return {};
-}
+  */
