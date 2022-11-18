@@ -2,7 +2,6 @@
 import * as h from './test.helper';
 // Setup
 let token0: string;
-let token1 : string;
 let uId0: number;
 
 let invalidUserId: number;
@@ -34,9 +33,6 @@ describe('Error Handling', () => {
   });
   test('Only global owner', () => {
     h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, uId0, token0);
-  });
-  test('Auth user not global owner', () => {
-    h.testErrorThrown(h.ADMIN_USER_RMV_URL, 'DELETE', 400, uId0, token1);
   });
 });
 // ------------------Function Testing------------------//

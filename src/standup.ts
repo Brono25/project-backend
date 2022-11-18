@@ -40,10 +40,12 @@ export function standupStartV1(token: string, channelId: number, length: number)
 
 export function standupActivetV1(token: string, channelId: number) {
   isValidToken(token);
+  isValidChannelId(channelId);
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(403, 'User not a member');
+  }
 
-  console.log('B');
-
-  return { isActive: true, timeFinish: 10 };
+  return { isActive: true, timeFinish: -1 };
 }
 
 // ////////////////////////////////////////////////////// //

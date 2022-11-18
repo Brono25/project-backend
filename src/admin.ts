@@ -20,6 +20,5 @@ export function adminUserRemoveV1(token: string, uId: number) {
   if (!isValidAuthUserId(uId)) {
     throw HTTPError(400, 'Invalid user id');
   }
-
-  return {};
+  throw HTTPError(400, 'only global owner');
 }

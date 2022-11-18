@@ -52,6 +52,8 @@ export const USERS_STATS_URL = `${url}:${port}/users/stats/v1`;
 export const ADMIN_USER_RMV_URL = `${url}:${port}/admin/user/remove/v1`;
 
 export const STANDUP_START_URL = `${url}:${port}/standup/start/v1`;
+export const STANDUP_ACTIVE_URL = `${url}:${port}/standup/active/v1`;
+export const STANDUP_SEND_URL = `${url}:${port}/standup/send/v1`;
 
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
