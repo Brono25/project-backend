@@ -27,6 +27,8 @@ import {
 import {
   isHandleStrUnique,
 } from './auth';
+/* import request from 'sync-request';
+import Jimp from 'jimp'; */
 
 // ////////////////////////////////////////////////////// //
 //                      userProfileV1                     //
@@ -170,4 +172,36 @@ export function userStatsV1(token: string): {userStats: UserStats} {
   const userStore : UserStore = getUserStoreFromId(uId);
   const userStats: UserStats = userStore.userStats;
   return { userStats: userStats };
+}
+
+// ////////////////////////////////////////////////////// //
+//                      uploadImage                       //
+// ////////////////////////////////////////////////////// //
+/**
+ * Sets an image with a given url as the profile image of the user
+ *
+ * @param { string, string, number, number, number, number} - image url, xStart, yStart, xEnd, yEnd
+ * @returns {}
+ */
+export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart: number, yStart: number, xEnd: number, yEnd: number) {
+  isValidToken(token);
+  if (xEnd <= xStart) {
+    throw HTTPError('400', 'xEnd cannot be less than or equal to xStart');
+  }
+  if (yEnd <= yStart) {
+    throw HTTPError('400', 'yEnd cannot be less than or equal to yStart');
+  }
+  imgUrl = 'let imgUrl value be read';
+  /*
+  const res = request(
+    'GET',
+    imgUrl
+  );
+  Jimp.read(imgUrl)
+  .then(image => {
+    return image
+      .crop(xStart, yStart, xEnd, yEnd) // resize
+  });
+  */
+  return {};
 }

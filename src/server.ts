@@ -37,6 +37,7 @@ import {
   userProfileSetEmailV1,
   userProfileSetHandleV1,
   userStatsV1,
+  userProfileUploadPhotoV1,
 } from './user';
 
 import {
@@ -298,6 +299,11 @@ app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
 app.get('/user/stats/v1', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(userStatsV1(token));
+});
+app.post('/user/profile/uploadphoto/v1', (req: Request, res: Response) => {
+  const { imgUrl, xStart, yStart, xEnd, yEnd } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(userProfileUploadPhotoV1(token, imgUrl, parseInt(xStart), parseInt(yStart), parseInt(xEnd), parseInt(yEnd)));
 });
 // ------------- USERS --------------
 
