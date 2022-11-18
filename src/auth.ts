@@ -89,9 +89,9 @@ function authRegisterV1(
   const handleStr: string = generateHandleStr(nameFirst, nameLast);
   const authUserId: AuthUserId = generateAuthUserId();
 
-  let globalPermission: GlobalPermision = 'member';
+  let globalPermission: GlobalPermision = 2;
   if (authUserId.authUserId === GLOBAL_OWNER) {
-    globalPermission = 'owner';
+    globalPermission = 1;
   }
   const timeStamp: number = getTimeInSecs();
   const token: string = generateToken(email);

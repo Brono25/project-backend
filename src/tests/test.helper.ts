@@ -56,6 +56,8 @@ export const STANDUP_START_URL = `${url}:${port}/standup/start/v1`;
 export const STANDUP_ACTIVE_URL = `${url}:${port}/standup/active/v1`;
 export const STANDUP_SEND_URL = `${url}:${port}/standup/send/v1`;
 
+export const ADMIN_USER_PERM_CHANGE = `${url}:${port}/admin/userpermission/change/v1`;
+
 type AuthRegisterArgs = [string, string, string, string];
 type ChannelsCreateArgs = [number, string, boolean];
 export type Args = AuthRegisterArgs | ChannelsCreateArgs;

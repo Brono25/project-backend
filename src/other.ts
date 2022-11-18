@@ -26,6 +26,7 @@ import {
   NumChannelsExist,
   DmsExist,
   MessagesExist,
+  OWNER,
 } from './data.types';
 
 /**
@@ -92,7 +93,7 @@ export function isValidAuthUserId(authUserId: number): boolean {
       return true;
     }
   }
-  return false;
+  throw HTTPError(400, 'Invalid user id');
 }
 /**
  * @param {number} - channel id
@@ -179,6 +180,21 @@ export function isThisUserReacted(message: Message, reactId: number, token: stri
       return false;
     }
   }
+}
+/**
+ * @param {number} - permissionId
+ * @returns {boolean} - does exist true/false
+ */
+export function isValidPermId(permissionId: number) {
+  if (permissionId === 1) {
+    return true;
+  }
+
+  if (permissionId === 2) {
+    return true;
+  }
+
+  throw HTTPError(400, 'Invalid permission id');
 }
 
 // ////////////////////////////////////////////////////// //
@@ -322,7 +338,7 @@ export function getMessageLocation(messageId: number) {
  */
 export function isGlobalOwner (authUserId: number): boolean {
   const user: UserStore = getUserStoreFromId(authUserId);
-  if (user.globalPermission === 'owner') {
+  if (user.globalPermission === OWNER) {
     return true;
   }
   return false;
@@ -341,7 +357,7 @@ export function doesTokenHaveChanOwnerPermissions (token: string, channelId: num
     return true;
   }
   if (channelStore.allMembers.find(a => a.uId === uId)) {
-    if (userStore.globalPermission === 'owner') {
+    if (userStore.globalPermission === OWNER) {
       return true;
     }
   }

@@ -43,9 +43,7 @@ import Jimp from 'jimp'; */
 
 export function userProfileV2(token: string, uId: number): {user: User} | Error {
   isValidToken(token);
-  if (!isValidAuthUserId(uId)) {
-    throw HTTPError(400, 'User is not autherised');
-  }
+  isValidAuthUserId(uId);
   const data: DataStore = getData();
 
   for (const user of data.users) {

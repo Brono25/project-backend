@@ -50,10 +50,8 @@ import {
  */
 export function dmCreateV1(token: string, uIds: number[]): DmCreateReturn {
   isValidToken(token);
+  uIds.map(a => isValidAuthUserId(a));
 
-  if (uIds.find(a => isValidAuthUserId(a) === false)) {
-    throw HTTPError(400, 'Invalid User ID');
-  }
   const numUniqueIds: number = new Set(uIds).size;
   if (numUniqueIds !== uIds.length) {
     throw HTTPError(400, 'Duplicate uId');

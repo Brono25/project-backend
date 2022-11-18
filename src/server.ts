@@ -73,7 +73,11 @@ import {
   standupSendV1
 } from './standup';
 
-import { adminUserRemoveV1 } from './admin';
+import {
+  adminUserRemoveV1,
+  adminUserPermChangeV1,
+} from './admin';
+
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -326,7 +330,11 @@ app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
   const uId = req.query.uId as string;
   res.json(adminUserRemoveV1(token, parseInt(uId)));
 });
-
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
+  const { uId, permissionId } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(adminUserPermChangeV1(token, parseInt(uId), parseInt(permissionId)));
+});
 // ------------- STANDUP --------------
 app.post('/standup/start/v1', (req: Request, res: Response) => {
   const { channelId, length } = req.body;
