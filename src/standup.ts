@@ -17,7 +17,7 @@ import {isValidToken} from './other'
 export function standupStartV1(token: string, channelId: number, length: number) {
   isValidToken(token);
   
-  console.log('A')
+  console.log(token, channelId, length)
   return {timeFinish: length};
 }
 
