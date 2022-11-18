@@ -4,12 +4,6 @@
 import {isValidToken} from './other'
 
 
-
-
-
-
-
-
 // ////////////////////////////////////////////////////// //
 //                      StandupStart                      //
 // ////////////////////////////////////////////////////// //
@@ -23,7 +17,7 @@ import {isValidToken} from './other'
 export function standupStartV1(token: string, channelId: number, length: number) {
   isValidToken(token);
   
-  console.log(length)
+  console.log('A')
   return {timeFinish: length};
 }
 
@@ -32,15 +26,30 @@ export function standupStartV1(token: string, channelId: number, length: number)
 //                        StandupActive                   //
 // ////////////////////////////////////////////////////// //
 /**
- * Logouts a user by invalidating their token
  *
  * @param {string, number, number} - token, channelId, length
  * @returns {number} time finished
  */
 
-export function standupActivetV1(token: string, channelId: number, length: number) {
+export function standupActivetV1(token: string, channelId: number) {
   isValidToken(token);
-  
-  console.log(length)
-  return {timeFinish: length};
+  console.log('B')
+
+  return {isActive: true, timeFinish: 10 }
+}
+
+
+// ////////////////////////////////////////////////////// //
+//                       StandupSend                      //
+// ////////////////////////////////////////////////////// //
+/**
+ *
+ * @param {string, number, number} - token, channelId, message
+ * @returns {number} time finished
+ */
+
+export function standupSendV1(token: string, channelId: number, message: string) {
+  isValidToken(token);
+  console.log('C-------------------------')
+  return {}
 }

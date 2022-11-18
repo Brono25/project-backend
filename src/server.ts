@@ -65,7 +65,11 @@ import {
   dmListV1,
 } from './dm';
 
-import { standupStartV1 } from './standup';
+import { 
+  standupStartV1,
+  standupActivetV1,
+  standupSendV1
+} from './standup';
 
 import { adminUserRemoveV1 } from './admin';
 // Set up web app
@@ -316,8 +320,16 @@ app.post('/standup/start/v1', (req: Request, res: Response) => {
   const token = getTokenFromHeader(req);
   res.json(standupStartV1(token, parseInt(channelId), parseInt(length)));
 });
-
-
+app.get('/standup/active/v1', (req: Request, res: Response) => {
+  const token = getTokenFromHeader(req);
+  const channelId = req.query.channelId as string;
+  res.json(standupActivetV1(token, parseInt(channelId)));
+});
+app.post('/standup/send/v1', (req: Request, res: Response) => {
+  const { channelId, message } = req.body;
+  const token = getTokenFromHeader(req);
+  res.json(standupSendV1(token, parseInt(channelId), message));
+});
 
 // ----------------------------------------------------------
 
