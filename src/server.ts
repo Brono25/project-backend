@@ -65,7 +65,7 @@ import {
   dmListV1,
 } from './dm';
 
-import { 
+import {
   standupStartV1,
   standupActivetV1,
   standupSendV1

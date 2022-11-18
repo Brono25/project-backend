@@ -10,6 +10,7 @@ let channelId0: number;
 let channelId1: number;
 const length = 20;
 let tmp: any;
+let InvalidChannelId: number;
 beforeEach(() => {
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(0));
   token0 = tmp.token;
@@ -19,6 +20,7 @@ beforeEach(() => {
   channelId0 = parseInt(tmp.channelId);
   tmp = h.postRequest(h.CHAN_CREATE_URL, h.generateChannelsCreateArgs(1, true), token1);
   channelId1 = parseInt(tmp.channelId);
+  InvalidChannelId = channelId0 + channelId1 + 10;
 });
 
 // Tear down
@@ -33,7 +35,7 @@ describe('Error Handling', () => {
     h.testErrorThrown(h.STANDUP_START_URL, 'POST', 403, { channelId: channelId0, length: length }, h.invalidToken);
   });
   test('Channel Id is not a valid channel', () => {
-    h.testErrorThrown(h.STANDUP_START_URL, 'POST', 400, { channelId: channelId0, length: length }, token0);
+    h.testErrorThrown(h.STANDUP_START_URL, 'POST', 400, { channelId: InvalidChannelId, length: length }, token0);
   });
   test('Length is negative', () => {
     h.testErrorThrown(h.STANDUP_START_URL, 'POST', 400, { channelId: channelId0, length: -1 }, token0);
@@ -42,6 +44,6 @@ describe('Error Handling', () => {
     h.testErrorThrown(h.STANDUP_START_URL, 'POST', 400, { channelId: channelId0, length: length }, token0);
   });
   test('User Unautherised', () => {
-    h.testErrorThrown(h.STANDUP_START_URL, 'POST', 400, { channelId: channelId1, length: length }, token0);
+    h.testErrorThrown(h.STANDUP_START_URL, 'POST', 403, { channelId: channelId1, length: length }, token0);
   });
 });

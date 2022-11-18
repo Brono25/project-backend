@@ -1,8 +1,11 @@
 
+import HTTPError from 'http-errors';
 
-
-import {isValidToken} from './other'
-
+import {
+  isValidToken,
+  isTokenMemberOfChannel,
+  isValidChannelId
+} from './other';
 
 // ////////////////////////////////////////////////////// //
 //                      StandupStart                      //
@@ -16,11 +19,15 @@ import {isValidToken} from './other'
 
 export function standupStartV1(token: string, channelId: number, length: number) {
   isValidToken(token);
-  
-  console.log(token, channelId, length)
-  return {timeFinish: length};
+  isValidChannelId(channelId);
+  if (length < 0) {
+    throw HTTPError(400, 'Invalid length');
+  }
+  if (!isTokenMemberOfChannel(token, channelId)) {
+    throw HTTPError(403, 'User not a member');
+  }
+  throw HTTPError(400, 'Standup currently active');
 }
-
 
 // ////////////////////////////////////////////////////// //
 //                        StandupActive                   //
@@ -33,11 +40,11 @@ export function standupStartV1(token: string, channelId: number, length: number)
 
 export function standupActivetV1(token: string, channelId: number) {
   isValidToken(token);
-  console.log('B')
 
-  return {isActive: true, timeFinish: 10 }
+  console.log('B');
+
+  return { isActive: true, timeFinish: 10 };
 }
-
 
 // ////////////////////////////////////////////////////// //
 //                       StandupSend                      //
@@ -50,6 +57,6 @@ export function standupActivetV1(token: string, channelId: number) {
 
 export function standupSendV1(token: string, channelId: number, message: string) {
   isValidToken(token);
-  console.log('C-------------------------')
-  return {}
+  console.log('C-------------------------');
+  return {};
 }
