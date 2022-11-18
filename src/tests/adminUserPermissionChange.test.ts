@@ -5,9 +5,9 @@ h.deleteRequest(h.CLEAR_URL, {});
 // Setup
 let token0: string;
 let token1: string;
-
 let uId0: number;
 let uId1: number;
+let uId2: number;
 let invalidUId: number;
 
 let tmp: any;
@@ -21,7 +21,10 @@ beforeEach(() => {
   token1 = tmp.token;
   uId1 = parseInt(tmp.authUserId);
 
-  invalidUId = Math.abs(uId1 + 10);
+  tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+  uId2 = parseInt(tmp.authUserId);
+
+  invalidUId = Math.abs(uId1 + uId2 + 10);
 });
 // Tear down
 afterEach(() => {
@@ -96,6 +99,11 @@ describe('Function Testing', () => {
       permissionId: 1,
     }, token0);
     expect(a).toStrictEqual({});
+    const b: any = h.postRequest(h.ADMIN_USER_PERM_CHANGE, {
+      uId: uId2,
+      permissionId: 1,
+    }, token0);
+    expect(b).toStrictEqual({});
   });
 
   test('change permission of an owner to member', () => {

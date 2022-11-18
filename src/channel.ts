@@ -146,11 +146,10 @@ export function channelLeaveV1(
 export function channelInviteV2(token: string, channelId: number, uId: number): channelInviteReturn {
   isValidToken(token);
   isValidChannelId(channelId);
+  isValidAuthUserId(uId);
   const authUserId: number = getUIdFromToken(token);
 
-  if (!isValidAuthUserId(uId)) {
-    throw HTTPError(400, 'User is not autherised');
-  } else if (isAuthUserMember(uId, channelId)) {
+  if (isAuthUserMember(uId, channelId)) {
     throw HTTPError(400, 'User is already a member of the channel');
   } else if (!isAuthUserMember(authUserId, channelId) && !isGlobalOwner(authUserId)) {
     throw HTTPError(403, 'User is not a member of the channel');
@@ -260,9 +259,7 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
 export function channelAddOwnerV1(token: string, channelId: number, uId: number): ChanAddOwnerReturn {
   isValidToken(token);
   isValidChannelId(channelId);
-  if (!isValidAuthUserId(uId)) {
-    throw HTTPError(400, 'User is not autherised');
-  }
+  isValidAuthUserId(uId);
   if (!isAuthUserMember(uId, channelId)) {
     throw HTTPError(400, 'User is not a member');
   }

@@ -26,6 +26,7 @@ import {
   NumChannelsExist,
   DmsExist,
   MessagesExist,
+  OWNER,
 } from './data.types';
 
 /**
@@ -337,7 +338,7 @@ export function getMessageLocation(messageId: number) {
  */
 export function isGlobalOwner (authUserId: number): boolean {
   const user: UserStore = getUserStoreFromId(authUserId);
-  if (user.globalPermission === 1) {
+  if (user.globalPermission === OWNER) {
     return true;
   }
   return false;
@@ -356,7 +357,7 @@ export function doesTokenHaveChanOwnerPermissions (token: string, channelId: num
     return true;
   }
   if (channelStore.allMembers.find(a => a.uId === uId)) {
-    if (userStore.globalPermission === 1) {
+    if (userStore.globalPermission === OWNER) {
       return true;
     }
   }

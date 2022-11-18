@@ -13,6 +13,8 @@ import {
 import {
   UserStore,
   DataStore,
+  OWNER,
+  MEMBER
 } from './data.types';
 
 import {
@@ -31,10 +33,7 @@ import {
  */
 export function adminUserRemoveV1(token: string, uId: number) {
   isValidToken(token);
-  console.log(uId);
-  if (!isValidAuthUserId(uId)) {
-    throw HTTPError(400, 'Invalid user id');
-  }
+  isValidAuthUserId(uId);
   throw HTTPError(400, 'only global owner');
 }
 // ////////////////////////////////////////////////////// //
@@ -57,7 +56,7 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
   if (!isGlobalOwner(authUserID)) {
     throw HTTPError(403, 'the authorised user is not a global owner');
   }
- 
+
   const userStore: UserStore = getUserStoreFromId(uId);
   const permission: number = userStore.globalPermission;
 
@@ -65,20 +64,19 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
     throw HTTPError(400, 'the user already has the permissions level');
   }
 
-  if (uId === authUserID && permissionId === 2){
-    if (isonlyGlobalOwner(authUserID)) {
+  if (isonlyGlobalOwner(authUserID)) {
+    if (permissionId === MEMBER) {
       throw HTTPError(400, 'uId refers to a user who is the only global owner and they are being demoted to a user');
     }
   }
-  
 
   const data: DataStore = getData();
   const userIndex: number = data.users.findIndex(a => a.uId === uId);
 
-  if (permissionId === 1) {
-    data.users[userIndex].globalPermission = 1;
+  if (permissionId === OWNER) {
+    data.users[userIndex].globalPermission = OWNER;
   } else {
-    data.users[userIndex].globalPermission = 2;
+    data.users[userIndex].globalPermission = MEMBER;
   }
 
   setData(data);
@@ -89,11 +87,11 @@ export function adminUserPermChangeV1(token: string, uId: number, permissionId: 
 function isonlyGlobalOwner(uId: number) {
   const data: DataStore = getData();
   const users: UserStore[] = data.users;
-
-  let ownerNumber: number = 0;
+  console.log(users);
+  let ownerNumber = 0;
 
   for (const user of users) {
-    if (user.globalPermission === 1) {
+    if (user.globalPermission === OWNER) {
       ownerNumber = ownerNumber + 1;
     }
   }
