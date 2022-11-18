@@ -653,3 +653,53 @@ function shareToChannel(token: string, ogMessageId: number, message: string, cha
   const newMessageId = messageSendV1(token, channelId, newMessage).messageId;
   return { newMessageId: newMessageId };
 }
+
+// ////////////////////////////////////////////////////// //
+//                    messageSendLaterDmV1                     //
+// ////////////////////////////////////////////////////// //
+/**
+ * User as part of a DM can send a message.
+ * @param {string, number, string, number}
+ * @returns { MessageId | Error}
+ */
+export function messageSendLaterDmV1(
+  token: string, dmId: number, message: string, timeSent: number
+) {
+  isValidToken(token);
+  isValidDmId(dmId);
+
+  if (message.length < MIN_MSG_LEN || message.length > MAX_MSG_LEN) {
+    throw HTTPError(400, 'Invalid message length');
+  }
+
+  if (!isTokenMemberOfDm(token, dmId)) {
+    throw HTTPError(403, 'User not a member');
+  }
+
+  const messageId: number = generateMessageId();
+  const uId: number = getUIdFromToken(token);
+  const messageLoc: MessageTracking = {
+    messageId: messageId,
+    channelId: null,
+    dmId: dmId,
+    uId: uId
+  };
+  const messageDetails: Message = {
+    messageId: messageId,
+    uId: uId,
+    message: message,
+    timeSent: timeSent,
+  };
+  const data: DataStore = getData();
+  const index = data.dms.findIndex(a => a.dmId === dmId);
+  data.dms[index].messages.unshift(messageDetails);
+  data.messageIds.unshift(messageLoc);
+  setTimeout(executeLater, timeSent * 1000, data, uId);
+  return <MessageId>{ messageId: messageId };
+}
+
+function executeLater(data: DataStore, uId: number) {
+  setData(data);
+  updateUserMessagesSentStat(uId);
+  updateNumMessagesExistStat();
+}
