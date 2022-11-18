@@ -3,9 +3,7 @@ import * as h from './test.helper';
 // Setup
 let token0: string;
 let uId0: number;
-
 let invalidUserId: number;
-
 let tmp: any;
 
 beforeEach(() => {
@@ -15,6 +13,7 @@ beforeEach(() => {
   uId0 = parseInt(tmp.authUserId);
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(1));
   tmp = h.postRequest(h.REGISTER_URL, h.generateUserRegisterArgs(2));
+  invalidUserId = uId0 + 100;
 });
 
 // Tear down
