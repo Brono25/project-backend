@@ -46,6 +46,7 @@ export const USER_PROF_SET_NAME_URL = `${url}:${port}/user/profile/setname/v2`;
 export const USER_PROF_SET_EMAIL_URL = `${url}:${port}/user/profile/setemail/v2`;
 export const USER_PROF_SET_HANDLE_URL = `${url}:${port}/user/profile/sethandle/v2`;
 export const USER_STATS_URL = `${url}:${port}/user/stats/v1`;
+export const USER_IMAGE_URL = `${url}:${port}/user/profile/uploadphoto/v1`;
 
 export const USERS_STATS_URL = `${url}:${port}/users/stats/v1`;
 
